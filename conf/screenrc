@@ -1,0 +1,517 @@
+###############################################################################
+#### Session Options
+# A "Session" is a Screen server instance with a collection of "Windows".
+##sessionname ${USER}.${HOSTNAME} # get/set session name
+##debug off		# no debug
+##chdir			# cd to ~
+##password none		# if present, user must give password to reattach
+##setsid on		# use sessions and process groups
+##maxwin 32		# max number of windows in a screen session
+#### Session Commands
+#source FILE		# read & exec commands from FILE
+#sleep SEC		# pause screenrc reading for SEC seconds (for echo)
+#quit			# kill all windows and exit screen
+#screen			# create new window
+#setenv VAR VAL		# set environment var
+#unsetenv VAR		# remove VAR from environment
+#zmodem			# act as a zmodem`
+#colon			# enter screenrc command
+#exec FDPAT CMD ARGS	# run CMD in window
+
+#### Session Window Options
+#shell -${SHELL}	# alias for defshell
+defshell ${HOME}/local/bin/bash # override ${SHELL}
+#defzombie ^[^M onerror	# defzombie is an alias for zombie 
+zombie ^[^M onerror	# Esc=exit Enter=restart if window exits w/ error
+autodetach on		# detach on hangup
+deflogin off		# New shell windows are not login shells
+login off		# login or out of utmp
+#shelltitle TITLE	# title for new windows
+#### Window Commands
+# A Window contains a shell/command, displays in a "Reagon", and
+#  may be a member of a window "Group"
+#windowlist		# show list of windows
+#number +-N		# change window number
+#title STRING		# set window title
+#fit			# change window size to match current region
+#kill			# kill current window
+#at IDEND[#|*|%] CMD ARGS # run CMD at windows,displays, or for users
+#break			# send break signal to window
+#info			# display flow-control info
+#group			# get/set window group membership
+
+
+#### Window Terminal Options
+# Screen acts as a terminal for the commands running in a Window.
+#term "screen"		# change what screen presents as its term 'screen'
+defmode 0620		# ptty mode for new windows
+defobuflimit 1024	# output buffer, blocks when full
+console off		# don't grab system console /dev/console
+#defcharset		#
+#charset SET		#
+#defgr on		#
+#gr on			#
+#defencoding ENC	#
+#encoding ENC ENC	# UTF-8
+#termcap		# modify a termcap entry
+#terminfo		# modify a terminfo entry
+#termcapinfo		# modify a termcap and terminfo entry at the same time
+#defutf8 on		#
+#utf8 ON ON		# use utf-8
+#defnonblock on		#
+#nonblock on		# nonblocking io with the displays
+#defflow		#
+#flow ON|OFF|auto	# set FLOW-CONTROL
+#defwrap off		#
+#wrap off		# wrap long lines
+#defmousetrack off	# 
+#mousetrack on		# select region with mouse click
+#### Window Terminal Commands
+#dumptermcap		# dump termcap
+#pow_break		# reopen window term and send break
+#xon			# insert ^Q into window's stdin queue
+#xoff			# insert ^S into window's stdin queue
+
+#### Copy & Paste / History / Hardcopy Options
+defscrollback 2048	# scrollback bufer lines
+bufferfile "${HOME}/.screen/screen.buf"
+crlf off		# copied new lines are not CRLF
+defslowpaste 0		# No delay between characters when pasting
+pastefont off		# dont paste font info
+hardcopydir "${HOME}/.screen"	# hardcopy dir
+hardcopy_append off	# dont appent to hardcopy.n
+ignorecase off		# searches use case
+compacthist on		# no trailing blank lines when scrolling into history
+printcmd "cat > ${HOME}/.screen/.screen.print" # term print cmd will cat to file
+#### Copy & Paste Commands
+#scrollback 2048	# set scrollback for active window
+#copy			#
+#paste REG DEST_REG	# write content of REG to stdin of window
+#slowpaste MSEC		# delay paste to window between chars
+#hardcopy -h file	# write window to file, -h includes history
+#writebuf -E ENC FILE	# write paste buffer to file
+#readbuf -e ENC FILE	# read file into paste buffer
+#readreg -e ENC REG FILE# read file into REG, or PASTE buffer into REG
+#register -E Enc REG STRING # save string into register
+#removebuf		# remove writebuf/readbuf buffer file
+#stuff STRING		# stuff string into input buffer for window
+#history		# fake command history
+
+#### Logging Options
+deflog off		# no logging
+logfile "${HOME}/.screen/screenlog.%n" # logfile
+logfile flush 5		# flush timeout
+logtstamp off		# no logfile time stamp
+logtstamp after 600	# stamp after 10 min
+logtstamp string "-- %n:%t -- time-stamp -- %M/%d/%y %c:%s --\n" # format
+#### Logging Commands
+#log [on|off]		# start/stop saving text to screenlog.n
+
+#### Window (In)activity Monitoring Options
+defmonitor off		# no activity monitoring
+defsilence off		# no inactivity monitoring
+silencewait 15		# alert after SEC of silence
+#### Window (In)activity Monitoring Commands
+#monitor		# toggles activity monitoring
+#silence		# toggles inactivity monitoring
+
+#### Multiuser Options
+multiuser off		# single user mode
+defescape ^Aa		# Set escape for newly added users in multiuser mode
+defwritelock auto	# first come, first served
+writelock auto		# lock unlocked win upon entry, unlock when leaving
+#### Multiuser Commands
+#acladd USERNAMES CRYPTED-PASS
+#aclchg USERNAMES PERMBITS LIST
+#acldel USER
+#aclgrp USER GROUP
+#aclumask USERNAMES+BITS | USERNAMES-BITS
+#su USER PASSWD1 PASSWD2# su to a different user
+#wall MSG		# write MSG to all displays
+#displays		# show displays
+
+###############################################################################
+#### Display Options
+# A display is a Screen client. It connects to a user's terminal and
+#  shows one or more "Region".  Many Displays can connect to the same Session.
+#attrcolor attrib [attrib/color-modifier]
+vbell on		# no annoying audible bell, please
+##allpartial off		# update more than the cursor line on window change
+##partial off		# update more than the cursor line on window change
+##altscreen on		# support altscreen like xterm
+#blankerprg		#
+#idle			# set command to run after inactivity (i.e. blanker)
+#height -w -d LINES COLS# set the Display (-d) and/or the Window (-w) height
+#width -w -d COls ines	# set the Display (-d) and/or the Window (-w) width
+verbose on		# display command for new windows
+startup_message off	# don't display the copyright page
+nethack off		# funny, but not now
+msgminwait 2		# wait 2 sec if more messages are waiting
+msgwait 5		# display 5 sec if screen is not desturbed
+activity 'Update @ %n'	# monitored window changes
+#backtic
+bell_msg 'BELL @ %n'	# Term Bell Message
+vbell_msg 'BELL @ %n'	#
+vbellwait 1		# wait one sec
+#defhstatus "defhardline"
+#hstatus "hardline"	# change the Window’s hardstatus line
+hardstatus off		# use hardstatus line
+hardstatus alwaysignore "x%h"
+caption always "%?%F%{= kW}(%:%{= kw}[%?%01=%-Lw%{+r}%50L>%n%f* %t%{-}%+Lw%50<%?%F)%:]%?%?{%u}%?%h%=%D %Y/%m/%d %c (%l)"
+pow_detach_msg "Screen session of $LOGNAME $:cr:$:nl:ended."
+#color PREFIX
+windowlist title "Num  Name%=Flags"
+windowlist string "%3n %t%=%f"
+#### Display Commands
+#blanker		# clear display and call blankerprog
+#detach -h		# detach from term, -h will send SIGHUP to term
+#dinfo			# display term info
+#meta			# insert command char into active Window's input stream
+#digraph PRESET UNICODE	#
+#echo -n MESSAGE	# print message
+#help -c CLASS		# online help
+#license		# display disclamer page
+#lastmsg		# redisplay last message
+#lockscreen		# lock the display with $LOCKPRG
+#pow_detach		# send HANGUP to screen's parent after detach
+#suspend		# Use job control to suspend screen (detach windows)
+#time STRING		# display time of day, load average, or STRING
+#time "%c:%s %M %d %H%? %l%?"
+#version		# print screen version
+#windows		# show window list in message line
+
+#### Region Options
+#### Region Commands
+# A region displays the contents of a "Window" on the screen, and may be a member of a "Layout"
+#focusminsize		# region size limits
+#focus			# change region focus
+#only			# kill all regions but the one with focus
+#split -v		# split region (-v for virtical split)
+#remove			# kill current region
+#resize			# resize current region
+#resize -h -v -b -p -l
+#next			# switch region to next window
+#prev			# switch region to window with next lowest number
+#other			# switch region to last displayed window (next if it does not exist any more)
+#select WID		# switch region to window with WID
+#clear
+#redisplay		# redraw window
+
+#### Region Layout Options
+layout autosave on	# remember layouts after a detach
+layout attach :last	# reattach to last used layout
+#### Region Layout Commands
+#layout new TITLE	# 
+#layout remove N|TITLE	# 
+#layout next		# 
+#layout prev		# 
+#layout select N|Title	# 
+#layout show		# 
+#layout title TITLE	# 
+#layout number N	# 
+#layout save N|TITLE	# 
+#layout dump FILE	# 
+
+#### Display Terminal Options
+escape ^Aa		# escape is '^A' and '^Aa' sends '^A' to window
+#defc1 off		# dont treat char 128-159 as escape codes
+#c1 off			# dont treat char 128-159 as escape codes
+defautonuke off		# don't drop unwriten text on a clearscreen
+#autonuke off		# 
+#defbce			# Background Color Erase
+#bce off		# Background Color Erase
+#defbreaktype		# type of break to send
+#breaktype TYPE		# type of break to send
+#maptimeout 300ms	# timeout for map
+#bind			#
+#bindkey		#
+#mapdefault		# only look in default bindkey
+#mapnotnext		# dont use key binding for next input char
+#markkeys ""		# copy/history mode keys
+#process REG		# process REG as if it were keyboard input
+#command -c CLASS	# Same effect as ^A, useful for key bindings
+#rendition bell|monitor|silence|so ATTR COLOR
+#rendition bell "=ub "
+#rendition monitor "=b "
+#rendition silence "=u "
+#sorendition ATTR COLOR	# change highlighting "=s dd"
+#### Display Terminal Commands
+#reset			# term reset
+
+###############################################################################
+######## Command Bindings
+#### Binding Map
+#	x		^X		X	
+# a	meta		other		title	
+# b	focus		break		pow_break
+# c	screen		screen		screen	
+# d	detach		detach		pow_detach
+# e						
+# f	flow		flow		fit	
+# g			vbell		login	
+# h	focus		hardcopy	log	
+# i	info		focus			
+# j	focus					
+# k	focus		kill		kill	
+# l	focus		clear		redisplay
+# m	lastmsg		lastmsg		monitor	
+# n	next		layout		number	
+# o						
+# p	prev		layout			
+# q	xon		xon		only	
+# r	wrap		wrap			
+# s	xoff		xoff		split	
+# t	focus		time		title	
+# u						
+# v	version		digraph			
+# w	windows		windows		width	
+# x	lockscreen	lockscreen	remove	
+# y						
+# z	suspend		suspend		reset	
+# `					~ layout
+# 1	select 1			! layout
+# 2	select 2			@ layout
+# 3	select 3			# layout
+# 4	select 4			$ layout
+# 5	select 5			% layout
+# 6	select 6			^ layout
+# 7	select 7			& layout
+# 8	select 8			* layout
+# 9	select 9			( layout
+# 0	select 0			) layout
+# -	select -			_ silence
+# =	removebuf			+ 	
+# [	copy		copy		{ history
+# ]	paste		paste		} history
+# \			quit		| split
+# ;					: colon
+# '	select				" windowlist
+# ,	license				< readbuf
+# .	dumptermcap			> writebuf
+# /					? help	
+# ' '	next					
+# \177	prev					
+
+##bind -c DefPowDetach D pow_detach
+##bind D command -c DefPowDetach
+
+#### Bind Options
+#unbindall		# unbind all key bindings
+
+#### Session
+bind  a meta		# Send '^A' to window
+bind  ? help		# help
+bind  G login		# toggle utmp login
+bind  : colon		# enter screen command mode
+#bind  * displays	# show all connected displays
+
+#### Copy&Paste, History, Messages
+bind  [ copy		# enter copy/scrollback mode
+bind ^[ copy		# enter copy/scrollback mode
+bind  ] paste . 	# paste the "paste buffer"
+bind ^] paste . 	# paste the "paste buffer"
+bind  m lastmsg		# redisplay last message
+bind ^M lastmsg		# redisplay last message
+bind  M monitor		# Activity monitor toggle
+bind  _ silence		# Inactivity monitor toggle
+bind  H log		# Toggle logging to logfile
+bind ^H hardcopy	# write window display to file
+bind  { history		# fake command history
+bind  } history		# fake command history
+bind  , license		# display license
+bind  < readbuf		# read screen-exchange file into paste buffer
+bind  > writebuf	# write paste buffer to screen-exchange file
+bind  = removebuf	# remove screen-exchange file
+
+#### Job Control & Term
+bind  z suspend		# detach windows and BSD sleep screen client
+bind ^Z suspend		# detach windows and BSD sleep screen client
+bind  Z reset		# reset terminal
+bind ^\\ quit		# kill all windows and exit screen
+bind  d detach		# detach screen client from term
+bind ^D detach		# detach screen client from term
+bind  D pow_detach	# send HANGUP to screen's parent after detach
+bind  q xon		# send window ^Q character
+bind ^Q xon		# send window ^Q character
+bind  q xoff		# send window ^S character
+bind ^Q xoff		# send window ^S character
+bind  . dumptermcap	# write termcap to /tmp/screen/SESSION/.termcap
+
+#### Window
+bind  A title		# Enter title for window
+bind  T title		# Enter title for window
+bind  N number -1	# Decrement window number
+# Create window, and switch region to that window
+bind  c screen ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
+bind ^C screen ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
+bind  C screen //group	# Create window group
+bind ^K kill		# kill current window
+bind  K kill		# kill current window
+bind  i info		# display window info
+bind ^V digraph		# enter digraph character
+bind  W width		# toggle 80 / 132 width
+bind  r wrap		# toggle line-wrap
+bind ^R wrap		# toggle line-wrap
+
+#### Display 
+bind  ? help		# online help
+bind ^L clear		# clear/blank the screen
+bind  L redisplay	# refresh window
+bind  F fit		# resize window to region
+bind  f flow		# toggle flow: on>off>auto
+bind ^F flow		# toggle flow: on>off>auto
+bind ^B break		# Send break to window
+bind  B pow_break	# Reopen term line and send break
+bind ^G vbell		# toggle visual bell mode
+bind  v version		# print screen version
+bind ^T time		# display time
+bind  x lockscreen	# lock the display
+bind ^X lockscreen	# lock the display
+
+#### Region
+bind ^I focus		# next region
+bind  j focus down	# move down a region
+bind  k focus up		# move up a region
+bind  t focus top	# move to top region
+bind  b focus bottom	# move to bottom region
+bind  h focus left	# move to left region
+bind  l focus right	# move to right region
+bind  Q only		# make this the only regoin
+bind  X remove		# kill this region
+bind  S split		# split region horizontally
+bind  | split -v	# split region vertically
+
+bind ^A other		# switch region to most recent window
+bind  n next		# switch region to next window
+bind ' ' next		# switch region to next Window
+bind  p prev		# switch to prev window
+bind \0177 prev		# switch to prev window
+bind  0 select 0	# select win 0
+bind  1 select 1	# select win 1
+bind  2 select 2	# select win 2
+bind  3 select 3	# select win 3
+bind  4 select 4	# select win 4
+bind  5 select 5	# select win 5
+bind  6 select 6	# select win 6
+bind  7 select 7	# select win 7
+bind  8 select 8	# select win 8
+bind  9 select 9	# select win 9
+bind  - select -	# select win - an empty regon
+bind \' select		# ask for win number
+bind \" windowlist -b -m # Present a list of all windows for selection
+bind  w windows		# show list of windows
+bind ^W windows		# show list of windows
+
+#### Layout
+bind  ) layout select 0	# select layout 0
+bind  ! layout select 1	# select layout 1
+bind  @ layout select 2	# select layout 2
+bind  \# layout select 3 # select layout 3
+bind  $ layout select 4	# select layout 4
+bind  % layout select 5	# select layout 5
+bind  \^ layout select 6 # select layout 6
+bind  & layout select 7	# select layout 7
+bind  * layout select 8	# select layout 8
+bind  ( layout select 9	# select layout 9
+bind ^N layout next	# switch to next layout
+bind ^P layout prev	# switch to prev layout
+
+
+######## Default Options
+# This section should come last
+
+chdir			# cd to ~ for new windows
+
+# Environment
+setenv LES_HOME "${HOME}"
+setenv LES_LOCAL "${LES_HOME}/local"
+setenv LES_BIN "${LES_LOCAL}/bin"
+setenv LES_SBIN "${LES_LOCAL}/sbin"
+setenv LES_BASH "${LES_BIN}/bash"
+setenv LES_CONF "${LES_LOCAL}/conf"
+setenv LES_BASHRC "${LES_CONF}/bashrc"
+setenv SHELL "${LES_BASH}"
+
+# create main window group
+screen -t main 0 //group
+
+# create virt layout and 3 new windows
+layout new vplit3
+layout number 0
+screen -t sh 1 ${LES_BASH} --rcfile ${LES_BASHRC}
+group main
+split -v
+focus right
+screen -t edit 2 ${LES_BASH} --rcfile ${LES_BASHRC}
+group main
+split -v
+focus right
+screen -t help 3 ${LES_BASH} --rcfile ${LES_BASHRC}
+group main
+focus
+
+# main layout
+layout new main
+layout number 1
+focus
+select sh
+
+# vsplit layout
+layout new vsplit
+layout number 2
+select edit
+split -v
+focus right
+select help
+focus left
+
+# dev_l layout
+layout new dev_l
+layout number 3
+select sh
+split -v
+focus right
+select edit
+split
+focus down
+select help
+focus left
+
+# dev_r layout
+layout new dev_r
+layout number 4
+select edit
+split -v
+focus right
+select sh
+focus left
+split
+focus down
+select help
+focus up
+
+# hsplit layout
+layout new hsplit
+layout number 5
+select edit
+split
+focus down
+select help
+focus up
+
+# create work window group
+screen -t sub 6 //group
+
+# work layout
+layout new work
+layout number 6
+screen -t work 7 ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
+group sub
+focus
+select work
+
+
+# select main layout
+layout select main
+
+# vim:filetype=screen:

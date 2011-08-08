@@ -1,0 +1,71 @@
+set nocompatible
+set cpoptions=aABceFIs
+set noinsertmode
+set nopaste
+set pastetoggle=
+
+set whichwrap=b,s,<,>,[,]
+set nostartofline
+set wrapscan
+set incsearch
+
+"set scroll
+set scrolloff=0
+set wrap
+set nolinebreak
+set breakat=\ \	!@*-+;:,./?
+set showbreak=>
+set sidescroll=0
+set sidescrolloff=0
+set display=lastline,uhex
+set fillchars=vert:\|,fold:-,stl:^,stlnc:_,diff:-
+set cmdheight=1
+set nolazyredraw
+"set redrawtime=2000
+set writedelay=0
+set list
+set listchars=tab::.,nbsp:_,extends:>,precedes:<,trail:-,eol:`
+set number
+set numberwidth=6
+set autoindent
+
+set background=dark
+set hlsearch
+"if has("gui_running")
+"  " GUI is running or is about to start.
+"  " Maximize gvim window.
+"  set lines=999 columns=999
+"else
+"  " This is console Vim.
+"  if exists("+lines")
+"    set lines=999
+"  endif
+"  if exists("+columns")
+"    set columns=999
+"  endif
+"endif
+
+
+set nospell
+set spelllang=en
+
+set laststatus=2
+set splitbelow
+set splitright
+
+set showtabline=2
+
+set showcmd
+set showmode
+set ruler
+
+set errorbells
+set visualbell
+
+syntax on
+
+set backspace=indent,eol,start
+set showmatch
+set matchtime=4
+set matchpairs=(:),{:},[:]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
