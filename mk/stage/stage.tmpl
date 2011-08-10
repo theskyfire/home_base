@@ -1,0 +1,48 @@
+##############################################################################
+# Stage Template
+##############################################################################
+# Include Guard
+include $(GUARD)
+ifdef FIRST_INCLUDE
+
+GEN_SEQ			= $(eval $(STAGE)_$(1)_SEQ =$(STAGE)_$(1)_PRE)
+GEN_SEQ			+=$(eval $(STAGE)_$(1)_SEQ+=$(STAGE)_$(1))
+GEN_SEQ			+=$(eval $(STAGE)_$(1)_SEQ+=$(STAGE)_$(1)_POST)
+
+endif
+include $(END_GUARD)
+
+# Set STAGE, after END_GUARD THIS_MAKEFILE == Including Makefile
+STAGE			:=$(patsubst %.mk,%,$(notdir $(THIS_MAKEFILE)))
+
+
+$(call GEN_SEQ,CMD)
+$(call GEN_SEQ,ENV)
+$(call GEN_SEQ,PROG)
+$(call GEN_SEQ,ARG)
+$(call GEN_SEQ,REDIR)
+
+$(STAGE)_CMD		+=$(STAGE)_ENV_SEQ
+$(STAGE)_CMD		+=$(STAGE)_PROG_SEQ
+$(STAGE)_CMD		+=$(STAGE)_ARG_SEQ
+$(STAGE)_CMD		+=$(STAGE)_REDIR_SEQ
+
+.PHONY: $(STAGE)
+$(STAGE): $(foreach PRJ,$(PRJS),$(STAGE)($(PRJ)))
+
+$(foreach PRJ,$(PRJS),$(eval $(STAGE)_$(PRJ): PRJ=$(PRJ)))
+
+# stage(X) calls stage_X
+$(STAGE)(%): $(STAGE)_% ;
+
+$(STAGE)_%: $(BUILD_DIR)/$(STAGE).$$(*).log ;
+
+.PRECIOUS: $(BUILD_DIR)/$(STAGE).%.log
+$(BUILD_DIR)/$(STAGE).%.log: | $$(dir $$(@))
+	{
+		trap "mv '$(@)' '$(@).err'" ERR ;
+		cd '$($(STAGE)_PATH)' ;
+		$($(STAGE)_CMD_SEQ) ;
+	} |& tee '$(@)'
+
+# vim: set syntax=make:
