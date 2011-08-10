@@ -1,2 +1,1 @@
-MK_DIR			:=$(dir $(abspath $(MAKEFILE_LIST)))mk
-include $(MK_DIR)/main.mk
+include $(dir $(abspath $(MAKEFILE_LIST)))mk/main.mk

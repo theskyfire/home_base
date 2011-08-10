@@ -2,24 +2,44 @@
 # Configuration
 ##############################################################################
 
-# Set Default Goal
-.DEFAULT_GOAL		=install
+# Include Guard
+ifndef INCLUDE_config_mk
+INCLUDE_config_mk	:=$(abspath $(lastword $(MAKEFILE_LIST)))
 
-# only build serially
-.NOTPARALLEL:
+##############################################################################
+# GNU Make checks NOTE: Must come before any rules
 
-# Expand rules twice
-.SECONDEXPANSION:
+# Set a trap for versions of make that don't support .DEFAULT_GOAL
+_TRAP_: FORCE
+	@echo "Error: Please use a modern version of GNU Make!" >&2
+	exit 1
 
-# all lines of a recipe are exec'ed by the same shell instance
-# beware lines starting with '@' '-' '+'
-.ONESHELL:
+# Define FORCE target
+.PHONY: _TRAP_ FORCE
+FORCE:
 
-# use MY_SHELL
-SHELL		=$(firstword $(wildcard $(MY_SHELL) /bin/bash /bin/sh))
+# Require .DEFAULT_GOAL
+ifndef .DEFAULT_GOAL
+$(error Please use a modern version of GNU Make!)
+endif
 
-# exit recipe shell on error if using bash
-.SHELLFLAGS	=$(if $(findstring bash,$(SHELL)),-exc,-c)
+# Test for modern GNU Make
+ifneq ($(findstring else-if,$(.FEATURES)),else-if)
+$(error Please use a modern version of GNU Make!)
+endif
+ifneq ($(findstring target-specific,$(.FEATURES)),target-specific)
+$(error Please use a modern version of GNU Make!)
+else ifneq ($(findstring order-only,$(.FEATURES)),order-only)
+$(error Please use a modern version of GNU Make!)
+else ifneq ($(findstring second-expansion,$(.FEATURES)),second-expansion)
+$(error Please use a modern version of GNU Make!)
+else ifneq ($(findstring archives,$(.FEATURES)),archives)
+$(error Please use a modern version of GNU Make!)
+else ifneq ($(findstring jobserver,$(.FEATURES)),jobserver)
+$(error Please use a modern version of GNU Make!)
+else ifneq ($(findstring check-symlink,$(.FEATURES)),check-symlink)
+$(error Please use a modern version of GNU Make!)
+endif
 
 ##############################################################################
 # MAKE commandline overrides
@@ -27,6 +47,10 @@ SHELL		=$(firstword $(wildcard $(MY_SHELL) /bin/bash /bin/sh))
 # Location of HomeBase
 BASE_NAME		=base
 BASE			=$(HOME)/$(BASE_NAME)
+
+TMP_BASE_NAME		=$(USER).$(BASE_NAME)
+TMP			=/tmp
+TMP_BASE		=$(TMP)/$(TMP_BASE_NAME)
 
 # Path to "common" dir.  $(BASE_DIR)/common is a symlink to this location.
 COMMON_NAME		=common
@@ -55,5 +79,133 @@ LIB_NAME		=lib
 LOCALE_NAME		=locale
 SRC_NAME		=src
 MAN_NAME		=man
+##############################################################################
+
+# Projects
+PRJ_DIR			=$(MK_DIR)/prj
+MK_PRJS			:=$(wildcard $(PRJ_DIR)/*.mk)
+PRJS			:=$(patsubst $(PRJ_DIR)/%.mk,%,$(MK_PRJS))
+
+# Stages
+STAGE_DIR		=$(MK_DIR)/stage
+MK_STAGES		:=$(wildcard $(STAGE_DIR)/*.mk)
+STAGES			:=$(patsubst $(STAGE_DIR)/%.mk,%,$(MK_STAGES))
 
 
+##############################################################################
+# Make Settings
+
+# Set Default Goal
+.DEFAULT_GOAL		=install
+
+# only build serially
+.NOTPARALLEL:
+
+# Expand rules twice
+.SECONDEXPANSION:
+
+# all lines of a recipe are exec'ed by the same shell instance
+# beware lines starting with '@' '-' '+'
+.ONESHELL:
+
+# MY_SHELL
+MY_SHELL_CMD		=bash
+MY_MAKE_CMD		=make
+
+# use MY_SHELL
+SHELL		=$(firstword $(wildcard $(MY_SHELL) /bin/bash /bin/sh))
+
+# exit recipe shell on error if using bash
+.SHELLFLAGS	=$(if $(findstring bash,$(SHELL)),-exc,-c)
+
+
+
+##############################################################################
+# Functions
+
+# No Op
+NOP			=true
+
+# Return LIST without its last N items
+POP_LIST_N		=$(wordlist 1,$(shell echo "$$(( $$(( X = $(words $(1)) - $(2) )) >=0 ? X : 0))" ),$(1))
+POP_LIST		=$(call POP_LIST_N,$(1),1)
+
+# Generate Include Marker for given makefile
+GET_MARKER		=$(subst /,_,$(subst .,_,$(patsubst $(MK_DIR)/%,%,$(abspath $(1)))))
+
+GUARD			=$(MK_DIR)/guard.mk
+END_GUARD		=$(MK_DIR)/end_guard.mk
+
+
+##############################################################################
+# Default Make Configuration
+##############################################################################
+
+# This file
+MY_MAKEFILE		=$(firstword $(MAKEFILE_LIST))
+
+# Name of GNU Make command
+MY_MAKE_CMD		=make
+
+# Temp MAKE for bootstrap
+TMP_MAKE_DIR		=/tmp/homebase
+TMP_MAKE		=$(TMP_MAKE_DIR)/$(BASE)/bin/$(MY_MAKE_CMD)
+
+# HomeBase MAKE
+BASE_MAKE		=$(BASE)/$(BIN_NAME)/$(MY_MAKE_CMD)
+
+# Select best Make
+MY_MAKE			=$(firstword $(wildcard $(BASE_MAKE) $(TMP_MAKE)) $(MAKE))
+
+# My MAKE Options
+#MY_MAKE_OPTS		=
+#MY_MAKE_OPTS		+=--print-directory
+#MY_MAKE_OPTS		+=--no-builtin-variables
+#MY_MAKE_OPTS		+=--no-builtin-rules
+#MY_MAKE_OPTS		+=--warn-undefined-variables
+#MY_MAKE_OPTS		+=--debug=a
+#MY_MAKE_OPTS		+=--print-data-base
+MY_MAKEFLAGS		=
+MY_MAKEFLAGS		+=--warn-undefined-variables
+
+# Debug MAKE
+DEBUG			=
+ifneq (,$(DEBUG))
+MY_MAKEFLAGS		+=-wRrpd
+else
+MY_MAKEFLAGS		+=-wRr
+endif
+
+# MAKE working dir
+MY_CURDIR		=-C $(CURDIR)
+
+# MAKE Goals
+ifdef MAKECMDGOALS
+MY_GOALS		=$(foreach goal,$(MAKECMDGOALS),'$(goal)')
+else
+MY_GOALS		='$(.DEFAULT_GOAL)'
+endif
+MY_MAKE_GOALS		=$(subst 'bootstrap',,$(MY_GOALS))
+
+# Commandline Variable Overrides
+MY_OVERRIDES		=$(MAKEOVERRIDES)
+
+# MAKE's Environment
+MY_MAKE_ENV		=
+MY_MAKE_ENV		+=MAKELEVEL=0
+MY_MAKE_ENV		+=MAKEFLAGS=''
+MY_MAKE_ENV		+=MAKEOVERRIDES=''
+
+MAKE_BOOT		=$(MY_MAKE_ENV)
+MAKE_BOOT		+=$(MY_MAKE)
+MAKE_BOOT		+=-f '$(MY_MAKEFILE)'
+MAKE_BOOT		+=$(MY_MAKEFLAGS)
+MAKE_BOOT		+=$(MY_CURDIR)
+MAKE_BOOT		+=$(MY_MAKE_GOALS)
+MAKE_BOOT		+=$(MY_OVERRIDES)
+
+##############################################################################
+# Stop rebuild of Config Makefile
+$(lastword $(MAKEFILE_LIST)): ;
+
+endif # END Include Guard

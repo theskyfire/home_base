@@ -1,5 +1,13 @@
 ##############################################################################
-# HomeBase Items [Use these variables in the reat of the makefile.]
+# HomeBase Directory Project
+##############################################################################
+# Include Guard
+include $(GUARD)
+ifdef FIRST_INCLUDE
+
+include $(PRJ_DIR)/prj.tmpl
+
+get_$(PRJ):		get_CMD=$(NOP)
 
 # List of Directories
 DIRS			=
@@ -228,3 +236,6 @@ $(LNKS):
 # MAN7EXT			=.7
 # MAN8EXT			=.8
 
+endif # END Include Guard
+include $(END_GUARD)
+##############################################################################

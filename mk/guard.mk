@@ -2,63 +2,44 @@
 # Include Guard
 ##############################################################################
 
-# Require GUARD == full path to this makefile
-ifneq "$(GUARD)" "$(abspath $(lastword $(MAKEFILE_LIST)))"
-$(error Please set GUARD:=$$(dir $$(abspath $$(MAKEFILE_LIST)))/guard.mk in top Makefile)
-endif
+# Configuration
+include $(MK_DIR)/config.mk
 
-# Include GNU Make checks NOTE: Must come before any rules
-include $(dir $(GUARD))check.mk
-
+##############################################################################
 # Guard guard "Quis custodiet ipsos custodes?"
 ifndef INCLUDE_guard_mk
 
 # Explicitly set Guard's include marker
-INCLUDE_guard_mk	:=$(GUARD)
+INCLUDE_guard_mk	:=$(abspath $(lastword $(MAKEFILE_LIST)))
 
-# MK Directory
-MK_DIR			:=$(patsubst %/,%,$(dir $(GUARD)))
-
-# Inital definition for Guard created variables
+# Stack of Makefiles who use this include guard
 THIS_MAKEFILE_LIST	:=
-THIS_MAKEFILE		:=
 
-# Return LIST without its last item
-POP_LIST_N		=$(wordlist 1,$(shell echo "$$(( $$(( X = $(words $(1)) - $(2) )) >=0 ? X : 0))" ),$(1))
-POP_LIST		=$(call POP_LIST_N,$(1),1)
-
-# Generate Include Marker for given makefile
-GET_MARKER		=$(subst /,_,$(subst .,_,$(patsubst $(MK_DIR)/%,%,$(abspath $(1)))))
+# The including makefile is the last in THIS_MAKEFILE_LIST
+THIS_MAKEFILE		=$(lastword $(THIS_MAKEFILE_LIST))
 
 # Set THIS as marker for including Makefile: $(MK_DIR)/foo/bar.mk -> foo_bar_mk
 THIS			=$(call GET_MARKER,$(THIS_MAKEFILE))
 
-# End Guard
-END_GUARD		:=$(MK_DIR)/end_guard.mk
-
 # Stop rebuild of Guard Makefile
-$(GUARD): ;
+$(lastword $(call POP_LIST,$(MAKEFILE_LIST))): ;
 
 endif # END Guard guard
-##############################################################################
-
-# Save Guard created variables
-THIS_MAKEFILE_LIST	+=$(THIS_MAKEFILE)
-
-# Set "THIS_MAKEFILE" for including Makefile's use (Remove guard.mk & check.mk)
-THIS_MAKEFILE		:=$(lastword $(call POP_LIST_N,$(MAKEFILE_LIST),2))
 
 ##############################################################################
-# Setup Include Guard for including Makefile
+# Include Guard setup for including Makefile
 
-# Construct Include Marker for including Makefile
-INCLUDE_MARKER		:=INCLUDE_$(THIS)
+# Append calling makefile to THIS_MAKEFILE_LIST
+THIS_MAKEFILE_LIST	+=$(lastword $(call POP_LIST_N,$(MAKEFILE_LIST),2))
+
+# Undefine FIRST_INCLUDE NOTE: only use directly after including this file
+undefine FIRST_INCLUDE
 
 # This is first include
-ifndef $(INCLUDE_MARKER)
+ifndef INCLUDE_$(THIS)
 
 # Set INCLUDE_foo_mk = /Full/Path/To/mk/foo.mk
-$(INCLUDE_MARKER)	:=$(abspath $(THIS_MAKEFILE))
+INCLUDE_$(THIS)		:=$(abspath $(THIS_MAKEFILE))
 
 # Define FIRST_INCLUDE on first include
 FIRST_INCLUDE		=YES
@@ -66,16 +47,7 @@ FIRST_INCLUDE		=YES
 # Stop implicit rule search for including Makefile
 $(THIS_MAKEFILE): ;
 
-# This including Makefile was included before
-else
-
-# Undefine FIRST_INCLUDE on subsequent includes
-undefine FIRST_INCLUDE
-
 # end Include Guard setup for including Makefile
 endif
-
-# Unset variable holding name of include marker (Not the include marker itself)
-undefine INCLUDE_MARKER
 
 ##############################################################################
