@@ -12,15 +12,12 @@ $(STAGE)_PROG		=wget
 $(STAGE)_ARG		="$($(PRJ)_URL)"
 
 # Path where get command is run
-$(STAGE)_PATH		=$(SRC_DIR)/$(PRJ)
-
-# Set PROG
-#$(foreach prog,$(PROGS),$(eval GET_$(prog): PROG=$(prog)))
+#$(STAGE)_PATH		=$(SRC_DIR)/$(PRJ)
 
 # $(SRC_DIR)/$(PROJ)
-.PRECIOUS: $(SRC_DIR)/%/
-$(SRC_DIR)/%/: | $(SRC_DIR)
-	mkdir -vp '$(@)'
+#.PRECIOUS: $(SRC_DIR)/%/
+#$(SRC_DIR)/%/: | $(SRC_DIR)
+#	mkdir -vp '$(@)'
 
 endif # END Include Guard
 include $(END_GUARD)

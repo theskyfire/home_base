@@ -7,7 +7,10 @@ ifdef FIRST_INCLUDE
 
 include $(PRJ_DIR)/prj.tmpl
 
-get_$(PRJ):		get_CMD=$(NOP)
+##############################################################################
+
+# Directory Permissions
+DIR_MODE		=0710
 
 # List of Directories
 DIRS			=
@@ -180,11 +183,14 @@ GNU_URL			=http://mirrors.kernel.org/gnu
 ##############################################################################
 # Basic HomeBase Layout
 
-# Directory Permissions
-DIR_MODE		=0710
+$(get_$(PRJ)):		get_CMD=$(NOP)
+
+$(install_$(PRJ)):	install_CMD=$(NOP)
+
+$(install_$(PRJ)):	$(INSTALLDIRS)
 
 .PHONY: installdirs
-installdirs: $(INSTALLDIRS)
+installdirs: $(PRJ)
 
 $(BASE_DIR):
 	[ -r '$(MY_MAKEFILE)' ]

@@ -21,12 +21,12 @@ $(STAGE)_PATH		=$(BUILD_PATH)
 INSTALL_PATH		=$(BUILD_PATH)
 
 # install a prog
-install(%): build(%) ;
+#install(%): build(%) ;
 
 # INSTALL_prog depends on install log
-INSTALL_%: BUILD_%
+#INSTALL_%: BUILD_%
 
-$(BUILD_DIR)/$(STAGE).%.log: $(BUILD_DIR)/build.%.log
+#$(BUILD_DIR)/$(STAGE).%.log: $(BUILD_DIR)/build.%.log
 
 endif # END Include Guard
 include $(END_GUARD)

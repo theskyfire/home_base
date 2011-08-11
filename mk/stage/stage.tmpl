@@ -1,48 +1,87 @@
 ##############################################################################
 # Stage Template
 ##############################################################################
-# Include Guard
 include $(GUARD)
-ifdef FIRST_INCLUDE
-
-GEN_SEQ			= $(eval $(STAGE)_$(1)_SEQ =$(STAGE)_$(1)_PRE)
-GEN_SEQ			+=$(eval $(STAGE)_$(1)_SEQ+=$(STAGE)_$(1))
-GEN_SEQ			+=$(eval $(STAGE)_$(1)_SEQ+=$(STAGE)_$(1)_POST)
-
-endif
 include $(END_GUARD)
 
+##############################################################################
 # Set STAGE, after END_GUARD THIS_MAKEFILE == Including Makefile
 STAGE			:=$(patsubst %.mk,%,$(notdir $(THIS_MAKEFILE)))
 
+##############################################################################
+# Create Command Sequence
 
-$(call GEN_SEQ,CMD)
-$(call GEN_SEQ,ENV)
-$(call GEN_SEQ,PROG)
-$(call GEN_SEQ,ARG)
-$(call GEN_SEQ,REDIR)
+# CMD = $(ENV) $(PROG) $(ARG) $(REDIR)
+$(STAGE)_CMD_PRE	 =
+$(STAGE)_CMD		 =$($(STAGE)_ENV_SEQ)
+$(STAGE)_CMD		+=$($(STAGE)_PROG_SEQ)
+$(STAGE)_CMD		+=$($(STAGE)_ARG_SEQ)
+$(STAGE)_CMD		+=$($(STAGE)_REDIR_SEQ)
+$(STAGE)_CMD_POST	 =
 
-$(STAGE)_CMD		+=$(STAGE)_ENV_SEQ
-$(STAGE)_CMD		+=$(STAGE)_PROG_SEQ
-$(STAGE)_CMD		+=$(STAGE)_ARG_SEQ
-$(STAGE)_CMD		+=$(STAGE)_REDIR_SEQ
+# CMD_SEQ = $(CMD_PRE) $(CMD) $(CMD_POST)
+$(STAGE)_CMD_SEQ	 =$($(STAGE)_CMD_PRE)
+$(STAGE)_CMD_SEQ	+=$($(STAGE)_CMD)
+$(STAGE)_CMD_SEQ	+=$($(STAGE)_CMD_POST)
 
+$(STAGE)_ENV_PRE	 =
+$(STAGE)_ENV		 =
+$(STAGE)_ENV_POST	 =
+$(STAGE)_ENV_SEQ	 =$($(STAGE)_ENV_PRE)
+$(STAGE)_ENV_SEQ	+=$($(STAGE)_ENV)
+$(STAGE)_ENV_SEQ	+=$($(STAGE)_ENV_POST)
+
+$(STAGE)_PROG_PRE	 =
+$(STAGE)_PROG		 =
+$(STAGE)_PROG_POST	 =
+$(STAGE)_PROG_SEQ	 =$($(STAGE)_PROG_PRE)
+$(STAGE)_PROG_SEQ	+=$($(STAGE)_PROG)
+$(STAGE)_PROG_SEQ	+=$($(STAGE)_PROG_POST)
+
+$(STAGE)_ARG_PRE	 =
+$(STAGE)_ARG		 =
+$(STAGE)_ARG_POST	 =
+$(STAGE)_ARG_SEQ	 =$($(STAGE)_ARG_PRE)
+$(STAGE)_ARG_SEQ	+=$($(STAGE)_ARG)
+$(STAGE)_ARG_SEQ	+=$($(STAGE)_ARG_POST)
+
+$(STAGE)_REDIR_PRE	 =
+$(STAGE)_REDIR		 =
+$(STAGE)_REDIR_POST	 =
+$(STAGE)_REDIR_SEQ	 =$($(STAGE)_REDIR_PRE)
+$(STAGE)_REDIR_SEQ	+=$($(STAGE)_REDIR)
+$(STAGE)_REDIR_SEQ	+=$($(STAGE)_REDIR_POST)
+
+$(STAGE)_PATH		=/
+
+define CMD =
+{
+	trap "mv '$$(@)' '$$(@).err'" ERR ;
+	cd '$$($(STAGE)_PATH)' ||: ;
+	echo '$$($(STAGE)_CMD_SEQ)' ;
+} |& tee '$$(@)'
+endef
+
+##############################################################################
+
+# 'stage' will call 'stage(X)' for every project
 .PHONY: $(STAGE)
-$(STAGE): $(foreach PRJ,$(PRJS),$(STAGE)($(PRJ)))
 
-$(foreach PRJ,$(PRJS),$(eval $(STAGE)_$(PRJ): PRJ=$(PRJ)))
-
-# stage(X) calls stage_X
-$(STAGE)(%): $(STAGE)_% ;
-
-$(STAGE)_%: $(BUILD_DIR)/$(STAGE).$$(*).log ;
+$(foreach PRJ,$(PRJS),\
+	$(eval .PHONY: $(STAGE)($(PRJ)))\
+	$(eval $(STAGE): $(STAGE)($(PRJ)))\
+	$(eval $(STAGE)($(PRJ)): STAGE:=$(STAGE))\
+	$(eval $(STAGE)($(PRJ)): PRJ:=$(PRJ))\
+	$(eval $(STAGE)($(PRJ)): $($(STAGE)_$(PRJ)))\
+)
 
 .PRECIOUS: $(BUILD_DIR)/$(STAGE).%.log
-$(BUILD_DIR)/$(STAGE).%.log: | $$(dir $$(@))
+$(BUILD_DIR)/$(STAGE).%.log: | $(BUILD_DIR)
 	{
 		trap "mv '$(@)' '$(@).err'" ERR ;
 		cd '$($(STAGE)_PATH)' ;
 		$($(STAGE)_CMD_SEQ) ;
 	} |& tee '$(@)'
 
+##############################################################################
 # vim: set syntax=make:

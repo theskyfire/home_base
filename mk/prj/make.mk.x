@@ -5,14 +5,10 @@
 include $(GUARD)
 ifdef FIRST_INCLUDE
 
-include $(PRJ_DIR)/dir.mk
-
 include $(PRJ_DIR)/prj.tmpl
-include $(START_TMPL)
-include $(END_TMPL)
 
-get_$(PRJ): install(dir)
-$(warning [get_$(PRJ)])
+$(get_$(PRG)): dir
+
 
 install_$(PRJ):
 
