@@ -85,11 +85,13 @@ MAN_NAME		=man
 PRJ_DIR			=$(MK_DIR)/prj
 MK_PRJS			:=$(wildcard $(PRJ_DIR)/*.mk)
 PRJS			:=$(patsubst $(PRJ_DIR)/%.mk,%,$(MK_PRJS))
+PRJ_TMPL		=$(PRJ_DIR)/prj.tmpl
 
 # Stages
 STAGE_DIR		=$(MK_DIR)/stage
 MK_STAGES		:=$(wildcard $(STAGE_DIR)/*.mk)
 STAGES			:=$(patsubst $(STAGE_DIR)/%.mk,%,$(MK_STAGES))
+STAGE_TMPL		=$(STAGE_DIR)/stage.tmpl
 
 
 ##############################################################################

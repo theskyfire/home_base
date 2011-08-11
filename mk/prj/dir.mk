@@ -1,12 +1,9 @@
 ##############################################################################
 # HomeBase Directory Project
 ##############################################################################
-# Include Guard
 include $(GUARD)
 ifdef FIRST_INCLUDE
-
-include $(PRJ_DIR)/prj.tmpl
-
+include $(PRJ_TMPL)
 ##############################################################################
 
 # Directory Permissions

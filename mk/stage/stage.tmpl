@@ -52,8 +52,6 @@ $(STAGE)_REDIR_SEQ	 =$($(STAGE)_REDIR_PRE)
 $(STAGE)_REDIR_SEQ	+=$($(STAGE)_REDIR)
 $(STAGE)_REDIR_SEQ	+=$($(STAGE)_REDIR_POST)
 
-$(STAGE)_PATH		=/
-
 define CMD =
 {
 	trap "mv '$$(@)' '$$(@).err'" ERR ;
@@ -76,7 +74,7 @@ $(foreach PRJ,$(PRJS),\
 )
 
 .PRECIOUS: $(BUILD_DIR)/$(STAGE).%.log
-$(BUILD_DIR)/$(STAGE).%.log: | $(BUILD_DIR)
+$(BUILD_DIR)/$(STAGE).%.log: | $(BUILD_DIR) $$($(STAGE)_PATH)
 	{
 		trap "mv '$(@)' '$(@).err'" ERR ;
 		cd '$($(STAGE)_PATH)' ;
