@@ -1,24 +1,25 @@
 ##############################################################################
 # Bash Project
 ##############################################################################
-include $(GUARD)
-ifdef FIRST_INCLUDE
 include $(PRJ_TMPL)
+ifdef FIRST_INCLUDE
 ##############################################################################
 
-$(get_$(PRJ)):		
+include $(PRJ_DIR)/dir.mk
 
-$(PRJ)_URL		 =$(GNU_URL)/bash/bash-4.2.tar.gz
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-001
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-002
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-003
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-004
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-005
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-006
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-007
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-008
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-009
-$(PRJ)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-010
+$(get_$(THIS)):		X=x
+
+$(THIS)_URL		 =$(GNU_URL)/bash/bash-4.2.tar.gz
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-001
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-002
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-003
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-004
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-005
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-006
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-007
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-008
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-009
+$(THIS)_URL		+=$(GNU_URL)/bash/bash-4.2-patches/bash42-010
 
 ##############################################################################
 #MY_SHELL		=$(BIN_DIR)/$(MY_SHELL_CMD)
@@ -87,5 +88,5 @@ INSTALL_bash:		INSTALL_PATH=$(EXTRACT_PATH)/bash-4.2
 
 
 endif # END Include Guard
-include $(END_GUARD)
+include $(END_PRJ_TMPL)
 ##############################################################################

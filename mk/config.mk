@@ -1,46 +1,9 @@
 ##############################################################################
 # Configuration
 ##############################################################################
-
 # Include Guard
 ifndef INCLUDE_config_mk
 INCLUDE_config_mk	:=$(abspath $(lastword $(MAKEFILE_LIST)))
-
-##############################################################################
-# GNU Make checks NOTE: Must come before any rules
-
-# Set a trap for versions of make that don't support .DEFAULT_GOAL
-_TRAP_: FORCE
-	@echo "Error: Please use a modern version of GNU Make!" >&2
-	exit 1
-
-# Define FORCE target
-.PHONY: _TRAP_ FORCE
-FORCE:
-
-# Require .DEFAULT_GOAL
-ifndef .DEFAULT_GOAL
-$(error Please use a modern version of GNU Make!)
-endif
-
-# Test for modern GNU Make
-ifneq ($(findstring else-if,$(.FEATURES)),else-if)
-$(error Please use a modern version of GNU Make!)
-endif
-ifneq ($(findstring target-specific,$(.FEATURES)),target-specific)
-$(error Please use a modern version of GNU Make!)
-else ifneq ($(findstring order-only,$(.FEATURES)),order-only)
-$(error Please use a modern version of GNU Make!)
-else ifneq ($(findstring second-expansion,$(.FEATURES)),second-expansion)
-$(error Please use a modern version of GNU Make!)
-else ifneq ($(findstring archives,$(.FEATURES)),archives)
-$(error Please use a modern version of GNU Make!)
-else ifneq ($(findstring jobserver,$(.FEATURES)),jobserver)
-$(error Please use a modern version of GNU Make!)
-else ifneq ($(findstring check-symlink,$(.FEATURES)),check-symlink)
-$(error Please use a modern version of GNU Make!)
-endif
-
 ##############################################################################
 # MAKE commandline overrides
 
@@ -81,18 +44,23 @@ SRC_NAME		=src
 MAN_NAME		=man
 ##############################################################################
 
+# Include Guard
+GUARD			=$(MK_DIR)/guard.mk
+END_GUARD		=$(MK_DIR)/end_guard.mk
+
 # Projects
 PRJ_DIR			=$(MK_DIR)/prj
 MK_PRJS			:=$(wildcard $(PRJ_DIR)/*.mk)
 PRJS			:=$(patsubst $(PRJ_DIR)/%.mk,%,$(MK_PRJS))
 PRJ_TMPL		=$(PRJ_DIR)/prj.tmpl
+END_PRJ_TMPL		=$(PRJ_DIR)/end_prj.tmpl
 
 # Stages
 STAGE_DIR		=$(MK_DIR)/stage
 MK_STAGES		:=$(wildcard $(STAGE_DIR)/*.mk)
 STAGES			:=$(patsubst $(STAGE_DIR)/%.mk,%,$(MK_STAGES))
 STAGE_TMPL		=$(STAGE_DIR)/stage.tmpl
-
+END_STAGE_TMPL		=$(STAGE_DIR)/end_stage.tmpl
 
 ##############################################################################
 # Make Settings
@@ -120,8 +88,6 @@ SHELL		=$(firstword $(wildcard $(MY_SHELL) /bin/bash /bin/sh))
 # exit recipe shell on error if using bash
 .SHELLFLAGS	=$(if $(findstring bash,$(SHELL)),-exc,-c)
 
-
-
 ##############################################################################
 # Functions
 
@@ -135,9 +101,9 @@ POP_LIST		=$(call POP_LIST_N,$(1),1)
 # Generate Include Marker for given makefile
 GET_MARKER		=$(subst /,_,$(subst .,_,$(patsubst $(MK_DIR)/%,%,$(abspath $(1)))))
 
-GUARD			=$(MK_DIR)/guard.mk
-END_GUARD		=$(MK_DIR)/end_guard.mk
-
+# Name of Makefile including current Makefile
+INCLUDING_MAKEFILE	=$(lastword $(call POP_LIST_N,$(MAKEFILE_LIST),$(1)))
+ORIG_INCLUDING_MAKEFILE	=$(lastword $(call POP_LIST_N,$(MAKEFILE_LIST),$(1)))
 
 ##############################################################################
 # Default Make Configuration

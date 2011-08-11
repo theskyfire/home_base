@@ -1,0 +1,27 @@
+##############################################################################
+# End Stage Template
+##############################################################################
+
+# 'stage' will call 'stage(X)' for every project
+.PHONY: $(THIS)
+
+$(foreach PRJ,$(PRJS),\
+	$(eval .PHONY: $(THIS)($(PRJ)))\
+	$(eval $(THIS): $(THIS)($(PRJ)))\
+	$(eval $(THIS)($(PRJ)): STAGE:=$(THIS))\
+	$(eval $(THIS)($(PRJ)): PRJ:=$(PRJ))\
+	$(eval $(THIS)($(PRJ)): $($(THIS)_$(PRJ)))\
+)
+
+.PRECIOUS: $($(THIS)_STAGE)
+$($(THIS)_STAGE): | $(TMP_DIR)
+	{
+		trap "mv '$(@)' '$(@).err'" ERR ;
+		cd '$($(STAGE)_PATH)' ;
+		$($(STAGE)_CMD_SEQ) ;
+	} |& tee '$(@)'
+
+##############################################################################
+include $(END_GUARD)
+##############################################################################
+# vim: set syntax=make:

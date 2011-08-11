@@ -1,9 +1,8 @@
 ##############################################################################
 # HomeBase Directory Project
 ##############################################################################
-include $(GUARD)
-ifdef FIRST_INCLUDE
 include $(PRJ_TMPL)
+ifdef FIRST_INCLUDE
 ##############################################################################
 
 # Directory Permissions
@@ -180,14 +179,14 @@ GNU_URL			=http://mirrors.kernel.org/gnu
 ##############################################################################
 # Basic HomeBase Layout
 
-$(get_$(PRJ)):		get_CMD=$(NOP)
+$(get_$(THIS)):		get_CMD=$(NOP)
 
-$(install_$(PRJ)):	install_CMD=$(NOP)
+$(install_$(THIS)):	install_CMD=$(NOP)
 
-$(install_$(PRJ)):	$(INSTALLDIRS)
+$(install_$(THIS)):	$(INSTALLDIRS)
 
 .PHONY: installdirs
-installdirs: $(PRJ)
+installdirs: $(THIS)
 
 $(BASE_DIR):
 	[ -r '$(MY_MAKEFILE)' ]
@@ -240,5 +239,5 @@ $(LNKS):
 # MAN8EXT			=.8
 
 endif # END Include Guard
-include $(END_GUARD)
+include $(END_PRJ_TMPL)
 ##############################################################################

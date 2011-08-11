@@ -1,24 +1,24 @@
 ##############################################################################
 # Extract Stage
 ##############################################################################
-include $(GUARD)
-ifdef FIRST_INCLUDE
 include $(STAGE_TMPL)
+ifdef FIRST_INCLUDE
 ##############################################################################
 
-$(STAGE)_PROG		=tar
-$(STAGE)_ARG		=vxf$($(PRJ)_ZIP_FLAG) '$($(PRJ)_AR)'
+$(THIS)_PROG		=tar
+$(THIS)_ARG		=vxf$($(PRJ)_ZIP_FLAG) '$($(PRJ)_AR)'
 
-$(STAGE)_PATH		=$(BUILD_DIR)/$(PRJ)
+$(THIS)_PATH		=$(BUILD_DIR)/$(PRJ)
 
 # $(BUILD_DIR)/$(PRJ)
-#.PRECIOUS: $(BUILD_DIR)/%
-#$(BUILD_DIR)/%: | $(BUILD_DIR)
-#	mkdir -vp '$(@)'
+.PRECIOUS: $(BUILD_DIR)/%
+$(BUILD_DIR)/%: | $(BUILD_DIR)
+	mkdir -vp '$(@)'
 
-$(BUILD_DIR)/$(STAGE).%.log: $(BUILD_DIR)/get.%.log
+$($(THIS)_STAGE): get_STAGE
+$($(THIS)_STAGE): | $(THIS)_PATH
 
 ##############################################################################
 endif # END Include Guard
-include $(END_GUARD)
+include $(END_STAGE_TMPL)
 ##############################################################################
