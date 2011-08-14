@@ -1,7 +1,7 @@
 ##############################################################################
 # HomeBase Directory Project
 ##############################################################################
-include $(PRJ_TMPL)
+include $(prj_tmpl)
 ifdef FIRST_INCLUDE
 ##############################################################################
 
@@ -19,9 +19,6 @@ INSTALLDIRS		=
 INSTALLDIRS		+=$(DIRS)
 INSTALLDIRS		+=$(LNKS)
 
-# HomeBase
-BASE_DIR		=$(BASE)
-
 #### Symlinks
 # X_LNK= Path to Symlink's target [either Absolute or Relative to $(BASE_DIR)]
 # $(X_LNK):  Prereq's for 
@@ -32,172 +29,167 @@ BASE_DIR		=$(BASE)
 # $(X_DIR): | $(X_ROOT)  [X_DIR should delagate to X_ROOT]
 
 # Common directory: symlink to mount, share, etc.
-COMMON_DIR_BASE		=
-COMMON_DIR		=$(COMMON)
+#COMMON_DIR_BASE		=
+#COMMON_DIR		=$(COMMON)
 DIRS			+=$(COMMON_DIR)
 $(COMMON_DIR):
 .PHONY: $(COMMON_DIR_BASE)
 #$(COMMON_DIR_BASE):	| $(COMMON_DIR)
 
-COMMON_LNK_BASE		=$(COMMON_NAME)
-COMMON_LNK		=$(BASE_DIR)/$(COMMON_LNK_BASE)
+#COMMON_LNK_BASE		=$(COMMON_NAME)
+#COMMON_LNK		=$(BASE_DIR)/$(COMMON_LNK_BASE)
 LNKS			+=$(COMMON_LNK)
 $(COMMON_LNK):		| $(BASE_DIR) $(COMMON_DIR)
 .PHONY: $(COMMON_LNK_BASE)
 $(COMMON_LNK_BASE):	| $(COMMON_LNK)
 
 # Source Code Repository
-SRC_DIR_BASE		=$(COMMON_LNK_BASE)/$(SRC_NAME)
-SRC_DIR			=$(COMMON_LNK)/$(SRC_NAME)
+#SRC_DIR_BASE		=$(COMMON_LNK_BASE)/$(SRC_NAME)
+#SRC_DIR			=$(COMMON_LNK)/$(SRC_NAME)
 DIRS			+=$(SRC_DIR)
 $(SRC_DIR):		| $(COMMON_LNK)
 .PHONY: $(SRC_DIR_BASE)
 $(SRC_DIR_BASE):	| $(SRC_DIR)
 
-SRC_LNK_BASE		=$(SRC_NAME)
-SRC_LNK			=$(BASE_DIR)/$(SRC_LNK_BASE)
+#SRC_LNK_BASE		=$(SRC_NAME)
+#SRC_LNK			=$(BASE_DIR)/$(SRC_LNK_BASE)
 LNKS			+=$(SRC_LNK)
 $(SRC_LNK):		| $(BASE_DIR) $(SRC_DIR_BASE)
 .PHONY: $(SRC_LNK_BASE)
 $(SRC_LNK_BASE):	| $(SRC_LNK)
 
 # Shared State Directory
-COM_DIR_BASE		=$(COMMON_LNK_BASE)/$(COM_NAME)
-COM_DIR			=$(COMMON_LNK)/$(COM_NAME)
+#COM_DIR_BASE		=$(COMMON_LNK_BASE)/$(COM_NAME)
+#COM_DIR			=$(COMMON_LNK)/$(COM_NAME)
 DIRS			+=$(COM_DIR)
 $(COM_DIR):		| $(COMMON_LNK)
 .PHONY: $(COM_DIR_BASE)
 $(COM_DIR_BASE):	| $(COM_DIR)
 
-COM_LNK_BASE		=$(COM_NAME)
-COM_LNK			=$(BASE_DIR)/$(COM_LNK_BASE)
+#COM_LNK_BASE		=$(COM_NAME)
+#COM_LNK			=$(BASE_DIR)/$(COM_LNK_BASE)
 LNKS			+=$(COM_LNK)
 $(COM_LNK):		| $(BASE_DIR) $(COM_DIR_BASE)
 .PHONY: $(COM_LNK_BASE)
 $(COM_LNK_BASE):	| $(COM_LNK)
 
 # Data Root
-SHARE_DIR_BASE		=$(COMMON_LNK_BASE)/$(SHARE_NAME)
-SHARE_DIR		=$(COMMON_LNK)/$(SHARE_NAME)
+#SHARE_DIR_BASE		=$(COMMON_LNK_BASE)/$(SHARE_NAME)
+#SHARE_DIR		=$(COMMON_LNK)/$(SHARE_NAME)
 DIRS			+=$(SHARE_DIR)
 $(SHARE_DIR):		| $(COMMON_LNK)
 .PHONY: $(SHARE_DIR_BASE)
 $(SHARE_DIR_BASE):	| $(SHARE_DIR)
 
-SHARE_LNK_BASE		=$(SHARE_NAME)
-SHARE_LNK		=$(BASE_DIR)/$(SHARE_LNK_BASE)
+#SHARE_LNK_BASE		=$(SHARE_NAME)
+#SHARE_LNK		=$(BASE_DIR)/$(SHARE_LNK_BASE)
 LNKS			+=$(SHARE_LNK)
 $(SHARE_LNK):		| $(BASE_DIR) $(SHARE_DIR_BASE)
 .PHONY: $(SHARE_LNK_BASE)
 $(SHARE_LNK_BASE):	| $(SHARE_LNK)
 
 # Man Root
-MAN_DIR_BASE		=$(SHARE_LNK_BASE)/$(MAN_NAME)
-MAN_DIR			=$(SHARE_LNK)/$(MAN_NAME)
+#MAN_DIR_BASE		=$(SHARE_LNK_BASE)/$(MAN_NAME)
+#MAN_DIR			=$(SHARE_LNK)/$(MAN_NAME)
 DIRS			+=$(MAN_DIR)
 $(MAN_DIR):		| $(SHARE_LNK)
 .PHONY: $(MAN_DIR_BASE)
 $(MAN_DIR_BASE):	| $(MAN_DIR)
 
-MAN_LNK_BASE		=$(MAN_NAME)
-MAN_LNK			=$(BASE_DIR)/$(MAN_LNK_BASE)
+#MAN_LNK_BASE		=$(MAN_NAME)
+#MAN_LNK			=$(BASE_DIR)/$(MAN_LNK_BASE)
 LNKS			+=$(MAN_LNK)
 $(MAN_LNK):		| $(BASE_DIR) $(MAN_DIR_BASE)
 .PHONY: $(MAN_LNK_BASE)
 $(MAN_LNK_BASE):	| $(MAN_LNK)
 
 # GNU Makefile
-MK_FILE_BASE		=
-MK_FILE			=$(COMMON_LNK_BASE)/homebase.mk
+#MK_FILE_BASE		=
+#MK_FILE			=$(COMMON_LNK_BASE)/homebase.mk
 $(MK_FILE):		| $(COMMON_LNK) ;
 .PHONY: $(MK_FILE_BASE)
 #$(MK_FILE_BASE):	| $(MK_FILE)
 
-MK_FILE_LNK_BASE	=GNUmakefile
-MK_FILE_LNK		=$(BASE_DIR)/$(MK_FILE_LNK_BASE)
+#MK_FILE_LNK_BASE	=GNUmakefile
+#MK_FILE_LNK		=$(BASE_DIR)/$(MK_FILE_LNK_BASE)
 LNKS			+=$(MK_FILE_LNK)
 $(MK_FILE_LNK):		| $(BASE_DIR) $(MK_FILE)
 .PHONY: $(MK_FILE_LNK_BASE)
 $(MK_FILE_LNK_BASE):	| $(MK_FILE_LNK)
 
 # Temp Location
-TMP_DIR			=$(BASE_DIR)/$(TMP_NAME)
+#TMP_DIR			=$(BASE_DIR)/$(TMP_NAME)
 DIRS			+=$(TMP_DIR)
 $(TMP_DIR):		| $(BASE_DIR)
 
 # Build Root
-BUILD_DIR		=$(TMP_DIR)/$(BUILD_NAME)
+#BUILD_DIR		=$(TMP_DIR)/$(BUILD_NAME)
 DIRS			+=$(BUILD_DIR)
 $(BUILD_DIR):		| $(TMP_DIR)
 
 # Install Locations
-BIN_DIR			=$(BASE_DIR)/$(BIN_NAME)
+#BIN_DIR			=$(BASE_DIR)/$(BIN_NAME)
 DIRS			+=$(BIN_DIR)
 $(BIN_DIR):		| $(BASE_DIR)
 
-SBIN_DIR		=$(BASE_DIR)/$(SBIN_NAME)
+#SBIN_DIR		=$(BASE_DIR)/$(SBIN_NAME)
 DIRS			+=$(SBIN_DIR)
 $(SBIN_DIR):		| $(BASE_DIR)
 
-LIBEXEC_DIR		=$(BASE_DIR)/$(LIBEXEC_NAME)
+#LIBEXEC_DIR		=$(BASE_DIR)/$(LIBEXEC_NAME)
 DIRS			+=$(LIBEXEC_DIR)
 $(LIBEXEC_DIR):		| $(BASE_DIR)
 
-ETC_DIR			=$(BASE_DIR)/$(ETC_NAME)
+#ETC_DIR			=$(BASE_DIR)/$(ETC_NAME)
 DIRS			+=$(ETC_DIR)
 $(ETC_DIR):		| $(BASE_DIR)
 
-VAR_DIR			=$(BASE_DIR)/$(VAR_NAME)
+#VAR_DIR			=$(BASE_DIR)/$(VAR_NAME)
 DIRS			+=$(VAR_DIR)
 $(VAR_DIR):		| $(BASE_DIR)
 
-INCLUDE_DIR		=$(BASE_DIR)/$(INCLUDE_NAME)
+#INCLUDE_DIR		=$(BASE_DIR)/$(INCLUDE_NAME)
 DIRS			+=$(INCLUDE_DIR)
 $(INCLUDE_DIR):		| $(BASE_DIR)
 
-LIB_DIR			=$(BASE_DIR)/$(LIB_NAME)
+#LIB_DIR			=$(BASE_DIR)/$(LIB_NAME)
 DIRS			+=$(LIB_DIR)
 $(LIB_DIR):		| $(BASE_DIR)
 
-DOC_DIR			=$(SHARE_DIR)/$(DOC_NAME)
+#DOC_DIR			=$(SHARE_DIR)/$(DOC_NAME)
 DIRS			+=$(DOC_DIR)
 $(DOC_DIR):		| $(SHARE_DIR)
 
-INFO_DIR		=$(SHARE_DIR)/$(INFO_NAME)
+#INFO_DIR		=$(SHARE_DIR)/$(INFO_NAME)
 DIRS			+=$(INFO_DIR)
 $(INFO_DIR):		| $(SHARE_DIR)
 
-LOCALE_DIR		=$(SHARE_DIR)/$(LOCALE_NAME)
+#LOCALE_DIR		=$(SHARE_DIR)/$(LOCALE_NAME)
 DIRS			+=$(LOCALE_DIR)
 $(LOCALE_DIR):		| $(SHARE_DIR)
-
-# URL's
-#GNU_URL			=ftp://ftp.gnu.org/pub/gnu
-GNU_URL			=http://mirrors.kernel.org/gnu
-
 
 ##############################################################################
 # Basic HomeBase Layout
 
-$(get_$(THIS)):		get_CMD=$(NOP)
+get($(this)):		get_CMD=$(NOP)
+extract($(this)):	extract_CMD=$(NOP)
+install($(this)):	install_CMD=$(NOP)
 
-$(install_$(THIS)):	install_CMD=$(NOP)
-
-$(install_$(THIS)):	$(INSTALLDIRS)
+$(install_$(this)):	$(INSTALLDIRS)
 
 .PHONY: installdirs
-installdirs: $(THIS)
+installdirs: $(this)
 
-$(BASE_DIR):
-	[ -r '$(MY_MAKEFILE)' ]
-	[ ! -e '$(BASE_DIR)' ]
-	[ -d '$(COMMON_DIR)' ]
+$(base_DIR):
+	[ -r '$(my_MAKEFILE)' ]
+	[ ! -e '$(base_DIR)' ]
+	[ -d '$(common_DIR)' ]
 	mkdir -vp '$(@)'
 
-$(DIRS):
+$(dirs):
 	[ -d '$(@)' ] || mkdir -v --mode='$(DIR_MODE)' '$(@)'
 
-$(LNKS):
+$(lnks):
 	ln -vsT '$(lastword $(|))' '$(@)'
 
 ##############################################################################
@@ -238,6 +230,7 @@ $(LNKS):
 # MAN7EXT			=.7
 # MAN8EXT			=.8
 
+##############################################################################
 endif # END Include Guard
-include $(END_PRJ_TMPL)
+include $(end_prj_tmpl)
 ##############################################################################

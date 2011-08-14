@@ -1,24 +1,25 @@
 ##############################################################################
 # Extract Stage
 ##############################################################################
-include $(STAGE_TMPL)
+include $(stage_tmpl)
 ifdef FIRST_INCLUDE
 ##############################################################################
 
-$(THIS)_PROG		=tar
-$(THIS)_ARG		=vxf$($(PRJ)_ZIP_FLAG) '$($(PRJ)_AR)'
+$(this)_PROG		=tar
+$(this)_ARG		=vxf$($(prj)_ZIP_FLAG) '$($(prj)_AR)'
+$(this)_PATH		=$(build_PATH)/$(prj)
 
-$(THIS)_PATH		=$(BUILD_DIR)/$(PRJ)
+# Depend on get
+$(this)_DEP		+=get($(*))
+$(this)_DEP		+=$($(*)_PATH)
 
-# $(BUILD_DIR)/$(PRJ)
-.PRECIOUS: $(BUILD_DIR)/%
-$(BUILD_DIR)/%: | $(BUILD_DIR)
+# %.$(this).log: get(%)
+
+# $(build_PATH)/$(prj)
+.PRECIOUS: $(build_PATH)/%
+$(build_PATH)/%: | $$(@D)
 	mkdir -vp '$(@)'
-
-$($(THIS)_STAGE): get_STAGE
-$($(THIS)_STAGE): | $(THIS)_PATH
-
 ##############################################################################
-endif # END Include Guard
-include $(END_STAGE_TMPL)
+endif # END Include Guar
+include $(end_stage_tmpl)
 ##############################################################################

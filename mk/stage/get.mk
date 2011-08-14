@@ -1,23 +1,21 @@
 ##############################################################################
 # Get Stage
 ##############################################################################
-include $(STAGE_TMPL)
+include $(stage_tmpl)
 ifdef FIRST_INCLUDE
 ##############################################################################
 
-$(THIS)_PROG		=wget
+$(this)_PROG		=wget
+$(this)_ARG		=$($(prj)_URL)
+$(this)_PATH		=$(src_PATH)/$(prj)
 
-$(THIS)_ARG		=$($(PRJ)_URL)
+$(this)_DEP		+=$($(this)_PATH)
 
-# Path where get command is run
-$(THIS)_PATH		=$(SRC_DIR)/$(PRJ)
-
-# $(SRC_DIR)/$(PRJ)
-.PRECIOUS: $(SRC_DIR)/%
-$(SRC_DIR)/%: | $(SRC_DIR)
+# $(src_PATH)/$(prj)
+.PRECIOUS: $(src_PATH)/%
+$(src_PATH)/%: | $$(@D)
 	mkdir -vp '$(@)'
-
 ##############################################################################
 endif # END Include Guard
-include $(END_STAGE_TMPL)
+include $(end_stage_tmpl)
 ##############################################################################

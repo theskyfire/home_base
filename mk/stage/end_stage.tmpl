@@ -1,27 +1,28 @@
 ##############################################################################
 # End Stage Template
 ##############################################################################
+# 'stage' will call 'stage(X)' where X in Projects
+.PHONY: $(this)
 
-# 'stage' will call 'stage(X)' for every project
-.PHONY: $(THIS)
+.SECONDARY: $(this)(%)
+$(this)(%): $($(this)_STAGE) ;
 
-$(foreach PRJ,$(PRJS),\
-	$(eval .PHONY: $(THIS)($(PRJ)))\
-	$(eval $(THIS): $(THIS)($(PRJ)))\
-	$(eval $(THIS)($(PRJ)): STAGE:=$(THIS))\
-	$(eval $(THIS)($(PRJ)): PRJ:=$(PRJ))\
-	$(eval $(THIS)($(PRJ)): $($(THIS)_$(PRJ)))\
+$(foreach prj,$(prjs),\
+	$(eval $(this): $(this)($(prj)))\
+	$(eval $(this)($(prj)): stage:=$(this))\
+	$(eval $(this)($(prj)): prj:=$(prj))\
+	$(eval $(this)($(prj)): this=$$(stage))\
 )
 
-.PRECIOUS: $($(THIS)_STAGE)
-$($(THIS)_STAGE): | $(TMP_DIR)
+$($(this)_STAGE): $$($(this)_DEP) | $$($(this)_ORDER_DEP) $$(@D)
 	{
 		trap "mv '$(@)' '$(@).err'" ERR ;
-		cd '$($(STAGE)_PATH)' ;
-		$($(STAGE)_CMD_SEQ) ;
+		cd '$($(this)_PATH)' ;
+		$($(this)_CMD_SEQ) ;
 	} |& tee '$(@)'
+	exit $${PIPESTATUS[0]}
 
 ##############################################################################
-include $(END_GUARD)
+$(end_guard)
 ##############################################################################
 # vim: set syntax=make:

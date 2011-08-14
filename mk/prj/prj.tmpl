@@ -1,22 +1,16 @@
 ##############################################################################
 # Project Template
 ##############################################################################
-
-INCLUDING_MAKEFILE	:=$(lastword $(call POP_LIST,$(MAKEFILE_LIST)))
-include $(GUARD)
-INCLUDING_MAKEFILE	=$(ORIG_INCLUDING_MAKEFILE)
-
-##############################################################################
-# Set PRJ, after END_GUARD THIS_MAKEFILE == Including Makefile
-#PRJ			:=$(patsubst %.mk,%,$(notdir $(THIS_MAKEFILE)))
-
+IncludingMakefile:=$(IncludingMakefile)
+include $(guard)
+IncludingMakefile=$(value OrigIncludingMakefile)
 ##############################################################################
 
 # prg: install(prj)
-$(THIS): install($(THIS))
+$(this): install($(this))
 
-$(foreach STAGE,$(STAGES),\
-	$(eval $(STAGE)_$(THIS)=$$(BUILD_DIR)/$(THIS).$(STAGE).log)\
+$(foreach stage,$(stages),\
+	$(eval $(stage)_$(this)=$(tmp_PATH)/$(this).$(stage).log)\
 )
 
 ##############################################################################

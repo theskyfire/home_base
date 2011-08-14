@@ -1,1 +1,0 @@
-include $(dir $(abspath $(MAKEFILE_LIST)))mk/main.mk

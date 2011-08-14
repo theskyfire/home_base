@@ -1,34 +1,28 @@
 ##############################################################################
 # Bootstrap Make with out Options and Definitions
 ##############################################################################
-include $(GUARD)
+include $(guard)
 ifdef FIRST_INCLUDE
-
 ##############################################################################
-# Bootstrap
-
 # BOOTSTRAP marks proper bootstrap
 ifndef BOOTSTRAP
 $(warning Bootstrapping)
 
-# Set Default Goal
 .DEFAULT_GOAL		=bootstrap
 
 # force bootstrap
 $(MAKECMDGOALS): bootstrap ;
 
-# bootstrap
+#.EXPORT_ALL_VARIABLES:
 .PHONY: bootstrap
-bootstrap:		MY_OVERRIDES+=BOOTSTRAP='COMPLETE'
+bootstrap:		my_MAKEOVERRIDES+=BOOTSTRAP='Complete'
 bootstrap:
-	$(MAKE_BOOT)
+	$(bootstrap)
 
-# Bootstrap Complete
-else
+else # Bootstrap Complete
 $(warning Bootstrap Complete)
 
 endif # END Bootstrap
-
-##############################################################################
 endif # END Include Guard
-include $(END_GUARD)
+$(end_guard)
+##############################################################################
