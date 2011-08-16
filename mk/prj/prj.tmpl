@@ -3,15 +3,12 @@
 ##############################################################################
 IncludingMakefile:=$(IncludingMakefile)
 include $(guard)
-IncludingMakefile=$(value OrigIncludingMakefile)
+IncludingMakefile=$(OrigIncludingMakefile)
 ##############################################################################
 
 # prg: install(prj)
+.PHONY: $(this)
 $(this): install($(this))
-
-$(foreach stage,$(stages),\
-	$(eval $(stage)_$(this)=$(tmp_PATH)/$(this).$(stage).log)\
-)
 
 ##############################################################################
 # vim: set syntax=make:

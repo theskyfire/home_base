@@ -12,8 +12,9 @@ $(warning Bootstrapping)
 
 # force bootstrap
 $(MAKECMDGOALS): bootstrap ;
+(%):: bootstrap ;
+%:: bootstrap ;
 
-#.EXPORT_ALL_VARIABLES:
 .PHONY: bootstrap
 bootstrap:		my_MAKEOVERRIDES+=BOOTSTRAP='Complete'
 bootstrap:
@@ -23,6 +24,7 @@ else # Bootstrap Complete
 $(warning Bootstrap Complete)
 
 endif # END Bootstrap
+##############################################################################
 endif # END Include Guard
 $(end_guard)
 ##############################################################################

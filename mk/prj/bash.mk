@@ -5,9 +5,10 @@ include $(prj_tmpl)
 ifdef FIRST_INCLUDE
 ##############################################################################
 
-include $(prj_PATH)/dir.mk
+get($(this)): install(dir)
 
-$(get_$(this)):		X=x
+#extract($(this)):	extract_CMD=$(Nop)
+install($(this)):	install_CMD=$(Nop)
 
 $(this)_URL		 =$(gnu_url)/bash/bash-4.2.tar.gz
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-001

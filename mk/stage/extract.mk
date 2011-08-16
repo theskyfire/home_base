@@ -6,19 +6,20 @@ ifdef FIRST_INCLUDE
 ##############################################################################
 
 $(this)_PROG		=tar
-$(this)_ARG		=vxf$($(prj)_ZIP_FLAG) '$($(prj)_AR)'
-$(this)_PATH		=$(build_PATH)/$(prj)
+$(this)_ARG		=vxf$($(PRJ)_ZIP_FLAG) '$($(PRJ)_AR)'
+$(this)_PATH		=$(build_PATH)/$(PRJ)
 
-# Depend on get
-$(this)_DEP		+=get($(*))
-$(this)_DEP		+=$($(*)_PATH)
+# Set defaults
+$(foreach prj,$(prjs),$(eval \
+	$(prj)_AR	?=$$(firstword $$(wildcard $(src_PATH)/$(prj)/*.tar.gz $(src_PATH)/$(prj)/*.bz2)))\
+)
+$(foreach prj,$(prjs),$(eval \
+	$(prj)_ZIP_FLAG	?=$$(if $$(findstring .bz2,$$($(prj)_AR)),j,z))\
+)
 
-# %.$(this).log: get(%)
+# extract -> get
+$(this)($(prjs)): get($$(%))
 
-# $(build_PATH)/$(prj)
-.PRECIOUS: $(build_PATH)/%
-$(build_PATH)/%: | $$(@D)
-	mkdir -vp '$(@)'
 ##############################################################################
 endif # END Include Guar
 include $(end_stage_tmpl)

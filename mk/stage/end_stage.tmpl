@@ -1,27 +1,21 @@
 ##############################################################################
 # End Stage Template
 ##############################################################################
-# 'stage' will call 'stage(X)' where X in Projects
+# 'stage' will call each 'stage(X)' where X in Projects
 .PHONY: $(this)
+$(this): $(this)($(prjs))
 
-.SECONDARY: $(this)(%)
-$(this)(%): $($(this)_STAGE) ;
+.SECONDARY: $(this)($(prjs))
+$(this)($(prjs)): $$($(this)_LOG)
 
-$(foreach prj,$(prjs),\
-	$(eval $(this): $(this)($(prj)))\
-	$(eval $(this)($(prj)): stage:=$(this))\
-	$(eval $(this)($(prj)): prj:=$(prj))\
-	$(eval $(this)($(prj)): this=$$(stage))\
-)
+# Record action in $(this)_LOG
+$($(this)_LOG): | $$(@D) $$($(this)_PATH)
+	$($(STAGE)_CMD_SEQ)
 
-$($(this)_STAGE): $$($(this)_DEP) | $$($(this)_ORDER_DEP) $$(@D)
-	{
-		trap "mv '$(@)' '$(@).err'" ERR ;
-		cd '$($(this)_PATH)' ;
-		$($(this)_CMD_SEQ) ;
-	} |& tee '$(@)'
-	exit $${PIPESTATUS[0]}
-
+# mkdir $(this)_PATH
+.PRECIOUS: $($(this)_PATH)
+$($(this)_PATH): | $$(@D)
+	mkdir -vp '$(@)'
 ##############################################################################
 $(end_guard)
 ##############################################################################

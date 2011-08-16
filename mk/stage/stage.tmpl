@@ -7,53 +7,65 @@ IncludingMakefile=$(OrigIncludingMakefile)
 ##############################################################################
 # Create Command Sequence
 
+$(this)($(prjs)):	STAGE:=$(this)
+$(this)($(prjs)):	PRJ=$(or $(%),$(*))
+
+STAGE			=$(this)
+PRJ			=%
+
+$(this)_LOG		=$(tmp_PATH)/$(PRJ).$(STAGE).log
+$(this)_PATH		=/
+
+define $(this)_CMD_PRE =
+{
+	trap "mv '$($(STAGE)_LOG)' '$($(STAGE)_LOG).err'" ERR ;
+	set -x ;\
+	cd '$($(STAGE)_PATH)' ;
+endef
+
+define $(this)_CMD_POST =
+;
+} 2>&1 | tee '$(@)' ; exit $${PIPESTATUS[0]}
+endef
+
 # CMD = $(ENV) $(PROG) $(ARG) $(REDIR)
-$(this)_CMD_PRE		 =
-$(this)_CMD		 =$($(this)_ENV_SEQ)
-$(this)_CMD		+=$($(this)_PROG_SEQ)
-$(this)_CMD		+=$($(this)_ARG_SEQ)
-$(this)_CMD		+=$($(this)_REDIR_SEQ)
-$(this)_CMD_POST	 =
+$(this)_CMD		 =$($(STAGE)_ENV_SEQ)
+$(this)_CMD		+=$($(STAGE)_PROG_SEQ)
+$(this)_CMD		+=$($(STAGE)_ARG_SEQ)
+$(this)_CMD		+=$($(STAGE)_REDIR_SEQ)
 
 # CMD_SEQ = $(CMD_PRE) $(CMD) $(CMD_POST)
-$(this)_CMD_SEQ		 =$($(this)_CMD_PRE)
-$(this)_CMD_SEQ		+=$($(this)_CMD)
-$(this)_CMD_SEQ		+=$($(this)_CMD_POST)
+$(this)_CMD_SEQ		 =$($(STAGE)_CMD_PRE)
+$(this)_CMD_SEQ		+=$($(STAGE)_CMD)
+$(this)_CMD_SEQ		+=$($(STAGE)_CMD_POST)
 
 $(this)_ENV_PRE		 =
 $(this)_ENV		 =
 $(this)_ENV_POST	 =
-$(this)_ENV_SEQ		 =$($(this)_ENV_PRE)
-$(this)_ENV_SEQ		+=$($(this)_ENV)
-$(this)_ENV_SEQ		+=$($(this)_ENV_POST)
+$(this)_ENV_SEQ		 =$($(STAGE)_ENV_PRE)
+$(this)_ENV_SEQ		+=$($(STAGE)_ENV)
+$(this)_ENV_SEQ		+=$($(STAGE)_ENV_POST)
 
 $(this)_PROG_PRE	 =
 $(this)_PROG		 =
 $(this)_PROG_POST	 =
-$(this)_PROG_SEQ	 =$($(this)_PROG_PRE)
-$(this)_PROG_SEQ	+=$($(this)_PROG)
-$(this)_PROG_SEQ	+=$($(this)_PROG_POST)
+$(this)_PROG_SEQ	 =$($(STAGE)_PROG_PRE)
+$(this)_PROG_SEQ	+=$($(STAGE)_PROG)
+$(this)_PROG_SEQ	+=$($(STAGE)_PROG_POST)
 
 $(this)_ARG_PRE		 =
 $(this)_ARG		 =
 $(this)_ARG_POST	 =
-$(this)_ARG_SEQ		 =$($(this)_ARG_PRE)
-$(this)_ARG_SEQ		+=$($(this)_ARG)
-$(this)_ARG_SEQ		+=$($(this)_ARG_POST)
+$(this)_ARG_SEQ		 =$($(STAGE)_ARG_PRE)
+$(this)_ARG_SEQ		+=$($(STAGE)_ARG)
+$(this)_ARG_SEQ		+=$($(STAGE)_ARG_POST)
 
 $(this)_REDIR_PRE	 =
 $(this)_REDIR		 =
 $(this)_REDIR_POST	 =
-$(this)_REDIR_SEQ	 =$($(this)_REDIR_PRE)
-$(this)_REDIR_SEQ	+=$($(this)_REDIR)
-$(this)_REDIR_SEQ	+=$($(this)_REDIR_POST)
-
-$(this)_STAGE		=$(tmp_PATH)/%.$(this).log
-
-$(this)_PREREQ		=
-
-$(this)_DEP		?=
-$(this)_ORDER_DEP	?=
+$(this)_REDIR_SEQ	 =$($(STAGE)_REDIR_PRE)
+$(this)_REDIR_SEQ	+=$($(STAGE)_REDIR)
+$(this)_REDIR_SEQ	+=$($(STAGE)_REDIR_POST)
 
 ##############################################################################
 # vim: set syntax=make:

@@ -6,15 +6,10 @@ ifdef FIRST_INCLUDE
 ##############################################################################
 
 $(this)_PROG		=wget
-$(this)_ARG		=$($(prj)_URL)
-$(this)_PATH		=$(src_PATH)/$(prj)
+$(this)_ARG		 =-N
+$(this)_ARG		+=$($(PRJ)_URL)
+$(this)_PATH		=$(src_PATH)/$(PRJ)
 
-$(this)_DEP		+=$($(this)_PATH)
-
-# $(src_PATH)/$(prj)
-.PRECIOUS: $(src_PATH)/%
-$(src_PATH)/%: | $$(@D)
-	mkdir -vp '$(@)'
 ##############################################################################
 endif # END Include Guard
 include $(end_stage_tmpl)

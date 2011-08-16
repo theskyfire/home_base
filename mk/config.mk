@@ -68,11 +68,9 @@ this			=$(patsubst %.mk,%,$(call NotDir,$(this_MAKEFILE)))
 
 guard			=$(mk_PATH)/config.mk
 end_guard		=\
-$(eval $$(warning <$$(this_MAKEFILE_LIST)>))\
 $(eval \
 	this_MAKEFILE_LIST:=$$(call PopList,$$(this_MAKEFILE_LIST))\
 )\
-$(eval $$(warning <$$(this_MAKEFILE_LIST)>))
 
 my_MAKEFILE		=$(firstword $(MAKEFILE_LIST))
 ##############################################################################
@@ -218,6 +216,24 @@ locale_PATH		=$(locale_DIR)
 man_PATH		=$(man_DIR)
 
 ##############################################################################
+# Shell Configuration
+
+my_SHELL_CMD		=bash
+tmp_SHELL		=$(tmp_base_PATH)/$(bin_PATH)/$(my_SHELL_CMD)
+base_SHELL		=$(bin_PATH)/$(my_SHELL_CMD)
+my_SHELL		=$(firstword \
+	$(wildcard $(base_SHELL) $(tmp_SHELL)) /bin/bash /bin/sh \
+)
+my_SHELLFLAGS		=$(if $(findstring bash,$(my_SHELL)),-ec,-c)
+
+SHELL			:=$(my_SHELL)
+.SHELLFLAGS		:=$(my_SHELLFLAGS)
+
+# all lines of a recipe are exec'ed by the same shell instance
+# beware lines starting with '@' '-' '+'
+$(and $(findstring bash,$(my_SHELL)), .ONESHELL:)
+
+##############################################################################
 # Make Configuration
 
 my_MAKE_CMD		=make
@@ -233,6 +249,24 @@ my_CURDIR		=-C $(CURDIR)
 my_MAKECMDGOALS		=$(subst 'bootstrap',,\
 	$(foreach goal,$(or $(MAKECMDGOALS),$(.DEFAULT_GOAL)),'$(goal)')\
 )
+define EscGoals =
+{ 
+	shopt -s extglob ;
+	goals='  $(strip $(or $(MAKECMDGOALS),$(.DEFAULT_GOAL)))' ;
+	while [[ -n "$${goals}" ]]; do
+		goals="$${goals##+( )}" ;
+		if [[ "$${goals}" =~ ^[^\(\ ]+\   ]]; then
+			cmd="'$${BASH_REMATCH[0]}'"
+			goals=' ' ;
+		else
+			cmd="'$${goals}'"
+			goals='' ;
+		fi ;
+	done ;
+	echo "$${cnd}" ;
+}
+endef
+#my_MAKECMDGOALS		:=$(shell $(EscGoals))
 my_MAKEOVERRIDES	=$(MAKEOVERRIDES)
 my_MAKE_ENV		=
 my_MAKE_ENV		+=MAKELEVEL=0
@@ -257,24 +291,6 @@ $(MAKE)			=$(my_MAKE)
 
 # Expand rules twice
 .SECONDEXPANSION:
-
-##############################################################################
-# Shell Configuration
-
-my_SHELL_CMD		=bash
-tmp_SHELL		=$(tmp_base_PATH)/$(bin_PATH)/$(my_SHELL_CMD)
-base_SHELL		=$(bin_PATH)/$(my_SHELL_CMD)
-my_SHELL		=$(firstword \
-	$(wildcard $(base_SHELL) $(tmp_SHELL)) /bin/bash /bin/sh \
-)
-my_SHELLFLAGS		=$(if $(findstring bash,$(my_SHELL)),-exc,-c)
-
-SHELL			=$(my_SHELL)
-.SHELLFLAGS		=$(my_SHELLFLAGS)
-
-# all lines of a recipe are exec'ed by the same shell instance
-# beware lines starting with '@' '-' '+'
-$(and $(findstring bash,$(my_SHELL)), .ONESHELL:)
 
 ##############################################################################
 # Bootstrap
@@ -302,9 +318,9 @@ endif # END Include Guard
 # Include Guard   "Quis custodiet ipsos custodes?"
 ##############################################################################
 # Append calling makefile to THIS_MAKEFILE_LIST
-$(warning [$(this_MAKEFILE_LIST)])
+#$(warning [$(this_MAKEFILE_LIST)])
 this_MAKEFILE_LIST	+=$(IncludingMakefile)
-$(warning [$(this_MAKEFILE_LIST)])
+#$(warning [$(this_MAKEFILE_LIST)])
 
 # Undefine FIRST_INCLUDE NOTE: only use directly after including this file
 undefine FIRST_INCLUDE
