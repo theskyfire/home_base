@@ -20,11 +20,10 @@ $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-008
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-009
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-010
 
-#PATCH_bash:		PATCH_PATH=$(EXTRACT_PATH)/bash-4.2
-#PATCH_bash:		PATCH_PRE=cat '$(SRC_DIR)'/bash/bash42* |
-
 patch($(this)):		patch_PATH=$(extract_PATH)/bash-4.2
 patch($(this)):		patch_REDIR_PRE=cat '$(src_PATH)'/bash/bash42* |
+
+config($(this)):	config_PATH=$(extract_PATH)/bash-4.2
 
 install($(this)):	install_CMD=$(Nop)
 
