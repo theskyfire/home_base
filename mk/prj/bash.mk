@@ -5,10 +5,8 @@ include $(prj_tmpl)
 ifdef FIRST_INCLUDE
 ##############################################################################
 
-get($(this)): install(dir)
-
-#extract($(this)):	extract_CMD=$(Nop)
-install($(this)):	install_CMD=$(Nop)
+# require that dir is installed
+get($(this)):		install(dir)
 
 $(this)_URL		 =$(gnu_url)/bash/bash-4.2.tar.gz
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-001
@@ -21,6 +19,14 @@ $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-007
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-008
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-009
 $(this)_URL		+=$(gnu_url)/bash/bash-4.2-patches/bash42-010
+
+#PATCH_bash:		PATCH_PATH=$(EXTRACT_PATH)/bash-4.2
+#PATCH_bash:		PATCH_PRE=cat '$(SRC_DIR)'/bash/bash42* |
+
+patch($(this)):		patch_PATH=$(extract_PATH)/bash-4.2
+patch($(this)):		patch_REDIR_PRE=cat '$(src_PATH)'/bash/bash42* |
+
+install($(this)):	install_CMD=$(Nop)
 
 ##############################################################################
 #MY_SHELL		=$(BIN_DIR)/$(MY_SHELL_CMD)

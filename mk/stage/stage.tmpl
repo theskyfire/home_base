@@ -29,10 +29,11 @@ define $(this)_CMD_POST =
 endef
 
 # CMD = $(ENV) $(PROG) $(ARG) $(REDIR)
-$(this)_CMD		 =$($(STAGE)_ENV_SEQ)
+$(this)_CMD		 =$($(STAGE)_REDIR_PRE)
+$(this)_CMD		+=$($(STAGE)_ENV_SEQ)
 $(this)_CMD		+=$($(STAGE)_PROG_SEQ)
 $(this)_CMD		+=$($(STAGE)_ARG_SEQ)
-$(this)_CMD		+=$($(STAGE)_REDIR_SEQ)
+$(this)_CMD		+=$($(STAGE)_REDIR_POST)
 
 # CMD_SEQ = $(CMD_PRE) $(CMD) $(CMD_POST)
 $(this)_CMD_SEQ		 =$($(STAGE)_CMD_PRE)
@@ -61,11 +62,7 @@ $(this)_ARG_SEQ		+=$($(STAGE)_ARG)
 $(this)_ARG_SEQ		+=$($(STAGE)_ARG_POST)
 
 $(this)_REDIR_PRE	 =
-$(this)_REDIR		 =
 $(this)_REDIR_POST	 =
-$(this)_REDIR_SEQ	 =$($(STAGE)_REDIR_PRE)
-$(this)_REDIR_SEQ	+=$($(STAGE)_REDIR)
-$(this)_REDIR_SEQ	+=$($(STAGE)_REDIR_POST)
 
 ##############################################################################
 # vim: set syntax=make:
