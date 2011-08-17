@@ -1,18 +1,20 @@
 ##############################################################################
 # Config Stage
 ##############################################################################
-include $(stage_tmpl)
+include $(guard)
 ifdef FIRST_INCLUDE
+include $(stage_tmpl)
 ##############################################################################
 
-$(this)_PROG		=sh ./configure
-$(this)_ARG		=--prefix='$(base_DIR)'
-$(this)_PATH		=$(patch_PATH)
-
 # config -> patch
-$(this)($(prjs)): patch($$(%))
+include $(stage)/patch.mk
+$(this)_S_DEP		=patch($(PRJ))
+
+$(this)_PROG		=sh ./configure
+$(this)_ARG		=--prefix='$(base)'
+$(this)_PATH		=$(patch_PATH)
 
 ##############################################################################
 endif # END Include Guar
-include $(end_stage_tmpl)
+$(end_guard)
 ##############################################################################

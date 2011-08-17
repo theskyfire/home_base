@@ -1,14 +1,24 @@
 ##############################################################################
 # Project Template
 ##############################################################################
-IncludingMakefile:=$(IncludingMakefile)
-include $(guard)
-IncludingMakefile=$(OrigIncludingMakefile)
-##############################################################################
 
 # prg: install(prj)
 .PHONY: $(this)
 $(this): install($(this))
 
+$(this)_P_DEP		=
+$(this)_P_ODEP		=
+
+STAGE			=%
+PRJ			=$(this)
+
+$(this)_LOG		=$(tmp)/$(PRJ).$(STAGE).log
+
+#$($(this)_LOG):		STAGE:=$(or $(%),$(*))
+$($(this)_LOG):		PRJ:=$(this)
+
+# Record action in prj.stage.log
+$($(this)_LOG): | $$(@D) $$($$(STAGE)_PATH)
+	$($(STAGE)_CMD_SEQ)
 ##############################################################################
 # vim: set syntax=make:

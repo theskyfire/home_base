@@ -1,18 +1,20 @@
 ##############################################################################
 # Patch Stage
 ##############################################################################
-include $(stage_tmpl)
+include $(guard)
 ifdef FIRST_INCLUDE
+include $(stage_tmpl)
 ##############################################################################
+
+# patch -> extract
+include $(stage)/extract.mk
+$(this)_S_DEP		=extract($(PRJ))
 
 $(this)_PROG		=patch
 $(this)_ARG		=-p0
 $(this)_PATH		=$(extract_PATH)
 
-# patch -> extract
-$(this)($(prjs)): get($$(%))
-
 ##############################################################################
 endif # END Include Guar
-include $(end_stage_tmpl)
+$(end_guard)
 ##############################################################################

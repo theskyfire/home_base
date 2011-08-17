@@ -1,15 +1,16 @@
 ##############################################################################
-# Get Stage
+# Staging Stage
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
 include $(stage_tmpl)
 ##############################################################################
 
-$(this)_PROG		=wget
-$(this)_ARG		 =-N
-$(this)_ARG		+=$($(PRJ)_URL)
-$(this)_PATH		=$(src)/$(PRJ)
+# stage -> build
+include $(stage)/build.mk
+$(this)_S_DEP		=build($(PRJ))
+
+$(this)_PATH		=$(build_PATH)
 
 ##############################################################################
 endif # END Include Guard

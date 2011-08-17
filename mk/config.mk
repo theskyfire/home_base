@@ -44,16 +44,13 @@ PopList_N		=$(wordlist \
 )
 PopList			=$(call PopList_N,$(1),1)
 
-# Generate Include Marker for given makefile
-GetMarker		=$(subst /,_,$(subst .,_,$(patsubst $(MK_PATH)/%,%,$(abspath $(1)))))
-
 # Name of Makefile including current Makefile
 OrigIncludingMakefile	=$(lastword $(call PopList,$(MAKEFILE_LIST)))
 IncludingMakefile	=$(OrigIncludingMakefile)
 
 IncludeMarker		=INCLUDE_$(subst $(slash),$(under),$(strip \
 	$(subst $(dot),$(under),$(strip \
-		$(patsubst $(mk_PATH)/%,%,$(abspath $(this_MAKEFILE)))\
+		$(patsubst $(mk)/%,%,$(abspath $(this_MAKEFILE)))\
 	))\
 ))
 
@@ -66,11 +63,11 @@ this_MAKEFILE		=$(lastword $(this_MAKEFILE_LIST))
 # Set "this" for stage and prj Makefiles
 this			=$(patsubst %.mk,%,$(call NotDir,$(this_MAKEFILE)))
 
-guard			=$(mk_PATH)/config.mk
+guard			=$(mk)/config.mk
 end_guard		=\
 $(eval \
 	this_MAKEFILE_LIST:=$$(call PopList,$$(this_MAKEFILE_LIST))\
-)\
+)
 
 my_MAKEFILE		=$(firstword $(MAKEFILE_LIST))
 ##############################################################################
@@ -133,13 +130,9 @@ lnks			+=share
 lnks			+=man
 lnks			+=GNUmakefile
 
-# dir_DIR_NAME=dir
+# x_DIR_NAME=x / x_LNK_NAME=x
 $(foreach d,$(dirs),$(eval $(d)_DIR_NAME:=$(d)))
-
-# lnk_LNK_NAME=lnk
 $(foreach l,$(lnks),$(eval $(l)_LNK_NAME:=$(l)))
-
-# override
 base_DIR_NAME		=$(call NotDir,$(BASE))
 common_DIR_NAME		=$(call NotDir,$(COMMON))
 tmp_base_DIR_NAME	=$(call NotDir,$(TMP_BASE))
@@ -148,41 +141,39 @@ tmp_base_DIR_NAME	=$(call NotDir,$(TMP_BASE))
 base_DIR_ROOT		=$(call Dir,$(BASE))
 common_DIR_ROOT		=$(call Dir,$(COMMON))
 mk_DIR_ROOT		=$(common_DIR)
-stage_DIR_ROOT		=$(mk_PATH)
-prj_DIR_ROOT		=$(mk_PATH)
+stage_DIR_ROOT		=$(mk_DIR)
+prj_DIR_ROOT		=$(mk_DIR)
 tmp_base_DIR_ROOT	=$(call Dir,$(TMP_BASE))
-tmp_DIR_ROOT		=$(base_PATH)
-build_DIR_ROOT		=$(tmp_PATH)
+tmp_DIR_ROOT		=$(base_DIR)
+build_DIR_ROOT		=$(tmp_DIR)
 src_DIR_ROOT		=$(common_DIR)
-include_DIR_ROOT	=$(base_PATH)
-bin_DIR_ROOT		=$(base_PATH)
-sbin_DIR_ROOT		=$(base_PATH)
-libexec_DIR_ROOT	=$(base_PATH)
-lib_DIR_ROOT		=$(base_PATH)
-etc_DIR_ROOT		=$(base_PATH)
+include_DIR_ROOT	=$(base_DIR)
+bin_DIR_ROOT		=$(base_DIR)
+sbin_DIR_ROOT		=$(base_DIR)
+libexec_DIR_ROOT	=$(base_DIR)
+lib_DIR_ROOT		=$(base_DIR)
+etc_DIR_ROOT		=$(base_DIR)
 com_DIR_ROOT		=$(common_DIR)
-var_DIR_ROOT		=$(base_PATH)
+var_DIR_ROOT		=$(base_DIR)
 share_DIR_ROOT		=$(common_DIR)
-doc_DIR_ROOT		=$(share_PATH)
-info_DIR_ROOT		=$(share_PATH)
-locale_DIR_ROOT		=$(share_PATH)
-man_DIR_ROOT		=$(share_PATH)
+doc_DIR_ROOT		=$(share_LNK)
+info_DIR_ROOT		=$(share_LNK)
+locale_DIR_ROOT		=$(share_LNK)
+man_DIR_ROOT		=$(share_LNK)
 
-common_LNK_ROOT		=$(base_PATH)
-mk_LNK_ROOT		=$(base_PATH)
-src_LNK_ROOT		=$(base_PATH)
-com_LNK_ROOT		=$(base_PATH)
-share_LNK_ROOT		=$(base_PATH)
-man_LNK_ROOT		=$(base_PATH)
-GNUmakefile_LNK_ROOT	=$(base_PATH)
+# Just so happens all links are under base_DIR
+$(foreach l,$(lnks),$(eval $(l)_LNK_ROOT=$$(base_DIR)))
 
+# x_DIR=x_DIR_ROOT/x_DIR_NAME / x_LNK=x_LNK_ROOT/x_LNK_NAME
 $(foreach d,$(dirs),\
 	$(eval $(d)_DIR=$(value $(d)_DIR_ROOT)/$(value $(d)_DIR_NAME))\
 )
+$(foreach d,$(dirs),$(eval $(d)_LNK=))
 $(foreach l,$(lnks),\
 	$(eval $(l)_LNK=$(value $(l)_LNK_ROOT)/$(value $(l)_LNK_NAME))\
 )
 
+# Symlink Targets
 common_LNK_TARGET	=$(common_DIR_ROOT)/$(common_DIR_NAME)
 mk_LNK_TARGET		=$(common_LNK_NAME)/$(mk_DIR_NAME)
 src_LNK_TARGET		=$(common_LNK_NAME)/$(src_DIR_NAME)
@@ -191,36 +182,16 @@ share_LNK_TARGET	=$(common_LNK_NAME)/$(share_DIR_NAME)
 man_LNK_TARGET		=$(share_LNK_NAME)/$(man_DIR_NAME)
 GNUmakefile_LNK_TARGET	=$(mk_LNK_NAME)/main.mk
 
-# Locations
-base_PATH		=$(base_DIR)
-common_PATH		=$(common_LNK)
-mk_PATH			=$(mk_DIR)
-stage_PATH		=$(stage_DIR)
-prj_PATH		=$(prj_DIR)
-tmp_base_PATH		=$(tmp_base_DIR)
-tmp_PATH		=$(tmp_DIR)
-build_PATH		=$(build_DIR)
-src_PATH		=$(src_LNK)
-include_PATH		=$(include_DIR)
-bin_PATH		=$(bin_DIR)
-sbin_PATH		=$(sbin_DIR)
-libexec_PATH		=$(libexec_DIR)
-lib_PATH		=$(lib_DIR)
-etc_PATH		=$(etc_DIR)
-com_PATH		=$(com_LNK)
-var_PATH		=$(var_DIR)
-share_PATH		=$(share_LNK)
-doc_PATH		=$(doc_DIR)
-info_PATH		=$(info_DIR)
-locale_PATH		=$(locale_DIR)
-man_PATH		=$(man_DIR)
+# The prefered path for an item (either x_DIR or x_LNK)
+$(foreach d,$(dirs),$(eval $(d)=$$(or $$($(d)_LNK),$$($(d)_DIR))))
+mk			=$(mk_DIR)
 
 ##############################################################################
 # Shell Configuration
 
 my_SHELL_CMD		=bash
-tmp_SHELL		=$(tmp_base_PATH)/$(bin_PATH)/$(my_SHELL_CMD)
-base_SHELL		=$(bin_PATH)/$(my_SHELL_CMD)
+tmp_SHELL		=$(tmp_base)/$(bin)/$(my_SHELL_CMD)
+base_SHELL		=$(bin)/$(my_SHELL_CMD)
 my_SHELL		=$(firstword \
 	$(wildcard $(base_SHELL) $(tmp_SHELL)) /bin/bash /bin/sh \
 )
@@ -237,8 +208,8 @@ $(and $(findstring bash,$(my_SHELL)), .ONESHELL:)
 # Make Configuration
 
 my_MAKE_CMD		=make
-tmp_MAKE		=$(tmp_base_PATH)/$(bin_PATH)/$(my_MAKE_CMD)
-base_MAKE		=$(bin_PATH)/$(my_MAKE_CMD)
+tmp_MAKE		=$(tmp_base)/$(bin)/$(my_MAKE_CMD)
+base_MAKE		=$(bin)/$(my_MAKE_CMD)
 my_MAKE			=$(firstword \
 	$(wildcard $(base_MAKE) $(tmp_MAKE)) $(MAKE)\
 )
@@ -294,19 +265,34 @@ $(MAKE)			=$(my_MAKE)
 
 ##############################################################################
 # Bootstrap
-bootstrap_mk		=$(mk_PATH)/boot.mk
+bootstrap_mk		=$(mk_DIR)/boot.mk
 
 # Stages
-stages_mk		:=$(wildcard $(stage_PATH)/*.mk)
-stages			:=$(patsubst $(stage_PATH)/%.mk,%,$(stages_mk))
-stage_tmpl		=$(stage_PATH)/stage.tmpl
-end_stage_tmpl		=$(stage_PATH)/end_stage.tmpl
+stages_mk		:=$(wildcard $(stage)/*.mk)
+stages			:=$(patsubst $(stage)/%.mk,%,$(stages_mk))
+stage_tmpl		=$(stage)/stage.tmpl
+end_stage_tmpl		=$(stage)/end_stage.tmpl
 
 # Projects
-prjs_mk			:=$(wildcard $(prj_PATH)/*.mk)
-prjs			:=$(patsubst $(prj_PATH)/%.mk,%,$(prjs_mk))
-prj_tmpl		=$(prj_PATH)/prj.tmpl
-end_prj_tmpl		=$(prj_PATH)/end_prj.tmpl
+prjs_mk			:=$(wildcard $(prj)/*.mk)
+prjs			:=$(patsubst $(prj)/%.mk,%,$(prjs_mk))
+prj_tmpl		=$(prj)/prj.tmpl
+end_prj_tmpl		=$(prj)/end_prj.tmpl
+##############################################################################
+# Default value for Prerequisite Variables
+
+# Global Dependancy
+DEP			=
+
+# Global Order-Only Dependancy
+ODEP			=
+
+$(foreach s,$(stages),\
+	$(foreach p,$(prjs),\
+		$(eval $(s)_$(p)_SP_DEP=)\
+		$(eval $(s)_$(p)_SP_ODEP=)\
+	)\
+)
 ##############################################################################
 # URL's
 #gnu_url			=ftp://ftp.gnu.org/pub/gnu

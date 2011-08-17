@@ -1,20 +1,42 @@
 ##############################################################################
 # Stage Template
 ##############################################################################
-IncludingMakefile:=$(IncludingMakefile)
-include $(guard)
-IncludingMakefile=$(OrigIncludingMakefile)
-##############################################################################
-# Create Command Sequence
+
+STAGE			=$(this)
+PRJ			=%
+$(this)_LOG		=$(tmp)/$(PRJ).$(STAGE).log
+$(this)_PATH		=
+
+# 'stage' will call each 'stage(X)' where X in Projects
+.PHONY: $(this)
+$(this): $(this)($(prjs))
+
+# $(this)_PATH depends on parent dir
+$($(this)_PATH): | $$(@D)
+
+.SECONDARY: $(this)($(prjs))
+
+$(this)_S_DEP		=
+$(this)_S_ODEP		=$($(STAGE)_PATH)
 
 $(this)($(prjs)):	STAGE:=$(this)
 $(this)($(prjs)):	PRJ=$(or $(%),$(*))
 
-STAGE			=$(this)
-PRJ			=%
+# call all prerequisites of stage(prj) then call $(this)_LOG to do the work.
+$(this)($(prjs)):	$$(DEP)
+$(this)($(prjs)):	$$($$(PRJ)_P_DEP)
+$(this)($(prjs)):	$$($$(STAGE)_S_DEP)
+$(this)($(prjs)):	$$($$(STAGE)_$$(PRJ)_SP_DEP)
+$(this)($(prjs)):	| $$(ODEP)
+$(this)($(prjs)):	| $$($$(PRJ)_P_ODEP)
+$(this)($(prjs)):	| $$($$(STAGE)_S_ODEP)
+$(this)($(prjs)):	| $$($$(STAGE)_$$(PRJ)_SP_ODEP)
+$(this)($(prjs)):	| $$($(this)_LOG)
 
-$(this)_LOG		=$(tmp_PATH)/$(PRJ).$(STAGE).log
-$(this)_PATH		=/
+#$(this)($(prjs)): $$ $$($(this)_DEP) | $$($(this)_ORDER) $$($(this)_LOG)
+
+##############################################################################
+# Create Command Sequence
 
 define $(this)_CMD_PRE =
 {
@@ -48,7 +70,7 @@ $(this)_ENV_SEQ		+=$($(STAGE)_ENV)
 $(this)_ENV_SEQ		+=$($(STAGE)_ENV_POST)
 
 $(this)_PROG_PRE	 =
-$(this)_PROG		 =
+$(this)_PROG		 =$(Nop)
 $(this)_PROG_POST	 =
 $(this)_PROG_SEQ	 =$($(STAGE)_PROG_PRE)
 $(this)_PROG_SEQ	+=$($(STAGE)_PROG)
@@ -63,6 +85,5 @@ $(this)_ARG_SEQ		+=$($(STAGE)_ARG_POST)
 
 $(this)_REDIR_PRE	 =
 $(this)_REDIR_POST	 =
-
 ##############################################################################
 # vim: set syntax=make:
