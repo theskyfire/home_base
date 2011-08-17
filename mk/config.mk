@@ -1,18 +1,18 @@
 ##############################################################################
 # Configuration
 ##############################################################################
-ifndef INCLUDE_config_mk
-INCLUDE_config_mk	:=$(abspath $(lastword $(MAKEFILE_LIST)))
+ifndef config_mk.INCLUDE
+config_mk.INCLUDE	:=$(realpath $(lastword $(MAKEFILE_LIST)))
 ##############################################################################
 # Set a trap for versions of make that don't support .DEFAULT_GOAL
-_TRAP_: FORCE
+.TRAP: FORCE
 	@echo "Error: Please use a modern version of GNU Make!" >&2
 	exit 1
 
-# Define FORCE target
-.PHONY: _TRAP_ FORCE
 FORCE:
 
+# stop implicit rule search for this makefile
+$(lastword $(MAKEFILE_LIST)): ;
 ##############################################################################
 # Functions
 
@@ -22,68 +22,91 @@ space			:=$(empty) $(empty)
 slash			:=/
 dot			:=.
 under			:=_
+nop			:=true
 
-TestMakeFor		=$(if\
+# Test for GNU Make feature
+.test.make.for\
+=$(if\
 	$(findstring $(1),$(.FEATURES)),\
 	$(empty),\
 	$(warning Missing '$(1)': please use a modern version of GNU Make!)\
 )
 
-# No Op
-Nop			=true
-
 # Fix dir/notdir
-Dir			=$(patsubst %/,%,$(dir $(1)))
-NotDir			=$(notdir $(patsubst %/,%,$(1)))
+.rm.slash		=$(patsubst %/,%,$(1))
+.dir			=$(call .rm.slash,$(dir $(1)))
+.not.dir		=$(notdir $(call .rm.slash,$(1)))
+.rm.mk			=$(patsubst %.mk,%,$(1))
 
 # Return LIST without its last N items
-PopList_N		=$(wordlist \
+.pop.list.N\
+=$(wordlist \
 	1,\
-	$(shell echo "$$(( $$(( X = - $(2) + $(words $(1)) )) >=0 ? X : 0))" ),\
+	$(shell echo \
+		"$$(( $$(( X = - $(2) + $(words $(1)) )) >=0 ? X : 0))"\
+	),\
 	$(1)\
 )
-PopList			=$(call PopList_N,$(1),1)
+.pop.list		=$(call .pop.list.N,$(1),1)
 
 # Name of Makefile including current Makefile
-OrigIncludingMakefile	=$(lastword $(call PopList,$(MAKEFILE_LIST)))
-IncludingMakefile	=$(OrigIncludingMakefile)
+my.MAKEFILE_LIST	=$(MAKEFILE_LIST)
+my.pop.MAKEFILE_LIST	=$(call .pop.list,$(my.MAKEFILE_LIST))
+my.last.MAKEFILE	=$(lastword $(my.pop.MAKEFILE_LIST))
 
-IncludeMarker		=INCLUDE_$(subst $(slash),$(under),$(strip \
-	$(subst $(dot),$(under),$(strip \
-		$(patsubst $(mk)/%,%,$(abspath $(this_MAKEFILE)))\
-	))\
-))
+.esc.name\
+=$(subst $(slash),$(under),$(subst $(dot),$(under),$(1)))
+
 
 # Stack of Makefiles who use include guard
-this_MAKEFILE_LIST	:=
+this.MAKEFILE_LIST	:=
+this.pop.MAKEFILE_LIST	=$(call .pop.list,$(this.MAKEFILE_LIST))
+this.MAKEFILE		=$(lastword $(this.MAKEFILE_LIST))
+this.abs.MAKEFILE	=$(abspath $(this.MAKEFILE))
+this.mk.MAKEFILE	=$(patsubst $(mk)/%,%,$(this.abs.MAKEFILE))
+this.esc.MAKEFILE	=$(call .esc.name,$(this.mk.MAKEFILE))
+this.include.marker	=$(this.esc.MAKEFILE).INCLUDE
+this.real.MAKEFILE	=$(realpath $(this.MAKEFILE))
+this.name.MAKEFILE	=$(call .not.dir,$(this.MAKEFILE))
+this			=$(call .rm.mk,$(this.name.MAKEFILE))
 
-# this_MAKEFILE valid between "include $(guard)" and "include $(end_guard)"
-this_MAKEFILE		=$(lastword $(this_MAKEFILE_LIST))
+.set.this.include.marker\
+=$(eval $(this.include.marker):=$$(this.real.MAKEFILE))
+.set.FIRST_INCLUDE	=$(eval FIRST_INCLUDE:=yes)
+.unset.FIRST_INCLUDE	=$(eval undefine FIRST_INCLUDE)
+.stop.rule.search	=$(eval $$(this.MAKEFILE): ;)
 
-# Set "this" for stage and prj Makefiles
-this			=$(patsubst %.mk,%,$(call NotDir,$(this_MAKEFILE)))
+.push.this.MAKEFILE_LIST=$(eval this.MAKEFILE_LIST+=$(1))
+.pop.this.MAKEFILE_LIST\
+=$(eval this.MAKEFILE_LIST:=$$(this.pop.MAKEFILE_LIST))
 
 guard			=$(mk)/config.mk
-end_guard		=\
-$(eval \
-	this_MAKEFILE_LIST:=$$(call PopList,$$(this_MAKEFILE_LIST))\
-)
+end_guard		=$(call .pop.this.MAKEFILE_LIST)
 
-my_MAKEFILE		=$(firstword $(MAKEFILE_LIST))
+my.MAKEFILE		=$(firstword $(MAKEFILE_LIST))
+my.abs.MAKEFILE		=$(abspath $(my.MAKEFILE))
+my.real.MAKEFILE	=$(realpath $(my.MAKEFILE))
+my.name.MAKEFILE	=$(call .not.dir,$(my.MAKEFILE))
 ##############################################################################
 # Test for modern GNU Make
-$(call TestMakeFor,else-if)
-$(call TestMakeFor,target-specific)
-$(call TestMakeFor,order-only)
-$(call TestMakeFor,second-expansion)
-$(call TestMakeFor,archives)
-$(call TestMakeFor,jobserver)
-$(call TestMakeFor,check-symlink)
+$(call .test.make.for,else-if)
+$(call .test.make.for,target-specific)
+$(call .test.make.for,order-only)
+$(call .test.make.for,second-expansion)
+$(call .test.make.for,archives)
+$(call .test.make.for,jobserver)
+$(call .test.make.for,check-symlink)
 
 # Require .DEFAULT_GOAL
 ifndef .DEFAULT_GOAL
 $(error Please use a modern version of GNU Make!)
 endif
+
+# only build serially
+.NOTPARALLEL:
+
+# Expand rules twice
+.SECONDEXPANSION:
 
 ##############################################################################
 # MAKE commandline overrides
@@ -93,7 +116,7 @@ HOME			?=$(shell cd ; pwd)
 TMPDIR			?=/tmp
 
 BASE			=$(HOME)/base
-COMMON			=$(call Dir,$(call Dir,$(realpath $(my_MAKEFILE))))
+COMMON			=$(call .dir,$(call .dir,$(my.real.MAKEFILE)))
 TMP_BASE		=$(TMPDIR)/homebase.$(USER)
 
 ##############################################################################
@@ -130,94 +153,145 @@ lnks			+=share
 lnks			+=man
 lnks			+=GNUmakefile
 
-# x_DIR_NAME=x / x_LNK_NAME=x
-$(foreach d,$(dirs),$(eval $(d)_DIR_NAME:=$(d)))
-$(foreach l,$(lnks),$(eval $(l)_LNK_NAME:=$(l)))
-base_DIR_NAME		=$(call NotDir,$(BASE))
-common_DIR_NAME		=$(call NotDir,$(COMMON))
-tmp_base_DIR_NAME	=$(call NotDir,$(TMP_BASE))
+# x.DIR_NAME=x / x.LNK_NAME=x
+$(foreach d,$(dirs),$(eval $(d).DIR_NAME:=$(d)))
+$(foreach l,$(lnks),$(eval $(l).LNK_NAME:=$(l)))
+base.DIR_NAME		=$(call .not.dir,$(BASE))
+common.DIR_NAME		=$(call .not.dir,$(COMMON))
+tmp_base.DIR_NAME	=$(call .not.dir,$(TMP_BASE))
 
 # Root directories
-base_DIR_ROOT		=$(call Dir,$(BASE))
-common_DIR_ROOT		=$(call Dir,$(COMMON))
-mk_DIR_ROOT		=$(common_DIR)
-stage_DIR_ROOT		=$(mk_DIR)
-prj_DIR_ROOT		=$(mk_DIR)
-tmp_base_DIR_ROOT	=$(call Dir,$(TMP_BASE))
-tmp_DIR_ROOT		=$(base_DIR)
-build_DIR_ROOT		=$(tmp_DIR)
-src_DIR_ROOT		=$(common_DIR)
-include_DIR_ROOT	=$(base_DIR)
-bin_DIR_ROOT		=$(base_DIR)
-sbin_DIR_ROOT		=$(base_DIR)
-libexec_DIR_ROOT	=$(base_DIR)
-lib_DIR_ROOT		=$(base_DIR)
-etc_DIR_ROOT		=$(base_DIR)
-com_DIR_ROOT		=$(common_DIR)
-var_DIR_ROOT		=$(base_DIR)
-share_DIR_ROOT		=$(common_DIR)
-doc_DIR_ROOT		=$(share_LNK)
-info_DIR_ROOT		=$(share_LNK)
-locale_DIR_ROOT		=$(share_LNK)
-man_DIR_ROOT		=$(share_LNK)
+base.DIR_ROOT		=$(call .dir,$(BASE))
+common.DIR_ROOT		=$(call .dir,$(COMMON))
+mk.DIR_ROOT		=$(common.DIR)
+stage.DIR_ROOT		=$(mk.DIR)
+prj.DIR_ROOT		=$(mk.DIR)
+tmp_base.DIR_ROOT	=$(call .dir,$(TMP_BASE))
+tmp.DIR_ROOT		=$(base.DIR)
+build.DIR_ROOT		=$(tmp.DIR)
+src.DIR_ROOT		=$(common.DIR)
+include.DIR_ROOT	=$(base.DIR)
+bin.DIR_ROOT		=$(base.DIR)
+sbin.DIR_ROOT		=$(base.DIR)
+libexec.DIR_ROOT	=$(base.DIR)
+lib.DIR_ROOT		=$(base.DIR)
+etc.DIR_ROOT		=$(base.DIR)
+com.DIR_ROOT		=$(common.DIR)
+var.DIR_ROOT		=$(base.DIR)
+share.DIR_ROOT		=$(common.DIR)
+doc.DIR_ROOT		=$(share.LNK)
+info.DIR_ROOT		=$(share.LNK)
+locale.DIR_ROOT		=$(share.LNK)
+man.DIR_ROOT		=$(share.LNK)
 
-# Just so happens all links are under base_DIR
-$(foreach l,$(lnks),$(eval $(l)_LNK_ROOT=$$(base_DIR)))
+# Just so happens all links are under base.DIR
+$(foreach l,$(lnks),$(eval $(l).LNK_ROOT=$$(base.DIR)))
 
-# x_DIR=x_DIR_ROOT/x_DIR_NAME / x_LNK=x_LNK_ROOT/x_LNK_NAME
+# x.DIR=x.DIR_ROOT/x.DIR_NAME / x.LNK=x.LNK_ROOT/x.LNK_NAME
 $(foreach d,$(dirs),\
-	$(eval $(d)_DIR=$(value $(d)_DIR_ROOT)/$(value $(d)_DIR_NAME))\
+	$(eval $(d).DIR=$(value $(d).DIR_ROOT)/$(value $(d).DIR_NAME))\
 )
-$(foreach d,$(dirs),$(eval $(d)_LNK=))
+$(foreach d,$(dirs),$(eval $(d).LNK=))
 $(foreach l,$(lnks),\
-	$(eval $(l)_LNK=$(value $(l)_LNK_ROOT)/$(value $(l)_LNK_NAME))\
+	$(eval $(l).LNK=$(value $(l).LNK_ROOT)/$(value $(l).LNK_NAME))\
 )
+
+# Symlink Prerequisites
+$(common.LNK):		| $(common.DIR)
+$(mk.LNK):		| $(common.LNK) $(mk.DIR)
+$(src.LNK):		| $(common.LNK) $(src.DIR)
+$(com.LNK):		| $(common.LNK) $(com.DIR)
+$(share.LNK):		| $(common.LNK) $(share.DIR)
+$(man.LNK):		| $(share.LNK) $(man.DIR)
+$(GNUmakefile.LNK):	| $(mk.LNK)
 
 # Symlink Targets
-common_LNK_TARGET	=$(common_DIR_ROOT)/$(common_DIR_NAME)
-mk_LNK_TARGET		=$(common_LNK_NAME)/$(mk_DIR_NAME)
-src_LNK_TARGET		=$(common_LNK_NAME)/$(src_DIR_NAME)
-com_LNK_TARGET		=$(common_LNK_NAME)/$(com_DIR_NAME)
-share_LNK_TARGET	=$(common_LNK_NAME)/$(share_DIR_NAME)
-man_LNK_TARGET		=$(share_LNK_NAME)/$(man_DIR_NAME)
-GNUmakefile_LNK_TARGET	=$(mk_LNK_NAME)/main.mk
+common.LNK_TARGET	=$(common.DIR_ROOT)/$(common.DIR_NAME)
+mk.LNK_TARGET		=$(common.LNK_NAME)/$(mk.DIR_NAME)
+src.LNK_TARGET		=$(common.LNK_NAME)/$(src.DIR_NAME)
+com.LNK_TARGET		=$(common.LNK_NAME)/$(com.DIR_NAME)
+share.LNK_TARGET	=$(common.LNK_NAME)/$(share.DIR_NAME)
+man.LNK_TARGET		=$(share.LNK_NAME)/$(man.DIR_NAME)
+GNUmakefile.LNK_TARGET	=$(mk.LNK_NAME)/main.mk
 
-# The prefered path for an item (either x_DIR or x_LNK)
-$(foreach d,$(dirs),$(eval $(d)=$$(or $$($(d)_LNK),$$($(d)_DIR))))
-mk			=$(mk_DIR)
+# The prefered path for an item (either x.DIR or x.LNK)
+$(foreach d,$(dirs),$(eval $(d)=$$(or $$($(d).LNK),$$($(d).DIR))))
+mk			=$(mk.DIR)
+
+bootstrap.mk		=$(mk)/boot.mk
+stages.mk		:=$(wildcard $(stage)/*.mk)
+stages			:=$(patsubst $(stage)/%.mk,%,$(stages.mk))
+stage.tmpl		=$(stage)/stage.tmpl
+prjs.mk			:=$(wildcard $(prj)/*.mk)
+prjs			:=$(patsubst $(prj)/%.mk,%,$(prjs.mk))
+prj.tmpl		=$(prj)/prj.tmpl
+
+dirs.EXPAND		=$(foreach d,$(dirs),$($(d).DIR))
+lnks.EXPAND		=$(foreach l,$(lnks),$($(l).LNK))
+
+src.DIRS		=$(foreach p,$(prjs),$(src)/$(p))
+build.DIRS		=$(foreach p,$(prjs),$(build)/$(p))
+
+# add $(base) checks
+.PHONY: base_checks
+#$(base_DIR):		base_checks
+base_checks:
+	[ -r '$(my.MAKEFILE)' ]
+	[ ! -e '$(base.DIR)' ]
+	[ -d '$(common.DIR)' ]
+
+# Create Directories
+dirs.MODE		=0710
+.PRECIOUS: $(src.DIRS) $(build.DIRS)
+$(dirs.EXPAND) $(src.DIRS) $(build.DIRS): | $$(@D)
+	[ -d '$(@)' ] || mkdir -v --mode='$(dirs.MODE)' '$(@)'
+
+# Create Symlinks
+$(foreach l,$(lnks),$(eval $$($(l).LNK): TARGET=$$($(l).LNK_TARGET)))
+$(lnks.EXPAND): | $$(@D)
+	ln -vsT '$(TARGET)' '$(@)'
+
+# Create src and build sub-dirs as needed
+#.PRECIOUS: $(src)/% $(build)/%
+#$(src)/%: | $$(@D)
+#	[ -d '$(@)' ] || mkdir -v --mode='$(dirs.MODE)' '$(@)'
+
+#$(build)/%: | $$(@D)
+#	[ -d '$(@)' ] || mkdir -v --mode='$(dirs.MODE)' '$(@)'
 
 ##############################################################################
 # Shell Configuration
 
-my_SHELL_CMD		=bash
-tmp_SHELL		=$(tmp_base)/$(bin)/$(my_SHELL_CMD)
-base_SHELL		=$(bin)/$(my_SHELL_CMD)
-my_SHELL		=$(firstword \
-	$(wildcard $(base_SHELL) $(tmp_SHELL)) /bin/bash /bin/sh \
+my.SHELL_CMD		=bash
+tmp.SHELL		=$(tmp_base)/$(bin)/$(my.SHELL_CMD)
+base.SHELL		=$(bin)/$(my.SHELL_CMD)
+my.SHELL		=$(firstword \
+	$(wildcard $(base.SHELL) $(tmp.SHELL)) /bin/bash /bin/sh \
 )
-my_SHELLFLAGS		=$(if $(findstring bash,$(my_SHELL)),-ec,-c)
+is.bash			=$(findstring bash,$(my.SHELL))
+my.SHELLFLAGS		=$(if $(is.bash),-ec,-c)
 
-SHELL			:=$(my_SHELL)
-.SHELLFLAGS		:=$(my_SHELLFLAGS)
+SHELL			:=$(my.SHELL)
+.SHELLFLAGS		:=$(my.SHELLFLAGS)
 
 # all lines of a recipe are exec'ed by the same shell instance
 # beware lines starting with '@' '-' '+'
-$(and $(findstring bash,$(my_SHELL)), .ONESHELL:)
+$(and $(is.bash), .ONESHELL:)
 
 ##############################################################################
 # Make Configuration
 
-my_MAKE_CMD		=make
-tmp_MAKE		=$(tmp_base)/$(bin)/$(my_MAKE_CMD)
-base_MAKE		=$(bin)/$(my_MAKE_CMD)
-my_MAKE			=$(firstword \
-	$(wildcard $(base_MAKE) $(tmp_MAKE)) $(MAKE)\
+my.MAKE_CMD		=make
+tmp.MAKE		=$(tmp_base)/$(bin)/$(my.MAKE_CMD)
+base.MAKE		=$(bin)/$(my.MAKE_CMD)
+my.MAKE			=$(firstword \
+	$(wildcard $(base.MAKE) $(tmp.MAKE)) $(MAKE)\
 )
-my_MAKEFLAGS		=
-my_MAKEFLAGS		+=--warn-undefined-variables
-my_MAKEFLAGS		+=$(if $(DEBUG),-wRrpd,-wRr)
-my_CURDIR		=-C $(CURDIR)
-my_MAKECMDGOALS		=$(subst 'bootstrap',,\
+my.MAKEFLAGS		=
+my.MAKEFLAGS		+=--warn-undefined-variables
+my.MAKEFLAGS		+=$(if $(DEBUG),-wRrpd,-wRr)
+my.CURDIR		=-C $(CURDIR)
+my.MAKECMDGOALS		=$(subst 'bootstrap',,\
 	$(foreach goal,$(or $(MAKECMDGOALS),$(.DEFAULT_GOAL)),'$(goal)')\
 )
 define EscGoals =
@@ -237,91 +311,43 @@ define EscGoals =
 	echo "$${cnd}" ;
 }
 endef
-#my_MAKECMDGOALS		:=$(shell $(EscGoals))
-my_MAKEOVERRIDES	=$(MAKEOVERRIDES)
-my_MAKE_ENV		=
-my_MAKE_ENV		+=MAKELEVEL=0
-my_MAKE_ENV		+=MAKEFLAGS=''
-my_MAKE_ENV		+=MAKEOVERRIDES=''
+#my.MAKECMDGOALS		:=$(shell $(EscGoals))
+my.MAKEOVERRIDES	=$(MAKEOVERRIDES)
+my.MAKE_ENV		=
+my.MAKE_ENV		+=MAKELEVEL=0
+my.MAKE_ENV		+=MAKEFLAGS=''
+my.MAKE_ENV		+=MAKEOVERRIDES=''
 
-bootstrap		 =$(my_MAKE_ENV)
-bootstrap		+=$(my_MAKE)
-bootstrap		+=-f '$(my_MAKEFILE)'
-bootstrap		+=$(my_MAKEFLAGS)
-bootstrap		+=$(my_CURDIR)
-bootstrap		+=$(my_MAKECMDGOALS)
-bootstrap		+=$(my_MAKEOVERRIDES)
+bootstrap		 =$(my.MAKE_ENV)
+bootstrap		+=$(my.MAKE)
+bootstrap		+=-f '$(my.MAKEFILE)'
+bootstrap		+=$(my.MAKEFLAGS)
+bootstrap		+=$(my.CURDIR)
+bootstrap		+=$(my.MAKECMDGOALS)
+bootstrap		+=$(my.MAKEOVERRIDES)
 
-$(MAKE)			=$(my_MAKE)
+$(MAKE)			=$(my.MAKE)
 
 # Set Default Goal
 .DEFAULT_GOAL		=install
 
-# only build serially
-.NOTPARALLEL:
-
-# Expand rules twice
-.SECONDEXPANSION:
-
 ##############################################################################
-# Bootstrap
-bootstrap_mk		=$(mk_DIR)/boot.mk
-
-# Stages
-stages_mk		:=$(wildcard $(stage)/*.mk)
-stages			:=$(patsubst $(stage)/%.mk,%,$(stages_mk))
-stage_tmpl		=$(stage)/stage.tmpl
-end_stage_tmpl		=$(stage)/end_stage.tmpl
-
-# Projects
-prjs_mk			:=$(wildcard $(prj)/*.mk)
-prjs			:=$(patsubst $(prj)/%.mk,%,$(prjs_mk))
-prj_tmpl		=$(prj)/prj.tmpl
-end_prj_tmpl		=$(prj)/end_prj.tmpl
-##############################################################################
-# Default value for Prerequisite Variables
-
-# Global Dependancy
-DEP			=
-
-# Global Order-Only Dependancy
-ODEP			=
-
-$(foreach s,$(stages),\
-	$(foreach p,$(prjs),\
-		$(eval $(s)_$(p)_SP_DEP=)\
-		$(eval $(s)_$(p)_SP_ODEP=)\
-	)\
-)
-##############################################################################
-# URL's
-#gnu_url			=ftp://ftp.gnu.org/pub/gnu
-gnu_url			=http://mirrors.kernel.org/gnu
-##############################################################################
-$(lastword $(MAKEFILE_LIST)): ;
 endif # END Include Guard
 ##############################################################################
-# Include Guard   "Quis custodiet ipsos custodes?"
+
+
 ##############################################################################
-# Append calling makefile to THIS_MAKEFILE_LIST
-#$(warning [$(this_MAKEFILE_LIST)])
-this_MAKEFILE_LIST	+=$(IncludingMakefile)
-#$(warning [$(this_MAKEFILE_LIST)])
+# Setup Include Guard for including Makefile  "Quis custodiet ipsos custodes?"
+##############################################################################
+$(call .push.this.MAKEFILE_LIST,$(my.last.MAKEFILE))
 
-# Undefine FIRST_INCLUDE NOTE: only use directly after including this file
-undefine FIRST_INCLUDE
+$(call .unset.FIRST_INCLUDE)
 
-# This is first include
-ifndef $(IncludeMarker)
+ifndef $(this.include.marker)
+$(call .set.this.include.marker)
 
-# Set INCLUDE_foo_mk = /Full/Path/To/mk/foo.mk
-$(IncludeMarker)	:=$(abspath $(this_MAKEFILE))
+$(call .set.FIRST_INCLUDE)
 
-# Define FIRST_INCLUDE on first include
-FIRST_INCLUDE		=yes
-
-# Stop implicit rule search for including Makefile
-$(this_MAKEFILE): ;
-
+$(call .stop.rule.search)
 endif # end Include Guard setup for including Makefile
 ##############################################################################

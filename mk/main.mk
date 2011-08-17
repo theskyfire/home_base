@@ -9,17 +9,12 @@ guard			:=$(guard)config.mk
 include $(guard)
 ifdef FIRST_INCLUDE
 
-include $(bootstrap_mk)
+include $(bootstrap.mk)
 ifdef BOOTSTRAP
 
-include $(stages_mk)
+include $(stages.mk)
 
-include $(prjs_mk)
-
-# Record action in prj.stage.log
-#$(tmp)/%.log: | $$(@D) $$($$(STAGE)_PATH)
-#	# LOG [$@] [$*] [$%] S{$(STAGE)} P{$(PRJ)}
-
+include $(prjs.mk)
 
 endif # END Bootstrap Guard
 

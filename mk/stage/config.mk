@@ -3,16 +3,16 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
 # config -> patch
 include $(stage)/patch.mk
-$(this)_S_DEP		=patch($(PRJ))
+$(this).DEP_STAGE	=patch($(PRJ))
 
-$(this)_PROG		=sh ./configure
-$(this)_ARG		=--prefix='$(base)'
-$(this)_PATH		=$(patch_PATH)
+$(this).PROG		=sh ./configure
+$(this).ARG		=--prefix='$(base)'
+$(this).PATH		=$(patch.$(PRJ).PATH)
 
 ##############################################################################
 endif # END Include Guar

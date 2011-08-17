@@ -3,19 +3,19 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
 # install -> stage
 include $(stage)/stage.mk
-$(this)_S_DEP		=stage($(PRJ))
+$(this).DEP_STAGE	=stage($(PRJ))
 
-$(this)_ENV		+=MAKELEVEL=0
-$(this)_ENV		+=MAKEFLAGS=
-$(this)_ENV		+=MAKEOVERRIDES=
-$(this)_PROG		=$(my_MAKE)
-$(this)_ARG		=install
-$(this)_PATH		=$(stage_PATH)
+$(this).ENV		+=MAKELEVEL=0
+$(this).ENV		+=MAKEFLAGS=
+$(this).ENV		+=MAKEOVERRIDES=
+$(this).PROG		=$(my.MAKE)
+$(this).ARG		=install
+$(this).PATH		=$(stage.$(PRJ).PATH)
 
 ##############################################################################
 endif # END Include Guard

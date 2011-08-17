@@ -3,13 +3,17 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
-$(this)_PROG		=wget
-$(this)_ARG		 =-N
-$(this)_ARG		+=$($(PRJ)_URL)
-$(this)_PATH		=$(src)/$(PRJ)
+# URL's
+#gnu.url			=ftp://ftp.gnu.org/pub/gnu
+gnu.url			=http://mirrors.kernel.org/gnu
+
+$(this).PROG		=wget
+$(this).ARG		 =-N
+$(this).ARG		+=$($(PRJ).URL)
+$(this).PATH		=$(src)/$(PRJ)
 
 ##############################################################################
 endif # END Include Guard

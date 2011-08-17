@@ -8,17 +8,15 @@ ifdef FIRST_INCLUDE
 ifndef BOOTSTRAP
 $(warning Bootstrapping)
 
-.DEFAULT_GOAL		=bootstrap
-
-# force bootstrap
-$(MAKECMDGOALS): bootstrap ;
-(%):: bootstrap ;
-%:: bootstrap ;
-
 .PHONY: bootstrap
-bootstrap:		my_MAKEOVERRIDES+=BOOTSTRAP='Complete'
+bootstrap:		my.MAKEOVERRIDES+=BOOTSTRAP='Complete'
 bootstrap:
 	$(bootstrap)
+
+# force bootstrap
+.DEFAULT_GOAL		=bootstrap
+$(MAKECMDGOALS):	bootstrap ;
+%::			bootstrap ;
 
 else # Bootstrap Complete
 $(warning Bootstrap Complete)

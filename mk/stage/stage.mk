@@ -3,14 +3,14 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
 # stage -> build
 include $(stage)/build.mk
-$(this)_S_DEP		=build($(PRJ))
+$(this).DEP_STAGE	=build($(PRJ))
 
-$(this)_PATH		=$(build_PATH)
+$(this).PATH		=$(build.$(PRJ).PATH)
 
 ##############################################################################
 endif # END Include Guard

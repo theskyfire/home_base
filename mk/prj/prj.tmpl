@@ -2,23 +2,20 @@
 # Project Template
 ##############################################################################
 
+STAGE			=%
+PRJ			=$(this)
+$(this).LOG		=$(tmp)/$(PRJ).$(STAGE).log
+
+# Default stage.prg.PATH = stage.PATH
+$(foreach s,$(stages),$(eval $(s).$(this).PATH=$$($(s).PATH)))
+
 # prg: install(prj)
 .PHONY: $(this)
 $(this): install($(this))
 
-$(this)_P_DEP		=
-$(this)_P_ODEP		=
-
-STAGE			=%
-PRJ			=$(this)
-
-$(this)_LOG		=$(tmp)/$(PRJ).$(STAGE).log
-
-#$($(this)_LOG):		STAGE:=$(or $(%),$(*))
-$($(this)_LOG):		PRJ:=$(this)
-
-# Record action in prj.stage.log
-$($(this)_LOG): | $$(@D) $$($$(STAGE)_PATH)
-	$($(STAGE)_CMD_SEQ)
+# Record action in PRJ.STAGE.log
+$($(this).LOG):		PRJ:=$(this)
+$($(this).LOG): | $$(@D) $$($$(STAGE).$$(PRJ).PATH)
+	$($(STAGE).CMD_SEQ)
 ##############################################################################
 # vim: set syntax=make:

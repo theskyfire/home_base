@@ -3,16 +3,16 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
 # patch -> extract
 include $(stage)/extract.mk
-$(this)_S_DEP		=extract($(PRJ))
+$(this).DEP_STAGE	=extract($(PRJ))
 
-$(this)_PROG		=patch
-$(this)_ARG		=-p0
-$(this)_PATH		=$(extract_PATH)
+$(this).PROG		=patch
+$(this).ARG		=-p0
+$(this).PATH		=$(extract.$(PRJ).PATH)
 
 ##############################################################################
 endif # END Include Guar

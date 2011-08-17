@@ -3,18 +3,18 @@
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
-include $(stage_tmpl)
+include $(stage.tmpl)
 ##############################################################################
 
 # build -> config
 include $(stage)/config.mk
-$(this)_S_DEP		=config($(PRJ))
+$(this).DEP_STAGE	=config($(PRJ))
 
-$(this)_ENV		+=MAKELEVEL=0
-$(this)_ENV		+=MAKEFLAGS=
-$(this)_ENV		+=MAKEOVERRIDES=
-$(this)_PROG		=$(my_MAKE)
-$(this)_PATH		=$(patch_PATH)
+$(this).ENV		+=MAKELEVEL=0
+$(this).ENV		+=MAKEFLAGS=
+$(this).ENV		+=MAKEOVERRIDES=
+$(this).PROG		=$(my.MAKE)
+$(this).PATH		=$(patch.$(PRJ).PATH)
 
 ##############################################################################
 endif # END Include Guar
