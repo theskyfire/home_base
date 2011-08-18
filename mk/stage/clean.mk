@@ -1,22 +1,18 @@
 ##############################################################################
-# Get Stage
+# Clean Stage
 ##############################################################################
 include $(guard)
 ifdef FIRST_INCLUDE
 include $(stage.tmpl)
 ##############################################################################
 
-# URL's
-#gnu.url			=ftp://ftp.gnu.org/pub/gnu
-gnu.url			=http://mirrors.kernel.org/gnu
+$(this).PROG		=rm
+$(this).ARG		=-rfv '$(build)/$(PRJ)/' '$(tmp)/'$(PRJ).*.log
+$(this).PATH		=$(build)
 
-$(this).PROG		=wget
-$(this).ARG		 =-N
-$(this).ARG		+=$($(PRJ).URL)
-$(this).PATH		=$(src)/$(PRJ)
-
-# Set defaults
-$(foreach p,$(prjs),$(eval $(p).URL?=))
+# force clean
+.PHONY: $($(this).LOG)
+$(this).FORCE		=FORCE
 
 ##############################################################################
 endif # END Include Guard

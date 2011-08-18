@@ -15,7 +15,7 @@ $(this): install($(this))
 
 # Record action in PRJ.STAGE.log
 $($(this).LOG):		PRJ:=$(this)
-$($(this).LOG): | $$(@D) $$($$(STAGE).$$(PRJ).PATH)
+$($(this).LOG): $$($$(STAGE).FORCE) | $$(@D) $$($$(STAGE).$$(PRJ).PATH)
 	# [$(PRJ)] [$($(PRJ).URL)] [$(git.URL)]
 	$($(STAGE).CMD_SEQ)
 ##############################################################################

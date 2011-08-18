@@ -21,6 +21,7 @@ $(foreach p,$(prjs),\
 	$(eval $(this).$(p).DEP=)\
 	$(eval $(this).$(p).ORDER=)\
 )
+$(this).FORCE		=
 
 # 'stage' will call each 'stage(X)' where X in Projects
 .PHONY: $(this)
