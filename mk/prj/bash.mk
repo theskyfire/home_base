@@ -23,7 +23,10 @@ $(this).URL		+=$(gnu.url)/bash/bash-4.2-patches/bash42-010
 
 patch.$(this).PATH	=$(build)/bash/bash-4.2
 
-patch($(this)):		patch.REDIR_PRE=cat '$(src)'/bash/bash42* |
+patch($(this)):		patch.PROG_PRE=cat
+patch($(this)):		patch.ARG_PRE='$(src)'/bash/bash42*
+patch($(this)):		patch.PIPE_PRE=|
+
 
 ##############################################################################
 endif # END Include Guard

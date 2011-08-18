@@ -17,9 +17,14 @@ extract($(this)):	extract.ARG=-av $(src)/screen/screen .
 patch.$(this).PATH	=$(build)/$(PRJ)/screen/src
 patch($(this)):		patch.CMD=$(nop)
 
-config($(this)):	config.REDIR_PRE=./autogen.sh &&
+config($(this)):	config.PROG_PRE=./autogen.sh
+config($(this)):	config.PIPE_PRE=;
 config($(this)):	config.ARG+=--with-socket-dir='$(base)/screen'
 config($(this)):	config.ARG+=--with-sys-screenrc='$(etc)/screenrc'
+config($(this)):	config.ARG+=--enable-pam
+config($(this)):	config.ARG+=--enable-telnet
+config($(this)):	config.ARG+=--enable-colors256
+config($(this)):	config.ARG+=--enable-rxvt_osc
 ##############################################################################
 endif # END Include Guard
 $(end_guard)

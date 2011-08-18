@@ -44,52 +44,46 @@ $(this)($(prjs)):	;
 ##############################################################################
 # Create Command Sequence
 
-# CMD_SEQ = CMD_PRE CMD CMD_POST
-$(this).CMD_SEQ		 =$($(STAGE).CMD_PRE)
-$(this).CMD_SEQ		+=$($(STAGE).CMD)
-$(this).CMD_SEQ		+=$($(STAGE).CMD_POST)
-
-define $(this).CMD_PRE =
+define $(this).CMD_SEQ =
 {
 	trap "mv '$($(STAGE).LOG)' '$($(STAGE).LOG).err'" ERR ;
 	set -x ;
 	cd '$($(STAGE).$(PRJ).PATH)' ;
-endef
-
-# CMD = REDIR_PRE ENV_SEQ PROG_SEQ ARG_SEQ REDIR_POST
-$(this).REDIR_PRE	 =
-$(this).CMD		 =$($(STAGE).REDIR_PRE)
-$(this).CMD		+=$($(STAGE).ENV_SEQ)
-$(this).CMD		+=$($(STAGE).PROG_SEQ)
-$(this).CMD		+=$($(STAGE).ARG_SEQ)
-$(this).CMD		+=$($(STAGE).REDIR_POST)
-$(this).REDIR_POST	 =
-
-define $(this).CMD_POST =
-;
+	$($(STAGE).CMD_PRE) $($(STAGE).CMD) $($(STAGE).CMD_POST) ;
 } 2>&1 | tee '$(@)' ; exit $${PIPESTATUS[0]}
 endef
 
-$(this).ENV_PRE		 =
-$(this).ENV		 =
-$(this).ENV_POST	 =
-$(this).ENV_SEQ		 =$($(STAGE).ENV_PRE)
-$(this).ENV_SEQ		+=$($(STAGE).ENV)
-$(this).ENV_SEQ		+=$($(STAGE).ENV_POST)
+$(this).ENV_PRE		=
+$(this).PROG_PRE	=
+$(this).ARG_PRE		=
+$(this).PIPE_PRE	=
+$(this).CMD_PRE		 =$($(STAGE).ENV_PRE)
+$(this).CMD_PRE		+=$($(STAGE).PROG_PRE)
+$(this).CMD_PRE		+=$($(STAGE).ARG_PRE)
+$(this).CMD_PRE		+=$($(STAGE).PIPE_PRE)
 
-$(this).PROG_PRE	 =
-$(this).PROG		 =$(nop)
-$(this).PROG_POST	 =
-$(this).PROG_SEQ	 =$($(STAGE).PROG_PRE)
-$(this).PROG_SEQ	+=$($(STAGE).PROG)
-$(this).PROG_SEQ	+=$($(STAGE).PROG_POST)
+$(this).ENV		=
+$(this).PROG		=$(nop)
+$(this).ARG		=
+$(this).PIPE		=
+$(this).CMD		 =$($(STAGE).ENV)
+$(this).CMD		+=$($(STAGE).PROG)
+$(this).CMD		+=$($(STAGE).ARG)
+$(this).CMD		+=$($(STAGE).PIPE)
 
-$(this).ARG_PRE		 =
-$(this).ARG		 =
-$(this).ARG_POST	 =
-$(this).ARG_SEQ		 =$($(STAGE).ARG_PRE)
-$(this).ARG_SEQ		+=$($(STAGE).ARG)
-$(this).ARG_SEQ		+=$($(STAGE).ARG_POST)
+$(this).ENV_POST	=
+$(this).PROG_POST	=
+$(this).ARG_POST	=
+$(this).PIPE_POST	=
+$(this).CMD_POST	 =$($(STAGE).ENV_POST)
+$(this).CMD_POST	+=$($(STAGE).PROG_POST)
+$(this).CMD_POST	+=$($(STAGE).ARG_POST)
+$(this).CMD_POST	+=$($(STAGE).PIPE_POST)
+
+
+
+
+
 
 ##############################################################################
 # vim: set syntax=make:

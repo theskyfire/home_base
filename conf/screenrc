@@ -20,7 +20,7 @@
 
 #### Session Window Options
 #shell -${SHELL}	# alias for defshell
-defshell ${HOME}/local/bin/bash # override ${SHELL}
+defshell ${HOME}/base/bin/bash # override ${SHELL}
 #defzombie ^[^M onerror	# defzombie is an alias for zombie 
 zombie ^[^M onerror	# Esc=exit Enter=restart if window exits w/ error
 autodetach on		# detach on hangup
@@ -342,8 +342,8 @@ bind  A title		# Enter title for window
 bind  T title		# Enter title for window
 bind  N number -1	# Decrement window number
 # Create window, and switch region to that window
-bind  c screen ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
-bind ^C screen ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
+bind  c screen ${HOME}/base/bin/bash --rcfile ${HOME}/base/etc/bashrc
+bind ^C screen ${HOME}/base/bin/bash --rcfile ${HOME}/base/etc/bashrc
 bind  C screen //group	# Create window group
 bind ^K kill		# kill current window
 bind  K kill		# kill current window
@@ -424,7 +424,7 @@ chdir			# cd to ~ for new windows
 
 # Environment
 setenv LES_HOME "${HOME}"
-setenv LES_LOCAL "${LES_HOME}/local"
+setenv LES_LOCAL "${LES_HOME}/base"
 setenv LES_BIN "${LES_LOCAL}/bin"
 setenv LES_SBIN "${LES_LOCAL}/sbin"
 setenv LES_BASH "${LES_BIN}/bash"
@@ -505,7 +505,7 @@ screen -t sub 6 //group
 # work layout
 layout new work
 layout number 6
-screen -t work 7 ${HOME}/local/bin/bash --rcfile ${HOME}/local/bashrc
+screen -t work 7 ${HOME}/base/bin/bash --rcfile ${HOME}/base/bashrc
 group sub
 focus
 select work
