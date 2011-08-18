@@ -16,8 +16,8 @@ build($(this)):		build.CMD=$(nop)
 stage($(this)):		stage.CMD=$(nop)
 install($(this)):	install.CMD=$(nop)
 
-install.$(this).ORDER_PRJ =$(dirs.EXPAND)
-install.$(this).ORDER_PRJ+=$(lnks.EXPAND)
+install.$(this).ORDER =$(dirs.EXPAND)
+install.$(this).ORDER+=$(lnks.EXPAND)
 
 ##############################################################################
 endif # END Include Guard
