@@ -23,15 +23,19 @@ $(foreach p,$(prjs),\
 )
 $(this).FORCE		=
 
+
+stage.prjs		=$(this)($(prjs))
+
 # 'stage' will call each 'stage(X)' where X in Projects
 .PHONY: $(this)
-$(this): $(this)($(prjs))
+$(this): $(this)($(prjs)) $(stage.prjs) $(cmd.prjs)
 
 .SECONDARY: $(this)($(prjs))
 
 # call all prerequisites of stage(prj) then call $(this).LOG to do the work.
 $(this)($(prjs)):	STAGE:=$(this)
 $(this)($(prjs)):	PRJ=$(or $(%),$(*))
+$(this)($(prjs)):	FOO+=STAGE=$(STAGE)
 $(this)($(prjs)):	$$($$(PRJ).DEP_PRJ)
 $(this)($(prjs)):	$$($$(STAGE).DEP_STAGE)
 $(this)($(prjs)):	$$($$(STAGE).$$(PRJ).DEP)
@@ -79,11 +83,6 @@ $(this).CMD_POST	 =$($(STAGE).ENV_POST)
 $(this).CMD_POST	+=$($(STAGE).PROG_POST)
 $(this).CMD_POST	+=$($(STAGE).ARG_POST)
 $(this).CMD_POST	+=$($(STAGE).PIPE_POST)
-
-
-
-
-
 
 ##############################################################################
 # vim: set syntax=make:

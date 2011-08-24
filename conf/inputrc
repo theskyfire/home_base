@@ -71,3 +71,4 @@ set completion-map-case off
 set meta-flag on
 set prefer-visible-bell on
 set completion-display-width -1
+##############################################################################

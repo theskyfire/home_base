@@ -1,7 +1,7 @@
 ##############################################################################
-# Bootstrap Make with out Options and Definitions
+# Bootstrap Make with our Options and Definitions
 ##############################################################################
-include $(guard)
+include $(guard.mk)
 ifdef FIRST_INCLUDE
 ##############################################################################
 # BOOTSTRAP marks proper bootstrap
@@ -11,7 +11,11 @@ $(warning Bootstrapping)
 .PHONY: bootstrap
 bootstrap:		my.MAKEOVERRIDES+=BOOTSTRAP='Complete'
 bootstrap:
-	$(bootstrap)
+	$(MAKE) -f '$(INCLUDE.main.mk)' -C '$(CURDIR)' BOOTSTRAP='complete'
+
+#	$(bootstrap)
+
+#	$(make.CMD_SEQ)
 
 # force bootstrap
 .DEFAULT_GOAL		=bootstrap

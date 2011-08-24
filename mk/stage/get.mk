@@ -15,6 +15,8 @@ $(this).ARG		 =-N
 $(this).ARG		+=$($(PRJ).URL)
 $(this).PATH		=$(src)/$(PRJ)
 
+$(this)($(prjs)):	CMD=env
+
 # Set defaults
 $(foreach p,$(prjs),$(eval $(p).URL?=))
 

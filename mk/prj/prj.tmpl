@@ -15,7 +15,9 @@ $(this): install($(this))
 
 # Record action in PRJ.STAGE.log
 $($(this).LOG):		PRJ:=$(this)
+$($(this).LOG):		FOO+=PRJ=$(PRJ)
 $($(this).LOG): $$($$(STAGE).FORCE) | $$(@D)
+	# CMD[$(CMD)]
 	$($(STAGE).CMD_SEQ)
 ##############################################################################
 # vim: set syntax=make:

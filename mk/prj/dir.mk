@@ -9,6 +9,7 @@ include $(prj.tmpl)
 
 # Nop all stage commands
 get($(this)):		get.CMD=$(nop)
+get($(this)):		CMD=$(nop)
 extract($(this)):	extract.CMD=$(nop)
 patch($(this)):		patch.CMD=$(nop)
 config($(this)):	config.CMD=$(nop)

@@ -1,36 +1,41 @@
 ##############################################################################
 
-export LES_USER="${USER}"
-: ${LES_USER:=${USERNAME}}
-: ${LES_USER:=$(whoami)}
-export LES_HOME="${HOME}"
-: ${LES_HOME:=~}
-export LES_USER LES_HOME
-export LES_LOCAL="${LES_HOME}/local"
-export LES_BIN="${LES_LOCAL}/bin"
-export LES_CONF="${LES_LOCAL}/conf"
-export LES_LOG="${LES_LOCAL}/log"
+export HOMEbase="${HOME}/base"
+export HB="${HOMEbase}"
+export HB_USER="${USER}"
+: ${HB_USER:=${USERNAME}}
+: ${HB_USER:=$(whoami)}
+export HB_HOME="${HOME}"
+: ${HB_HOME:=~}
+: ${HB_HOME:=$(cd ; pwd)}
 
-export LES_PATH="${LES_BIN}:${PATH}"
-export PATH="${LES_PATH}"
+export HB_BIN="${HB}/bin"
+export HB_SBIN="${HB}/sbin"
+export HB_TMP="${HB}/tmp"
+export HB_ETC="${HB}/etc"
 
-export LES_INPUTRC="${LES_CONF}/inputrc"
-export INPUTRC="${LES_INPUTRC}"
+export HB_PATH="${HB_SBIN}:${HB_BIN}"
+export PATH="${HB_PATH}:${PATH}"
 
-export LES_BASH="${LES_BIN}/bash"
-export LES_BASHRC="${LES_CONF}/bashrc"
-export LES_SHELL="${LES_BASH}"
-export SHELL="${LES_SHELL}"
+export HB_INPUTRC="${HB_ETC}/inputrc"
+export INPUTRC="${HB_INPUTRC}"
 
-export LES_PAGER="less"
-export PAGER="${LES_PAGER}"
+export HB_BASH="${HB_BIN}/bash"
+export HB_BASHRC="${HB_ETC}/bashrc"
+export HB_SHELL="${HB_BASH}"
+export SHELL="${HB_SHELL}"
 
-export LES_VIM="${LES_BIN}/vim"
-export LES_VIMRC="${LES_CONF}/vimrc"
-export LES_EDITOR="${LES_VIM}"
-export EDITOR="${LES_EDITOR}"
+# export HB_PAGER="${HB_BIN}/less"
+export HB_PAGER="less"
+export PAGER="${HB_PAGER}"
 
-export MANPATH="${LES_SHARE}/man:${MANPATH}"
+export HB_VIM="${HB_BIN}/vim"
+export HB_VIMRC="${HB_ETC}/vimrc"
+export HB_EDITOR="${HB_VIM}"
+export EDITOR="${HB_EDITOR}"
+
+export HB_MANPATH="${HB}/man"
+export MANPATH="${HB_MANPATH}:${MANPATH}"
 
 ##############################################################################
 unset CDPATH
@@ -135,427 +140,414 @@ shopt -u shift_verbose		# don't print err message on 'shift' errors
 shopt -s sourcepath		# do use PATH to find 'source'd files
 shopt -u xpg_echo		# don't auto-expand echo escape sequences
 ##############################################################################
-#abort", rl_abort },
-#accept-line", rl_newline },
-#arrow-key-prefix", rl_arrow_keys },
-#backward-byte", rl_backward_byte },
-#backward-char", rl_backward_char },
-#backward-delete-char", rl_rubout },
-#backward-kill-line", rl_backward_kill_line },
-#backward-kill-word", rl_backward_kill_word },
-#backward-word", rl_backward_word },
-#beginning-of-history", rl_beginning_of_history },
-#beginning-of-line", rl_beg_of_line },
-#call-last-kbd-macro", rl_call_last_kbd_macro },
-#capitalize-word", rl_capitalize_word },
-#character-search", rl_char_search },
-#character-search-backward", rl_backward_char_search },
-#clear-screen", rl_clear_screen },
-#complete", rl_complete },
-#copy-backward-word", rl_copy_backward_word },
-#copy-forward-word", rl_copy_forward_word },
-#copy-region-as-kill", rl_copy_region_to_kill },
-#delete-char", rl_delete },
-#delete-char-or-list", rl_delete_or_show_completions },
-#delete-horizontal-space", rl_delete_horizontal_space },
-#digit-argument", rl_digit_argument },
-#do-lowercase-version", rl_do_lowercase_version },
-#downcase-word", rl_downcase_word },
-#dump-functions", rl_dump_functions },
-#dump-macros", rl_dump_macros },
-#dump-variables", rl_dump_variables },
-#emacs-editing-mode", rl_emacs_editing_mode },
-#end-kbd-macro", rl_end_kbd_macro },
-#end-of-history", rl_end_of_history },
-#end-of-line", rl_end_of_line },
-#exchange-point-and-mark", rl_exchange_point_and_mark },
-#forward-backward-delete-char", rl_rubout_or_delete },
-#forward-byte", rl_forward_byte },
-#forward-char", rl_forward_char },
-#forward-search-history", rl_forward_search_history },
-#forward-word", rl_forward_word },
-#history-search-backward", rl_history_search_backward },
-#history-search-forward", rl_history_search_forward },
-#insert-comment", rl_insert_comment },
-#insert-completions", rl_insert_completions },
-#kill-whole-line", rl_kill_full_line },
-#kill-line", rl_kill_line },
-#kill-region", rl_kill_region },
-#kill-word", rl_kill_word },
-#menu-complete", rl_menu_complete },
-#menu-complete-backward", rl_backward_menu_complete },
-#next-history", rl_get_next_history },
-#non-incremental-forward-search-history", rl_noninc_forward_search },
-#non-incremental-reverse-search-history", rl_noninc_reverse_search },
-#non-incremental-forward-search-history-again", rl_noninc_forward_search_again },
-#non-incremental-reverse-search-history-again", rl_noninc_reverse_search_again },
-#old-menu-complete", rl_old_menu_complete },
-#overwrite-mode", rl_overwrite_mode },
-#paste-from-clipboard", rl_paste_from_clipboard },
-#possible-completions", rl_possible_completions },
-#previous-history", rl_get_previous_history },
-#quoted-insert", rl_quoted_insert },
-#re-read-init-file", rl_re_read_init_file },
-#redraw-current-line", rl_refresh_line},
-#reverse-search-history", rl_reverse_search_history },
-#revert-line", rl_revert_line },
-#self-insert", rl_insert },
-#set-mark", rl_set_mark },
-#skip-csi-sequence", rl_skip_csi_sequence },
-#start-kbd-macro", rl_start_kbd_macro },
-#tab-insert", rl_tab_insert },
-#tilde-expand", rl_tilde_expand },
-#transpose-chars", rl_transpose_chars },
-#transpose-words", rl_transpose_words },
-#tty-status", rl_tty_status },
-#undo", rl_undo_command },
-#universal-argument", rl_universal_argument },
-#unix-filename-rubout", rl_unix_filename_rubout },
-#unix-line-discard", rl_unix_line_discard },
-#unix-word-rubout", rl_unix_word_rubout },
-#upcase-word", rl_upcase_word },
-#yank", rl_yank },
-#yank-last-arg", rl_yank_last_arg },
-#yank-nth-arg", rl_yank_nth_arg },
-#yank-pop", rl_yank_pop },
-#vi-append-eol", rl_vi_append_eol },
-#vi-append-mode", rl_vi_append_mode },
-#vi-arg-digit", rl_vi_arg_digit },
-#vi-back-to-indent", rl_vi_back_to_indent },
-#vi-backward-bigword", rl_vi_bWord },
-#vi-backward-word", rl_vi_bword },
-#vi-bWord", rl_vi_bWord },
-#vi-bword", rl_vi_bword },
-#vi-change-case", rl_vi_change_case },
-#vi-change-char", rl_vi_change_char },
-#vi-change-to", rl_vi_change_to },
-#vi-char-search", rl_vi_char_search },
-#vi-column", rl_vi_column },
-#vi-complete", rl_vi_complete },
-#vi-delete", rl_vi_delete },
-#vi-delete-to", rl_vi_delete_to },
-#vi-eWord", rl_vi_eWord },
-#vi-editing-mode", rl_vi_editing_mode },
-#vi-end-bigword", rl_vi_eWord },
-#vi-end-word", rl_vi_end_word },
-#vi-eof-maybe", rl_vi_eof_maybe },
-#vi-eword", rl_vi_eword },
-#vi-fWord", rl_vi_fWord },
-#vi-fetch-history", rl_vi_fetch_history },
-#vi-first-print", rl_vi_first_print },
-#vi-forward-bigword", rl_vi_fWord },
-#vi-forward-word", rl_vi_fword },
-#vi-fword", rl_vi_fword },
-#vi-goto-mark", rl_vi_goto_mark },
-#vi-insert-beg", rl_vi_insert_beg },
-#vi-insertion-mode", rl_vi_insertion_mode },
-#vi-match", rl_vi_match },
-#vi-movement-mode", rl_vi_movement_mode },
-#vi-next-word", rl_vi_next_word },
-#vi-overstrike", rl_vi_overstrike },
-#vi-overstrike-delete", rl_vi_overstrike_delete },
-#vi-prev-word", rl_vi_prev_word },
-#vi-put", rl_vi_put },
-#vi-redo", rl_vi_redo },
-#vi-replace", rl_vi_replace },
-#vi-rubout", rl_vi_rubout },
-#vi-search", rl_vi_search },
-#vi-search-again", rl_vi_search_again },
-#vi-set-mark", rl_vi_set_mark },
-#vi-subst", rl_vi_subst },
-#vi-tilde-expand", rl_vi_tilde_expand },
-#vi-yank-arg", rl_vi_yank_arg },
-#vi-yank-to", rl_vi_yank_to },
-#
-#KEYMAP_ENTRY_ARRAY vi_movement_keymap = {
-#  /* The regular control keys come first. */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-@ */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-a */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-b */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-c */
-#  { ISFUNC, rl_vi_eof_maybe },			/* Control-d */
-#  { ISFUNC, rl_emacs_editing_mode },		/* Control-e */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-f */
-#  { ISFUNC, rl_abort },				/* Control-g */
-#  { ISFUNC, rl_backward_char },			/* Control-h */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-i */
-#  { ISFUNC, rl_newline },			/* Control-j */
-#  { ISFUNC, rl_kill_line },			/* Control-k */
-#  { ISFUNC, rl_clear_screen },			/* Control-l */
-#  { ISFUNC, rl_newline },			/* Control-m */
-#  { ISFUNC, rl_get_next_history },		/* Control-n */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-o */
-#  { ISFUNC, rl_get_previous_history },		/* Control-p */
-#  { ISFUNC, rl_quoted_insert },			/* Control-q */
-#  { ISFUNC, rl_reverse_search_history },	/* Control-r */
-#  { ISFUNC, rl_forward_search_history },	/* Control-s */
-#  { ISFUNC, rl_transpose_chars },		/* Control-t */
-#  { ISFUNC, rl_unix_line_discard },		/* Control-u */
-#  { ISFUNC, rl_quoted_insert },			/* Control-v */
-#  { ISFUNC, rl_unix_word_rubout },		/* Control-w */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-x */
-#  { ISFUNC, rl_yank },				/* Control-y */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-z */
-#
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-[ */	/* vi_escape_keymap */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-\ */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-] */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-^ */
-#  { ISFUNC, rl_vi_undo },			/* Control-_ */
-#
-#  /* The start of printing characters. */
-#  { ISFUNC, rl_forward_char },			/* SPACE */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* ! */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* " */
-#  { ISFUNC, rl_insert_comment },		/* # */
-#  { ISFUNC, rl_end_of_line },			/* $ */
-#  { ISFUNC, rl_vi_match },			/* % */
-#  { ISFUNC, rl_vi_tilde_expand },		/* & */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* ' */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* ( */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* ) */
-#  { ISFUNC, rl_vi_complete },			/* * */
-#  { ISFUNC, rl_get_next_history},		/* + */
-#  { ISFUNC, rl_vi_char_search },		/* , */
-#  { ISFUNC, rl_get_previous_history },		/* - */
-#  { ISFUNC, rl_vi_redo },			/* . */
-#  { ISFUNC, rl_vi_search },			/* / */
-#
-#  /* Regular digits. */
-#  { ISFUNC, rl_beg_of_line },			/* 0 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 1 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 2 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 3 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 4 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 5 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 6 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 7 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 8 */
-#  { ISFUNC, rl_vi_arg_digit },			/* 9 */
-#
-#  /* A little more punctuation. */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* : */
-#  { ISFUNC, rl_vi_char_search },		/* ; */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* < */
-#  { ISFUNC, rl_vi_complete },			/* = */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* > */
-#  { ISFUNC, rl_vi_search },			/* ? */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* @ */
-#
-#  /* Uppercase alphabet. */
-#  { ISFUNC, rl_vi_append_eol },			/* A */
-#  { ISFUNC, rl_vi_prev_word},			/* B */
-#  { ISFUNC, rl_vi_change_to },			/* C */
-#  { ISFUNC, rl_vi_delete_to },			/* D */
-#  { ISFUNC, rl_vi_end_word },			/* E */
-#  { ISFUNC, rl_vi_char_search },		/* F */
-#  { ISFUNC, rl_vi_fetch_history },		/* G */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* H */
-#  { ISFUNC, rl_vi_insert_beg },			/* I */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* J */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* K */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* L */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* M */
-#  { ISFUNC, rl_vi_search_again },		/* N */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* O */
-#  { ISFUNC, rl_vi_put },			/* P */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Q */
-#  { ISFUNC, rl_vi_replace },			/* R */
-#  { ISFUNC, rl_vi_subst },			/* S */
-#  { ISFUNC, rl_vi_char_search },		/* T */
-#  { ISFUNC, rl_revert_line },			/* U */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* V */
-#  { ISFUNC, rl_vi_next_word },			/* W */
-#  { ISFUNC, rl_vi_rubout },			/* X */
-#  { ISFUNC, rl_vi_yank_to },			/* Y */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Z */
-#
-#  /* Some more punctuation. */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* [ */
-#  { ISFUNC, rl_vi_complete },			/* \ */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* ] */
-#  { ISFUNC, rl_vi_first_print },		/* ^ */
-#  { ISFUNC, rl_vi_yank_arg },			/* _ */
-#  { ISFUNC, rl_vi_goto_mark },			/* ` */
-#
-#  /* Lowercase alphabet. */
-#  { ISFUNC, rl_vi_append_mode },		/* a */
-#  { ISFUNC, rl_vi_prev_word },			/* b */
-#  { ISFUNC, rl_vi_change_to },			/* c */
-#  { ISFUNC, rl_vi_delete_to },			/* d */
-#  { ISFUNC, rl_vi_end_word },			/* e */
-#  { ISFUNC, rl_vi_char_search },		/* f */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* g */
-#  { ISFUNC, rl_backward_char },			/* h */
-#  { ISFUNC, rl_vi_insert_mode },		/* i */
-#  { ISFUNC, rl_get_next_history },		/* j */
-#  { ISFUNC, rl_get_previous_history },		/* k */
-#  { ISFUNC, rl_forward_char },			/* l */
-#  { ISFUNC, rl_vi_set_mark },			/* m */
-#  { ISFUNC, rl_vi_search_again },		/* n */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* o */
-#  { ISFUNC, rl_vi_put },			/* p */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* q */
-#  { ISFUNC, rl_vi_change_char },		/* r */
-#  { ISFUNC, rl_vi_subst },			/* s */
-#  { ISFUNC, rl_vi_char_search },		/* t */
-#  { ISFUNC, rl_vi_undo },			/* u */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* v */
-#  { ISFUNC, rl_vi_next_word },			/* w */
-#  { ISFUNC, rl_vi_delete },			/* x */
-#  { ISFUNC, rl_vi_yank_to },			/* y */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* z */
-#
-#  /* Final punctuation. */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* { */
-#  { ISFUNC, rl_vi_column },			/* | */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* } */
-#  { ISFUNC, rl_vi_change_case },		/* ~ */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* RUBOUT */
+#abort                                       rl_abort
+#accept-line                                 rl_newline
+#arrow-key-prefix                            rl_arrow_keys
+#backward-byte                               rl_backward_byte
+#backward-char                               rl_backward_char
+#backward-delete-char                        rl_rubout
+#backward-kill-line                          rl_backward_kill_line
+#backward-kill-word                          rl_backward_kill_word
+#backward-word                               rl_backward_word
+#beginning-of-history                        rl_beginning_of_history
+#beginning-of-line                           rl_beg_of_line
+#call-last-kbd-macro                         rl_call_last_kbd_macro
+#capitalize-word                             rl_capitalize_word
+#character-search                            rl_char_search
+#character-search-backward                   rl_backward_char_search
+#clear-screen                                rl_clear_screen
+#complete                                    rl_complete
+#copy-backward-word                          rl_copy_backward_word
+#copy-forward-word                           rl_copy_forward_word
+#copy-region-as-kill                         rl_copy_region_to_kill
+#delete-char                                 rl_delete
+#delete-char-or-list                         rl_delete_or_show_completions
+#delete-horizontal-space                     rl_delete_horizontal_space
+#digit-argument                              rl_digit_argument
+#do-lowercase-version                        rl_do_lowercase_version
+#downcase-word                               rl_downcase_word
+#dump-functions                              rl_dump_functions
+#dump-macros                                 rl_dump_macros
+#dump-variables                              rl_dump_variables
+#emacs-editing-mode                          rl_emacs_editing_mode
+#end-kbd-macro                               rl_end_kbd_macro
+#end-of-history                              rl_end_of_history
+#end-of-line                                 rl_end_of_line
+#exchange-point-and-mark                     rl_exchange_point_and_mark
+#forward-backward-delete-char                rl_rubout_or_delete
+#forward-byte                                rl_forward_byte
+#forward-char                                rl_forward_char
+#forward-search-history                      rl_forward_search_history
+#forward-word                                rl_forward_word
+#history-search-backward                     rl_history_search_backward
+#history-search-forward                      rl_history_search_forward
+#insert-comment                              rl_insert_comment
+#insert-completions                          rl_insert_completions
+#kill-whole-line                             rl_kill_full_line
+#kill-line                                   rl_kill_line
+#kill-region                                 rl_kill_region
+#kill-word                                   rl_kill_word
+#menu-complete                               rl_menu_complete
+#menu-complete-backward                      rl_backward_menu_complete
+#next-history                                rl_get_next_history
+#non-incremental-forward-search-history      rl_noninc_forward_search
+#non-incremental-reverse-search-history      rl_noninc_reverse_search
+#non-incremental-forward-search-history-againrl_noninc_forward_search_again
+#non-incremental-reverse-search-history-againrl_noninc_reverse_search_again
+#old-menu-complete                           rl_old_menu_complete
+#overwrite-mode                              rl_overwrite_mode
+#paste-from-clipboard                        rl_paste_from_clipboard
+#possible-completions                        rl_possible_completions
+#previous-history                            rl_get_previous_history
+#quoted-insert                               rl_quoted_insert
+#re-read-init-file                           rl_re_read_init_file
+#redraw-current-line                         rl_refresh_line},
+#reverse-search-history                      rl_reverse_search_history
+#revert-line                                 rl_revert_line
+#self-insert                                 rl_insert
+#set-mark                                    rl_set_mark
+#skip-csi-sequence                           rl_skip_csi_sequence
+#start-kbd-macro                             rl_start_kbd_macro
+#tab-insert                                  rl_tab_insert
+#tilde-expand                                rl_tilde_expand
+#transpose-chars                             rl_transpose_chars
+#transpose-words                             rl_transpose_words
+#tty-status                                  rl_tty_status
+#undo                                        rl_undo_command
+#universal-argument                          rl_universal_argument
+#unix-filename-rubout                        rl_unix_filename_rubout
+#unix-line-discard                           rl_unix_line_discard
+#unix-word-rubout                            rl_unix_word_rubout
+#upcase-word                                 rl_upcase_word
+#yank                                        rl_yank
+#yank-last-arg                               rl_yank_last_arg
+#yank-nth-arg                                rl_yank_nth_arg
+#yank-pop                                    rl_yank_pop
+#vi-append-eol                               rl_vi_append_eol
+#vi-append-mode                              rl_vi_append_mode
+#vi-arg-digit                                rl_vi_arg_digit
+#vi-back-to-indent                           rl_vi_back_to_indent
+#vi-backward-bigword                         rl_vi_bWord
+#vi-backward-word                            rl_vi_bword
+#vi-bWord                                    rl_vi_bWord
+#vi-bword                                    rl_vi_bword
+#vi-change-case                              rl_vi_change_case
+#vi-change-char                              rl_vi_change_char
+#vi-change-to                                rl_vi_change_to
+#vi-char-search                              rl_vi_char_search
+#vi-column                                   rl_vi_column
+#vi-complete                                 rl_vi_complete
+#vi-delete                                   rl_vi_delete
+#vi-delete-to                                rl_vi_delete_to
+#vi-eWord                                    rl_vi_eWord
+#vi-editing-mode                             rl_vi_editing_mode
+#vi-end-bigword                              rl_vi_eWord
+#vi-end-word                                 rl_vi_end_word
+#vi-eof-maybe                                rl_vi_eof_maybe
+#vi-eword                                    rl_vi_eword
+#vi-fWord                                    rl_vi_fWord
+#vi-fetch-history                            rl_vi_fetch_history
+#vi-first-print                              rl_vi_first_print
+#vi-forward-bigword                          rl_vi_fWord
+#vi-forward-word                             rl_vi_fword
+#vi-fword                                    rl_vi_fword
+#vi-goto-mark                                rl_vi_goto_mark
+#vi-insert-beg                               rl_vi_insert_beg
+#vi-insertion-mode                           rl_vi_insertion_mode
+#vi-match                                    rl_vi_match
+#vi-movement-mode                            rl_vi_movement_mode
+#vi-next-word                                rl_vi_next_word
+#vi-overstrike                               rl_vi_overstrike
+#vi-overstrike-delete                        rl_vi_overstrike_delete
+#vi-prev-word                                rl_vi_prev_word
+#vi-put                                      rl_vi_put
+#vi-redo                                     rl_vi_redo
+#vi-replace                                  rl_vi_replace
+#vi-rubout                                   rl_vi_rubout
+#vi-search                                   rl_vi_search
+#vi-search-again                             rl_vi_search_again
+#vi-set-mark                                 rl_vi_set_mark
+#vi-subst                                    rl_vi_subst
+#vi-tilde-expand                             rl_vi_tilde_expand
+#vi-yank-arg                                 rl_vi_yank_arg
+#vi-yank-to                                  rl_vi_yank_to
 ##################
-#KEYMAP_ENTRY_ARRAY vi_insertion_keymap = {
-#  /* The regular control keys come first. */
-#  { ISFUNC, (rl_command_func_t *)0x0 },		/* Control-@ */
-#  { ISFUNC, rl_insert },			/* Control-a */
-#  { ISFUNC, rl_insert },			/* Control-b */
-#  { ISFUNC, rl_insert },			/* Control-c */
-#  { ISFUNC, rl_vi_eof_maybe },			/* Control-d */
-#  { ISFUNC, rl_insert },			/* Control-e */
-#  { ISFUNC, rl_insert },			/* Control-f */
-#  { ISFUNC, rl_insert },			/* Control-g */
-#  { ISFUNC, rl_rubout },			/* Control-h */
-#  { ISFUNC, rl_complete },			/* Control-i */
-#  { ISFUNC, rl_newline },			/* Control-j */
-#  { ISFUNC, rl_insert },			/* Control-k */
-#  { ISFUNC, rl_insert },			/* Control-l */
-#  { ISFUNC, rl_newline },			/* Control-m */
-#  { ISFUNC, rl_menu_complete},			/* Control-n */
-#  { ISFUNC, rl_insert },			/* Control-o */
-#  { ISFUNC, rl_backward_menu_complete },	/* Control-p */
-#  { ISFUNC, rl_insert },			/* Control-q */
-#  { ISFUNC, rl_reverse_search_history },	/* Control-r */
-#  { ISFUNC, rl_forward_search_history },	/* Control-s */
-#  { ISFUNC, rl_transpose_chars },		/* Control-t */
-#  { ISFUNC, rl_unix_line_discard },		/* Control-u */
-#  { ISFUNC, rl_quoted_insert },			/* Control-v */
-#  { ISFUNC, rl_unix_word_rubout },		/* Control-w */
-#  { ISFUNC, rl_insert },			/* Control-x */
-#  { ISFUNC, rl_yank },				/* Control-y */
-#  { ISFUNC, rl_insert },			/* Control-z */
-#
-#  { ISFUNC, rl_vi_movement_mode },		/* Control-[ */
-#  { ISFUNC, rl_insert },			/* Control-\ */
-#  { ISFUNC, rl_insert },			/* Control-] */
-#  { ISFUNC, rl_insert },			/* Control-^ */
-#  { ISFUNC, rl_vi_undo },			/* Control-_ */
-#
-#  /* The start of printing characters. */
-#  { ISFUNC, rl_insert },			/* SPACE */
-#  { ISFUNC, rl_insert },			/* ! */
-#  { ISFUNC, rl_insert },			/* " */
-#  { ISFUNC, rl_insert },			/* # */
-#  { ISFUNC, rl_insert },			/* $ */
-#  { ISFUNC, rl_insert },			/* % */
-#  { ISFUNC, rl_insert },			/* & */
-#  { ISFUNC, rl_insert },			/* ' */
-#  { ISFUNC, rl_insert },			/* ( */
-#  { ISFUNC, rl_insert },			/* ) */
-#  { ISFUNC, rl_insert },			/* * */
-#  { ISFUNC, rl_insert },			/* + */
-#  { ISFUNC, rl_insert },			/* , */
-#  { ISFUNC, rl_insert },			/* - */
-#  { ISFUNC, rl_insert },			/* . */
-#  { ISFUNC, rl_insert },			/* / */
-#
-#  /* Regular digits. */
-#  { ISFUNC, rl_insert },			/* 0 */
-#  { ISFUNC, rl_insert },			/* 1 */
-#  { ISFUNC, rl_insert },			/* 2 */
-#  { ISFUNC, rl_insert },			/* 3 */
-#  { ISFUNC, rl_insert },			/* 4 */
-#  { ISFUNC, rl_insert },			/* 5 */
-#  { ISFUNC, rl_insert },			/* 6 */
-#  { ISFUNC, rl_insert },			/* 7 */
-#  { ISFUNC, rl_insert },			/* 8 */
-#  { ISFUNC, rl_insert },			/* 9 */
-#
-#  /* A little more punctuation. */
-#  { ISFUNC, rl_insert },			/* : */
-#  { ISFUNC, rl_insert },			/* ; */
-#  { ISFUNC, rl_insert },			/* < */
-#  { ISFUNC, rl_insert },			/* = */
-#  { ISFUNC, rl_insert },			/* > */
-#  { ISFUNC, rl_insert },			/* ? */
-#  { ISFUNC, rl_insert },			/* @ */
-#
-#  /* Uppercase alphabet. */
-#  { ISFUNC, rl_insert },			/* A */
-#  { ISFUNC, rl_insert },			/* B */
-#  { ISFUNC, rl_insert },			/* C */
-#  { ISFUNC, rl_insert },			/* D */
-#  { ISFUNC, rl_insert },			/* E */
-#  { ISFUNC, rl_insert },			/* F */
-#  { ISFUNC, rl_insert },			/* G */
-#  { ISFUNC, rl_insert },			/* H */
-#  { ISFUNC, rl_insert },			/* I */
-#  { ISFUNC, rl_insert },			/* J */
-#  { ISFUNC, rl_insert },			/* K */
-#  { ISFUNC, rl_insert },			/* L */
-#  { ISFUNC, rl_insert },			/* M */
-#  { ISFUNC, rl_insert },			/* N */
-#  { ISFUNC, rl_insert },			/* O */
-#  { ISFUNC, rl_insert },			/* P */
-#  { ISFUNC, rl_insert },			/* Q */
-#  { ISFUNC, rl_insert },			/* R */
-#  { ISFUNC, rl_insert },			/* S */
-#  { ISFUNC, rl_insert },			/* T */
-#  { ISFUNC, rl_insert },			/* U */
-#  { ISFUNC, rl_insert },			/* V */
-#  { ISFUNC, rl_insert },			/* W */
-#  { ISFUNC, rl_insert },			/* X */
-#  { ISFUNC, rl_insert },			/* Y */
-#  { ISFUNC, rl_insert },			/* Z */
-#
-#  /* Some more punctuation. */
-#  { ISFUNC, rl_insert },			/* [ */
-#  { ISFUNC, rl_insert },			/* \ */
-#  { ISFUNC, rl_insert },			/* ] */
-#  { ISFUNC, rl_insert },			/* ^ */
-#  { ISFUNC, rl_insert },			/* _ */
-#  { ISFUNC, rl_insert },			/* ` */
-#
-#  /* Lowercase alphabet. */
-#  { ISFUNC, rl_insert },			/* a */
-#  { ISFUNC, rl_insert },			/* b */
-#  { ISFUNC, rl_insert },			/* c */
-#  { ISFUNC, rl_insert },			/* d */
-#  { ISFUNC, rl_insert },			/* e */
-#  { ISFUNC, rl_insert },			/* f */
-#  { ISFUNC, rl_insert },			/* g */
-#  { ISFUNC, rl_insert },			/* h */
-#  { ISFUNC, rl_insert },			/* i */
-#  { ISFUNC, rl_insert },			/* j */
-#  { ISFUNC, rl_insert },			/* k */
-#  { ISFUNC, rl_insert },			/* l */
-#  { ISFUNC, rl_insert },			/* m */
-#  { ISFUNC, rl_insert },			/* n */
-#  { ISFUNC, rl_insert },			/* o */
-#  { ISFUNC, rl_insert },			/* p */
-#  { ISFUNC, rl_insert },			/* q */
-#  { ISFUNC, rl_insert },			/* r */
-#  { ISFUNC, rl_insert },			/* s */
-#  { ISFUNC, rl_insert },			/* t */
-#  { ISFUNC, rl_insert },			/* u */
-#  { ISFUNC, rl_insert },			/* v */
-#  { ISFUNC, rl_insert },			/* w */
-#  { ISFUNC, rl_insert },			/* x */
-#  { ISFUNC, rl_insert },			/* y */
-#  { ISFUNC, rl_insert },			/* z */
-#
-#  /* Final punctuation. */
-#  { ISFUNC, rl_insert },			/* { */
-#  { ISFUNC, rl_insert },			/* | */
-#  { ISFUNC, rl_insert },			/* } */
-#  { ISFUNC, rl_insert },			/* ~ */
-#  { ISFUNC, rl_rubout },			/* RUBOUT */
+#vi_movement_keymap
+#Control-@ rl_command_func_t
+#Control-a rl_command_func_t
+#Control-b rl_command_func_t
+#Control-c rl_command_func_t
+#Control-d rl_vi_eof_maybe
+#Control-e rl_emacs_editing_mode
+#Control-f rl_command_func_t
+#Control-g rl_abort
+#Control-h rl_backward_char
+#Control-i rl_command_func_t
+#Control-j rl_newline
+#Control-k rl_kill_line
+#Control-l rl_clear_screen
+#Control-m rl_newline
+#Control-n rl_get_next_history
+#Control-o rl_command_func_t
+#Control-p rl_get_previous_history
+#Control-q rl_quoted_insert
+#Control-r rl_reverse_search_history
+#Control-s rl_forward_search_history
+#Control-t rl_transpose_chars
+#Control-u rl_unix_line_discard
+#Control-v rl_quoted_insert
+#Control-w rl_unix_word_rubout
+#Control-x rl_command_func_t
+#Control-y rl_yank
+#Control-z rl_command_func_t
+#Control-[ rl_command_func_tvi_escape_keymap
+#Control-\ rl_command_func_t
+#Control-] rl_command_func_t
+#Control-^ rl_command_func_t
+#Control-_ rl_vi_undo
+#SPACE     rl_forward_char
+#!         rl_command_func_t
+#"         rl_command_func_t
+##         rl_insert_comment
+#$         rl_end_of_line
+#%         rl_vi_match
+#&         rl_vi_tilde_expand
+#'         rl_command_func_t
+#(         rl_command_func_t
+#)         rl_command_func_t
+#*         rl_vi_complete
+#+         rl_get_next_history
+#,         rl_vi_char_search
+#-         rl_get_previous_history
+#.         rl_vi_redo
+#/         rl_vi_search
+#0         rl_beg_of_line
+#1         rl_vi_arg_digit
+#2         rl_vi_arg_digit
+#3         rl_vi_arg_digit
+#4         rl_vi_arg_digit
+#5         rl_vi_arg_digit
+#6         rl_vi_arg_digit
+#7         rl_vi_arg_digit
+#8         rl_vi_arg_digit
+#9         rl_vi_arg_digit
+#:         rl_command_func_t
+#;         rl_vi_char_search
+#<         rl_command_func_t
+#=         rl_vi_complete
+#>         rl_command_func_t
+#?         rl_vi_search
+#@         rl_command_func_t
+#A         rl_vi_append_eol
+#B         rl_vi_prev_word
+#C         rl_vi_change_to
+#D         rl_vi_delete_to
+#E         rl_vi_end_word
+#F         rl_vi_char_search
+#G         rl_vi_fetch_history
+#H         rl_command_func_t
+#I         rl_vi_insert_beg
+#J         rl_command_func_t
+#K         rl_command_func_t
+#L         rl_command_func_t
+#M         rl_command_func_t
+#N         rl_vi_search_again
+#O         rl_command_func_t
+#P         rl_vi_put
+#Q         rl_command_func_t
+#R         rl_vi_replace
+#S         rl_vi_subst
+#T         rl_vi_char_search
+#U         rl_revert_line
+#V         rl_command_func_t
+#W         rl_vi_next_word
+#X         rl_vi_rubout
+#Y         rl_vi_yank_to
+#Z         rl_command_func_t
+#[         rl_command_func_t
+#\         rl_vi_complete
+#]         rl_command_func_t
+#^         rl_vi_first_print
+#_         rl_vi_yank_arg
+#`         rl_vi_goto_mark
+#a         rl_vi_append_mode
+#b         rl_vi_prev_word
+#c         rl_vi_change_to
+#d         rl_vi_delete_to
+#e         rl_vi_end_word
+#f         rl_vi_char_search
+#g         rl_command_func_t
+#h         rl_backward_char
+#i         rl_vi_insert_mode
+#j         rl_get_next_history
+#k         rl_get_previous_history
+#l         rl_forward_char
+#m         rl_vi_set_mark
+#n         rl_vi_search_again
+#o         rl_command_func_t
+#p         rl_vi_put
+#q         rl_command_func_t
+#r         rl_vi_change_char
+#s         rl_vi_subst
+#t         rl_vi_char_search
+#u         rl_vi_undo
+#v         rl_command_func_t
+#w         rl_vi_next_word
+#x         rl_vi_delete
+#y         rl_vi_yank_to
+#z         rl_command_func_t
+#{         rl_command_func_t
+#|         rl_vi_column
+#}         rl_command_func_t
+#~         rl_vi_change_case
+#RUBOUT    rl_command_func_t
+###########
+#vi_insertion_keymap
+###########
+#Control-@ rl_command_func_t
+#Control-d rl_vi_eof_maybe
+#Control-h rl_rubout
+#Control-i rl_complete
+#Control-j rl_newline
+#Control-m rl_newline
+#Control-n rl_menu_complete
+#Control-p rl_backward_menu_complete
+#Control-r rl_reverse_search_history
+#Control-s rl_forward_search_history
+#Control-t rl_transpose_chars
+#Control-u rl_unix_line_discard
+#Control-v rl_quoted_insert
+#Control-w rl_unix_word_rubout
+#Control-y rl_yank
+#Control-[ rl_vi_movement_mode
+#Control-_ rl_vi_undo
+
+#Control-@ rl_command_func_t
+#Control-a rl_insert
+#Control-b rl_insert
+#Control-c rl_insert
+#Control-d rl_vi_eof_maybe
+#Control-e rl_insert
+#Control-f rl_insert
+#Control-g rl_insert
+#Control-h rl_rubout
+#Control-i rl_complete
+#Control-j rl_newline
+#Control-k rl_insert
+#Control-l rl_insert
+#Control-m rl_newline
+#Control-n rl_menu_complete
+#Control-o rl_insert
+#Control-p rl_backward_menu_complete
+#Control-q rl_insert
+#Control-r rl_reverse_search_history
+#Control-s rl_forward_search_history
+#Control-t rl_transpose_chars
+#Control-u rl_unix_line_discard
+#Control-v rl_quoted_insert
+#Control-w rl_unix_word_rubout
+#Control-x rl_insert
+#Control-y rl_yank
+#Control-z rl_insert
+#Control-[ rl_vi_movement_mode
+#Control-\ rl_insert
+#Control-] rl_insert
+#Control-^ rl_insert
+#Control-_ rl_vi_undo
+#SPACE     rl_insert
+#!         rl_insert
+#"         rl_insert
+##         rl_insert
+#$         rl_insert
+#%         rl_insert
+#&         rl_insert
+#'         rl_insert
+#(         rl_insert
+#)         rl_insert
+#*         rl_insert
+#+         rl_insert
+#,         rl_insert
+#-         rl_insert
+#.         rl_insert
+#/         rl_insert
+#0         rl_insert
+#1         rl_insert
+#2         rl_insert
+#3         rl_insert
+#4         rl_insert
+#5         rl_insert
+#6         rl_insert
+#7         rl_insert
+#8         rl_insert
+#9         rl_insert
+#:         rl_insert
+#;         rl_insert
+#<         rl_insert
+#=         rl_insert
+#>         rl_insert
+#?         rl_insert
+#@         rl_insert
+#A         rl_insert
+#B         rl_insert
+#C         rl_insert
+#D         rl_insert
+#E         rl_insert
+#F         rl_insert
+#G         rl_insert
+#H         rl_insert
+#I         rl_insert
+#J         rl_insert
+#K         rl_insert
+#L         rl_insert
+#M         rl_insert
+#N         rl_insert
+#O         rl_insert
+#P         rl_insert
+#Q         rl_insert
+#R         rl_insert
+#S         rl_insert
+#T         rl_insert
+#U         rl_insert
+#V         rl_insert
+#W         rl_insert
+#X         rl_insert
+#Y         rl_insert
+#Z         rl_insert
+#[         rl_insert
+#\         rl_insert
+#]         rl_insert
+#^         rl_insert
+#_         rl_insert
+#`         rl_insert
+#a         rl_insert
+#b         rl_insert
+#c         rl_insert
+#d         rl_insert
+#e         rl_insert
+#f         rl_insert
+#g         rl_insert
+#h         rl_insert
+#i         rl_insert
+#j         rl_insert
+#k         rl_insert
+#l         rl_insert
+#m         rl_insert
+#n         rl_insert
+#o         rl_insert
+#p         rl_insert
+#q         rl_insert
+#r         rl_insert
+#s         rl_insert
+#t         rl_insert
+#u         rl_insert
+#v         rl_insert
+#w         rl_insert
+#x         rl_insert
+#y         rl_insert
+#z         rl_insert
+#{         rl_insert
+#|         rl_insert
+#}         rl_insert
+#~         rl_insert
+#RUBOUT    rl_rubout
 ##############################################################################

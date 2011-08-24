@@ -73,7 +73,7 @@ console off		# don't grab system console /dev/console
 #xoff			# insert ^S into window's stdin queue
 
 #### Copy & Paste / History / Hardcopy Options
-defscrollback 2048	# scrollback bufer lines
+defscrollback 4096	# scrollback bufer lines
 bufferfile "${HOME}/.screen/screen.buf"
 crlf off		# copied new lines are not CRLF
 defslowpaste 0		# No delay between characters when pasting
@@ -423,14 +423,14 @@ bind ^P layout prev	# switch to prev layout
 chdir			# cd to ~ for new windows
 
 # Environment
-setenv LES_HOME "${HOME}"
-setenv LES_LOCAL "${LES_HOME}/base"
-setenv LES_BIN "${LES_LOCAL}/bin"
-setenv LES_SBIN "${LES_LOCAL}/sbin"
-setenv LES_BASH "${LES_BIN}/bash"
-setenv LES_CONF "${LES_LOCAL}/conf"
-setenv LES_BASHRC "${LES_CONF}/bashrc"
-setenv SHELL "${LES_BASH}"
+setenv HOMEbase "${HOME}/base"
+setenv HB "${HOMEbase}"
+setenv HB_ETC "${HB}/etc"
+setenv HB_BIN "${HB}/bin"
+setenv HB_BASH "${HB_BIN}/bash"
+setenv HB_BASHRC "${HB_ETC}/bashrc"
+setenv HB_SHELL "${HB_BASH}"
+setenv SHELL "${HB_SHELL}"
 
 # create main window group
 screen -t main 0 //group
@@ -438,15 +438,15 @@ screen -t main 0 //group
 # create virt layout and 3 new windows
 layout new vplit3
 layout number 0
-screen -t sh 1 ${LES_BASH} --rcfile ${LES_BASHRC}
+screen -t sh 1 ${HB_BASH} --rcfile ${HB_BASHRC}
 group main
 split -v
 focus right
-screen -t edit 2 ${LES_BASH} --rcfile ${LES_BASHRC}
+screen -t edit 2 ${HB_BASH} --rcfile ${HB_BASHRC}
 group main
 split -v
 focus right
-screen -t help 3 ${LES_BASH} --rcfile ${LES_BASHRC}
+screen -t help 3 ${HB_BASH} --rcfile ${HB_BASHRC}
 group main
 focus
 

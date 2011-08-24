@@ -1,3 +1,20 @@
+# Shell Configuration
+my.SHELL_CMD		=bash
+tmp.SHELL		=$(tmp_base)/$(bin)/$(my.SHELL_CMD)
+base.SHELL		=$(bin)/$(my.SHELL_CMD)
+my.SHELL		=$(firstword \
+	$(wildcard $(base.SHELL) $(tmp.SHELL)) /bin/bash /bin/sh \
+)
+is.bash			=$(findstring bash,$(my.SHELL))
+my.SHELLFLAGS		=$(if $(is.bash),-ec,-c)
+
+SHELL			:=$(my.SHELL)
+.SHELLFLAGS		:=$(my.SHELLFLAGS)
+
+# all lines of a recipe are exec'ed by the same shell instance
+# beware lines starting with '@' '-' '+'
+$(and $(is.bash), .ONESHELL:)
+
 ##############################################################################
 # Bash Project
 ##############################################################################
@@ -27,6 +44,11 @@ patch($(this)):		patch.PROG_PRE=cat
 patch($(this)):		patch.ARG_PRE='$(src)'/bash/bash42*
 patch($(this)):		patch.PIPE_PRE=|
 
+install($(this)):	install.PIPE=;
+install($(this)):	install.PROG_POST=ln
+install($(this)):	install.ARG_POST=-vsT
+install($(this)):	install.ARG_POST+='../$(common.LNK_NAME)/conf/bashrc'
+install($(this)):	install.ARG_POST+='$(etc)/bashrc'
 
 ##############################################################################
 endif # END Include Guard

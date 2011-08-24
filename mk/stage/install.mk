@@ -6,6 +6,9 @@ ifdef FIRST_INCLUDE
 include $(stage.tmpl)
 ##############################################################################
 
+# Default Goal is 'install'
+.DEFAULT_GOAL		=install
+
 # install -> stage
 include $(stage)/stage.mk
 $(this).DEP_STAGE	=stage($(PRJ))
