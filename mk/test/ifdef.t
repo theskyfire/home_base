@@ -2,19 +2,31 @@
 # ifdef / ifndef
 ##############################################################################
 
+ifdef UNDEFINED
+include FAIL $(error ifdef UNDEFINED)
+endif
+
+ifndef UNDEFINED
+else
+include FAIL $(error ifndef UNDEFINED)
+endif
+
 DEFINED=defined
 ifndef DEFINED
-include FAIL $(error Does ifndef work? Please use a modern GNU Make!)
+include FAIL $(error ifndef DEFINED)
+endif
+
+ifdef DEFINED
+else
+include FAIL $(error ifdef DEFINED)
 endif
 
 undefine DEFINED
 ifdef DEFINED
-include FAIL $(error Does undefine work? Please use a modern GNU Make!)
+include FAIL $(error undefine DEFINED)
 endif
 
-ifdef UNDEFINED
-include FAIL $(error Does ifdef work? Please use a modern GNU Make!)
-endif
-
+.DEFAULT_GOAL:=PASS
 
 ##############################################################################
+# vim: set syntax=make:

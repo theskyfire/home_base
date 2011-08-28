@@ -201,7 +201,7 @@ shopt -u xpg_echo		# don't auto-expand echo escape sequences
 #previous-history                            rl_get_previous_history
 #quoted-insert                               rl_quoted_insert
 #re-read-init-file                           rl_re_read_init_file
-#redraw-current-line                         rl_refresh_line},
+#redraw-current-line                         rl_refresh_line
 #reverse-search-history                      rl_reverse_search_history
 #revert-line                                 rl_revert_line
 #self-insert                                 rl_insert
@@ -271,283 +271,339 @@ shopt -u xpg_echo		# don't auto-expand echo escape sequences
 #vi-tilde-expand                             rl_vi_tilde_expand
 #vi-yank-arg                                 rl_vi_yank_arg
 #vi-yank-to                                  rl_vi_yank_to
+##############################################################################
+#arrow-key-prefix                            rl_arrow_keys
+#backward-byte                               rl_backward_byte
+#backward-kill-line                          rl_backward_kill_line
+#backward-kill-word                          rl_backward_kill_word
+#backward-word                               rl_backward_word
+#beginning-of-history                        rl_beginning_of_history
+#call-last-kbd-macro                         rl_call_last_kbd_macro
+#capitalize-word                             rl_capitalize_word
+#character-search                            rl_char_search
+#character-search-backward                   rl_backward_char_search
+#copy-backward-word                          rl_copy_backward_word
+#copy-forward-word                           rl_copy_forward_word
+#copy-region-as-kill                         rl_copy_region_to_kill
+#delete-char                                 rl_delete
+#delete-char-or-list                         rl_delete_or_show_completions
+#delete-horizontal-space                     rl_delete_horizontal_space
+#digit-argument                              rl_digit_argument
+#do-lowercase-version                        rl_do_lowercase_version
+#downcase-word                               rl_downcase_word
+#dump-functions                              rl_dump_functions
+#dump-macros                                 rl_dump_macros
+#dump-variables                              rl_dump_variables
+#end-kbd-macro                               rl_end_kbd_macro
+#end-of-history                              rl_end_of_history
+#exchange-point-and-mark                     rl_exchange_point_and_mark
+#forward-backward-delete-char                rl_rubout_or_delete
+#forward-byte                                rl_forward_byte
+#forward-word                                rl_forward_word
+#history-search-backward                     rl_history_search_backward
+#history-search-forward                      rl_history_search_forward
+#insert-completions                          rl_insert_completions
+#kill-whole-line                             rl_kill_full_line
+#kill-region                                 rl_kill_region
+#kill-word                                   rl_kill_word
+#non-incremental-forward-search-history      rl_noninc_forward_search
+#non-incremental-reverse-search-history      rl_noninc_reverse_search
+#non-incremental-forward-search-history-again rl_noninc_forward_search_again
+#non-incremental-reverse-search-history-again rl_noninc_reverse_search_again
+#old-menu-complete                           rl_old_menu_complete
+#overwrite-mode                              rl_overwrite_mode
+#paste-from-clipboard                        rl_paste_from_clipboard
+#possible-completions                        rl_possible_completions
+#re-read-init-file                           rl_re_read_init_file
+#redraw-current-line                         rl_refresh_line
+#set-mark                                    rl_set_mark
+#skip-csi-sequence                           rl_skip_csi_sequence
+#start-kbd-macro                             rl_start_kbd_macro
+#tab-insert                                  rl_tab_insert
+#tilde-expand                                rl_tilde_expand
+#transpose-words                             rl_transpose_words
+#tty-status                                  rl_tty_status
+#universal-argument                          rl_universal_argument
+#unix-filename-rubout                        rl_unix_filename_rubout
+#upcase-word                                 rl_upcase_word
+#yank-last-arg                               rl_yank_last_arg
+#yank-nth-arg                                rl_yank_nth_arg
+#yank-pop                                    rl_yank_pop
+#vi-back-to-indent                           rl_vi_back_to_indent
+#vi-backward-bigword                         rl_vi_bWord
+#vi-backward-word                            rl_vi_bword
+#vi-bWord                                    rl_vi_bWord
+#vi-bword                                    rl_vi_bword
+#vi-editing-mode                             rl_vi_editing_mode
+#vi-eWord                                    rl_vi_eWord
+#vi-end-bigword                              rl_vi_eWord
+#vi-eword                                    rl_vi_eword
+#vi-fWord                                    rl_vi_fWord
+#vi-forward-bigword                          rl_vi_fWord
+#vi-forward-word                             rl_vi_fword
+#vi-fword                                    rl_vi_fword
+#vi-insertion-mode                           rl_vi_insertion_mode
+#vi-overstrike                               rl_vi_overstrike
+#vi-overstrike-delete                        rl_vi_overstrike_delete
 ##################
 #vi_movement_keymap
-#Control-@ rl_command_func_t
-#Control-a rl_command_func_t
-#Control-b rl_command_func_t
-#Control-c rl_command_func_t
-#Control-d rl_vi_eof_maybe
-#Control-e rl_emacs_editing_mode
-#Control-f rl_command_func_t
-#Control-g rl_abort
-#Control-h rl_backward_char
-#Control-i rl_command_func_t
-#Control-j rl_newline
-#Control-k rl_kill_line
-#Control-l rl_clear_screen
-#Control-m rl_newline
-#Control-n rl_get_next_history
-#Control-o rl_command_func_t
-#Control-p rl_get_previous_history
-#Control-q rl_quoted_insert
-#Control-r rl_reverse_search_history
-#Control-s rl_forward_search_history
-#Control-t rl_transpose_chars
-#Control-u rl_unix_line_discard
-#Control-v rl_quoted_insert
-#Control-w rl_unix_word_rubout
-#Control-x rl_command_func_t
-#Control-y rl_yank
-#Control-z rl_command_func_t
-#Control-[ rl_command_func_tvi_escape_keymap
-#Control-\ rl_command_func_t
-#Control-] rl_command_func_t
-#Control-^ rl_command_func_t
-#Control-_ rl_vi_undo
-#SPACE     rl_forward_char
-#!         rl_command_func_t
-#"         rl_command_func_t
-##         rl_insert_comment
-#$         rl_end_of_line
-#%         rl_vi_match
-#&         rl_vi_tilde_expand
-#'         rl_command_func_t
-#(         rl_command_func_t
-#)         rl_command_func_t
-#*         rl_vi_complete
-#+         rl_get_next_history
-#,         rl_vi_char_search
-#-         rl_get_previous_history
-#.         rl_vi_redo
-#/         rl_vi_search
-#0         rl_beg_of_line
-#1         rl_vi_arg_digit
-#2         rl_vi_arg_digit
-#3         rl_vi_arg_digit
-#4         rl_vi_arg_digit
-#5         rl_vi_arg_digit
-#6         rl_vi_arg_digit
-#7         rl_vi_arg_digit
-#8         rl_vi_arg_digit
-#9         rl_vi_arg_digit
-#:         rl_command_func_t
-#;         rl_vi_char_search
-#<         rl_command_func_t
-#=         rl_vi_complete
-#>         rl_command_func_t
-#?         rl_vi_search
-#@         rl_command_func_t
-#A         rl_vi_append_eol
-#B         rl_vi_prev_word
-#C         rl_vi_change_to
-#D         rl_vi_delete_to
-#E         rl_vi_end_word
-#F         rl_vi_char_search
-#G         rl_vi_fetch_history
-#H         rl_command_func_t
-#I         rl_vi_insert_beg
-#J         rl_command_func_t
-#K         rl_command_func_t
-#L         rl_command_func_t
-#M         rl_command_func_t
-#N         rl_vi_search_again
-#O         rl_command_func_t
-#P         rl_vi_put
-#Q         rl_command_func_t
-#R         rl_vi_replace
-#S         rl_vi_subst
-#T         rl_vi_char_search
-#U         rl_revert_line
-#V         rl_command_func_t
-#W         rl_vi_next_word
-#X         rl_vi_rubout
-#Y         rl_vi_yank_to
-#Z         rl_command_func_t
-#[         rl_command_func_t
-#\         rl_vi_complete
-#]         rl_command_func_t
-#^         rl_vi_first_print
-#_         rl_vi_yank_arg
-#`         rl_vi_goto_mark
-#a         rl_vi_append_mode
-#b         rl_vi_prev_word
-#c         rl_vi_change_to
-#d         rl_vi_delete_to
-#e         rl_vi_end_word
-#f         rl_vi_char_search
-#g         rl_command_func_t
-#h         rl_backward_char
+#Control-@ NULL
+#Control-a SCREEN
+#Control-b NULL
+#Control-c NULL
+#Control-d vi-eof-maybe            rl_vi_eof_maybe
+#Control-e emacs-editing-mode      rl_emacs_editing_mode
+#Control-f NULL
+#Control-g abort                   rl_abort
+#Control-h backward-char           rl_backward_char
+#Control-i NULL
+#Control-j accept-line             rl_newline
+#Control-k kill-line               rl_kill_line
+#Control-l clear-screen            rl_clear_screen
+#Control-m accept-line             rl_newline
+#Control-n next-history            rl_get_next_history
+#Control-o NULL
+#Control-p previous-history        rl_get_previous_history
+#Control-q quoted-insert           rl_quoted_insert
+#Control-r reverse-search-history  rl_reverse_search_history
+#Control-s forward-search-history  rl_forward_search_history
+#Control-t transpose-chars         rl_transpose_chars
+#Control-u unix-line-discard       rl_unix_line_discard
+#Control-v quoted-insert           rl_quoted_insert
+#Control-w unix-word-rubout        rl_unix_word_rubout
+#Control-x NULL
+#Control-y yank                    rl_yank
+#Control-z NULL
+#Control-[ NULL
+#Control-\ NULL
+#Control-] NULL
+#Control-^ NULL
+#Control-_ previous-history        rl_get_previous_history
+#SPACE     forward-char            rl_forward_char
+#!         NULL
+#"         NULL
+##         insert-comment          rl_insert_comment
+#$         end-of-line             rl_end_of_line
+#%         vi-match                rl_vi_match
+#&         vi-tilde-expand         rl_vi_tilde_expand
+#'         NULL
+#(         NULL
+#)         NULL
+#*         vi-complete             rl_vi_complete
+#+         next-history            rl_get_next_history
+#,         vi-char-search          rl_vi_char_search
+#-         previous-history        rl_get_previous_history
+#.         vi-redo                 rl_vi_redo
+#/         vi-search               rl_vi_search
+#0         beginning-of-line       rl_beg_of_line
+#1         vi-arg-digit            rl_vi_arg_digit
+#2         vi-arg-digit            rl_vi_arg_digit
+#3         vi-arg-digit            rl_vi_arg_digit
+#4         vi-arg-digit            rl_vi_arg_digit
+#5         vi-arg-digit            rl_vi_arg_digit
+#6         vi-arg-digit            rl_vi_arg_digit
+#7         vi-arg-digit            rl_vi_arg_digit
+#8         vi-arg-digit            rl_vi_arg_digit
+#9         vi-arg-digit            rl_vi_arg_digit
+#:         NULL
+#;         vi-char-search          rl_vi_char_search
+#<         NULL
+#=         vi-complete             rl_vi_complete
+#>         NULL
+#?         vi-search               rl_vi_search
+#@         NULL
+#A         vi-append-eol           rl_vi_append_eol
+#B         vi-prev-word            rl_vi_prev_word
+#C         vi-change-to            rl_vi_change_to
+#D         vi-delete-to            rl_vi_delete_to
+#E         vi-end-word             rl_vi_end_word
+#F         vi-char-search          rl_vi_char_search
+#G         vi-fetch-history        rl_vi_fetch_history
+#H         NULL
+#I         vi-insert-beg           rl_vi_insert_beg
+#J         NULL
+#K         NULL
+#L         NULL
+#M         NULL
+#N         vi-search-again         rl_vi_search_again
+#O         NULL
+#P         vi-put                  rl_vi_put
+#Q         NULL
+#R         vi-replace              rl_vi_replace
+#S         vi-subst                rl_vi_subst
+#T         vi-char-search          rl_vi_char_search
+#U         revert-line             rl_revert_line
+#V         NULL
+#W         vi-next-word            rl_vi_next_word
+#X         vi-rubout               rl_vi_rubout
+#Y         vi-yank-to              rl_vi_yank_to
+#Z         NULL
+#[         NULL
+#\         vi-complete             rl_vi_complete
+#]         NULL
+#^         vi-first-print          rl_vi_first_print
+#_         vi-yank-arg             rl_vi_yank_arg
+#`         vi-goto-mark            rl_vi_goto_mark
+#a         vi-append-mode          rl_vi_append_mode
+#b         vi-prev-word            rl_vi_prev_word
+#c         vi-change-to            rl_vi_change_to
+#d         vi-delete-to            rl_vi_delete_to
+#e         vi-end-word             rl_vi_end_word
+#f         vi-char-search          rl_vi_char_search
+#g         NULL
+#h         backward-char           rl_backward_char
 #i         rl_vi_insert_mode
-#j         rl_get_next_history
-#k         rl_get_previous_history
-#l         rl_forward_char
-#m         rl_vi_set_mark
-#n         rl_vi_search_again
-#o         rl_command_func_t
-#p         rl_vi_put
-#q         rl_command_func_t
-#r         rl_vi_change_char
-#s         rl_vi_subst
-#t         rl_vi_char_search
-#u         rl_vi_undo
-#v         rl_command_func_t
-#w         rl_vi_next_word
-#x         rl_vi_delete
-#y         rl_vi_yank_to
-#z         rl_command_func_t
-#{         rl_command_func_t
-#|         rl_vi_column
-#}         rl_command_func_t
-#~         rl_vi_change_case
-#RUBOUT    rl_command_func_t
+#j         next-history            rl_get_next_history
+#k         previous-history        rl_get_previous_history
+#l         forward-char            rl_forward_char
+#m         vi-set-mark             rl_vi_set_mark
+#n         vi-search-again         rl_vi_search_again
+#o         NULL
+#p         vi-put                  rl_vi_put
+#q         NULL
+#r         vi-change-char          rl_vi_change_char
+#s         vi-subst                rl_vi_subst
+#t         vi-char-search          rl_vi_char_search
+#u         previous-history        rl_get_previous_history
+#v         NULL
+#w         vi-next-word            rl_vi_next_word
+#x         vi-delete               rl_vi_delete
+#y         vi-yank-to              rl_vi_yank_to
+#z         NULL
+#{         NULL
+#|         vi-column               rl_vi_column
+#}         NULL
+#~         vi-change-case          rl_vi_change_case
+#RUBOUT    NULL
 ###########
 #vi_insertion_keymap
 ###########
-#Control-@ rl_command_func_t
-#Control-d rl_vi_eof_maybe
-#Control-h rl_rubout
-#Control-i rl_complete
-#Control-j rl_newline
-#Control-m rl_newline
-#Control-n rl_menu_complete
-#Control-p rl_backward_menu_complete
-#Control-r rl_reverse_search_history
-#Control-s rl_forward_search_history
-#Control-t rl_transpose_chars
-#Control-u rl_unix_line_discard
-#Control-v rl_quoted_insert
-#Control-w rl_unix_word_rubout
-#Control-y rl_yank
-#Control-[ rl_vi_movement_mode
-#Control-_ rl_vi_undo
-
-#Control-@ rl_command_func_t
-#Control-a rl_insert
-#Control-b rl_insert
-#Control-c rl_insert
-#Control-d rl_vi_eof_maybe
-#Control-e rl_insert
-#Control-f rl_insert
-#Control-g rl_insert
-#Control-h rl_rubout
-#Control-i rl_complete
-#Control-j rl_newline
-#Control-k rl_insert
-#Control-l rl_insert
-#Control-m rl_newline
-#Control-n rl_menu_complete
-#Control-o rl_insert
-#Control-p rl_backward_menu_complete
-#Control-q rl_insert
-#Control-r rl_reverse_search_history
-#Control-s rl_forward_search_history
-#Control-t rl_transpose_chars
-#Control-u rl_unix_line_discard
-#Control-v rl_quoted_insert
-#Control-w rl_unix_word_rubout
-#Control-x rl_insert
-#Control-y rl_yank
-#Control-z rl_insert
-#Control-[ rl_vi_movement_mode
-#Control-\ rl_insert
-#Control-] rl_insert
-#Control-^ rl_insert
-#Control-_ rl_vi_undo
-#SPACE     rl_insert
-#!         rl_insert
-#"         rl_insert
-##         rl_insert
-#$         rl_insert
-#%         rl_insert
-#&         rl_insert
-#'         rl_insert
-#(         rl_insert
-#)         rl_insert
-#*         rl_insert
-#+         rl_insert
-#,         rl_insert
-#-         rl_insert
-#.         rl_insert
-#/         rl_insert
-#0         rl_insert
-#1         rl_insert
-#2         rl_insert
-#3         rl_insert
-#4         rl_insert
-#5         rl_insert
-#6         rl_insert
-#7         rl_insert
-#8         rl_insert
-#9         rl_insert
-#:         rl_insert
-#;         rl_insert
-#<         rl_insert
-#=         rl_insert
-#>         rl_insert
-#?         rl_insert
-#@         rl_insert
-#A         rl_insert
-#B         rl_insert
-#C         rl_insert
-#D         rl_insert
-#E         rl_insert
-#F         rl_insert
-#G         rl_insert
-#H         rl_insert
-#I         rl_insert
-#J         rl_insert
-#K         rl_insert
-#L         rl_insert
-#M         rl_insert
-#N         rl_insert
-#O         rl_insert
-#P         rl_insert
-#Q         rl_insert
-#R         rl_insert
-#S         rl_insert
-#T         rl_insert
-#U         rl_insert
-#V         rl_insert
-#W         rl_insert
-#X         rl_insert
-#Y         rl_insert
-#Z         rl_insert
-#[         rl_insert
-#\         rl_insert
-#]         rl_insert
-#^         rl_insert
-#_         rl_insert
-#`         rl_insert
-#a         rl_insert
-#b         rl_insert
-#c         rl_insert
-#d         rl_insert
-#e         rl_insert
-#f         rl_insert
-#g         rl_insert
-#h         rl_insert
-#i         rl_insert
-#j         rl_insert
-#k         rl_insert
-#l         rl_insert
-#m         rl_insert
-#n         rl_insert
-#o         rl_insert
-#p         rl_insert
-#q         rl_insert
-#r         rl_insert
-#s         rl_insert
-#t         rl_insert
-#u         rl_insert
-#v         rl_insert
-#w         rl_insert
-#x         rl_insert
-#y         rl_insert
-#z         rl_insert
-#{         rl_insert
-#|         rl_insert
-#}         rl_insert
-#~         rl_insert
-#RUBOUT    rl_rubout
+#Control-@ NULL
+#Control-a self-insert             rl_insert
+#Control-b self-insert             rl_insert
+#Control-c self-insert             rl_insert
+#Control-d vi-eof-maybe            rl_vi_eof_maybe
+#Control-e self-insert             rl_insert
+#Control-f self-insert             rl_insert
+#Control-g self-insert             rl_insert
+#Control-h backward-delete-char    rl_rubout
+#Control-i complete                rl_complete
+#Control-j accept-line             rl_newline
+#Control-k self-insert             rl_insert
+#Control-l self-insert             rl_insert
+#Control-m accept-line             rl_newline
+#Control-n menu-complete           rl_menu_complete
+#Control-o self-insert             rl_insert
+#Control-p menu-complete-backward  rl_backward_menu_complete
+#Control-q self-insert             rl_insert
+#Control-r reverse-search-history  rl_reverse_search_history
+#Control-s forward-search-history  rl_forward_search_history
+#Control-t transpose-chars         rl_transpose_chars
+#Control-u unix-line-discard       rl_unix_line_discard
+#Control-v quoted-insert           rl_quoted_insert
+#Control-w unix-word-rubout        rl_unix_word_rubout
+#Control-x self-insert             rl_insert
+#Control-y yank                    rl_yank
+#Control-z self-insert             rl_insert
+#Control-[ vi-movement-mode        rl_vi_movement_mode
+#Control-\ self-insert             rl_insert
+#Control-] self-insert             rl_insert
+#Control-^ self-insert             rl_insert
+#Control-_ previous-history        rl_get_previous_history
+#SPACE     self-insert             rl_insert
+#!         self-insert             rl_insert
+#"         self-insert             rl_insert
+##         self-insert             rl_insert
+#$         self-insert             rl_insert
+#%         self-insert             rl_insert
+#&         self-insert             rl_insert
+#'         self-insert             rl_insert
+#(         self-insert             rl_insert
+#)         self-insert             rl_insert
+#*         self-insert             rl_insert
+#+         self-insert             rl_insert
+#,         self-insert             rl_insert
+#-         self-insert             rl_insert
+#.         self-insert             rl_insert
+#/         self-insert             rl_insert
+#0         self-insert             rl_insert
+#1         self-insert             rl_insert
+#2         self-insert             rl_insert
+#3         self-insert             rl_insert
+#4         self-insert             rl_insert
+#5         self-insert             rl_insert
+#6         self-insert             rl_insert
+#7         self-insert             rl_insert
+#8         self-insert             rl_insert
+#9         self-insert             rl_insert
+#:         self-insert             rl_insert
+#;         self-insert             rl_insert
+#<         self-insert             rl_insert
+#=         self-insert             rl_insert
+#>         self-insert             rl_insert
+#?         self-insert             rl_insert
+#@         self-insert             rl_insert
+#A         self-insert             rl_insert
+#B         self-insert             rl_insert
+#C         self-insert             rl_insert
+#D         self-insert             rl_insert
+#E         self-insert             rl_insert
+#F         self-insert             rl_insert
+#G         self-insert             rl_insert
+#H         self-insert             rl_insert
+#I         self-insert             rl_insert
+#J         self-insert             rl_insert
+#K         self-insert             rl_insert
+#L         self-insert             rl_insert
+#M         self-insert             rl_insert
+#N         self-insert             rl_insert
+#O         self-insert             rl_insert
+#P         self-insert             rl_insert
+#Q         self-insert             rl_insert
+#R         self-insert             rl_insert
+#S         self-insert             rl_insert
+#T         self-insert             rl_insert
+#U         self-insert             rl_insert
+#V         self-insert             rl_insert
+#W         self-insert             rl_insert
+#X         self-insert             rl_insert
+#Y         self-insert             rl_insert
+#Z         self-insert             rl_insert
+#[         self-insert             rl_insert
+#\         self-insert             rl_insert
+#]         self-insert             rl_insert
+#^         self-insert             rl_insert
+#_         self-insert             rl_insert
+#`         self-insert             rl_insert
+#a         self-insert             rl_insert
+#b         self-insert             rl_insert
+#c         self-insert             rl_insert
+#d         self-insert             rl_insert
+#e         self-insert             rl_insert
+#f         self-insert             rl_insert
+#g         self-insert             rl_insert
+#h         self-insert             rl_insert
+#i         self-insert             rl_insert
+#j         self-insert             rl_insert
+#k         self-insert             rl_insert
+#l         self-insert             rl_insert
+#m         self-insert             rl_insert
+#n         self-insert             rl_insert
+#o         self-insert             rl_insert
+#p         self-insert             rl_insert
+#q         self-insert             rl_insert
+#r         self-insert             rl_insert
+#s         self-insert             rl_insert
+#t         self-insert             rl_insert
+#u         self-insert             rl_insert
+#v         self-insert             rl_insert
+#w         self-insert             rl_insert
+#x         self-insert             rl_insert
+#y         self-insert             rl_insert
+#z         self-insert             rl_insert
+#{         self-insert             rl_insert
+#|         self-insert             rl_insert
+#}         self-insert             rl_insert
+#~         self-insert             rl_insert
+#RUBOUT    backward-delete-char    rl_rubout
 ##############################################################################

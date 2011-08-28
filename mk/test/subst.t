@@ -53,4 +53,7 @@ ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
+.DEFAULT_GOAL:=PASS
+
 ##############################################################################
+# vim: set syntax=make:

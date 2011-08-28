@@ -1,6 +1,24 @@
 ##############################################################################
 # Functions
 ##############################################################################
+
+# Set THIS.mk to including makefile
+THIS.mk			:=\
+$(lastword\
+	$(wordlist\
+		1,\
+		$(words \
+			$(wordlist \
+				2,\
+				$(words $(MAKEFILE_LIST)),\
+				$(MAKEFILE_LIST)\
+			)\
+		),\
+		$(MAKEFILE_LIST)\
+	)\
+)
+
+##############################################################################
 ifndef INCLUDE.func.mk
 INCLUDE.func.mk		:=$(lastword $(MAKEFILE_LIST))
 ##############################################################################
@@ -58,7 +76,15 @@ else
 .debug.3		=
 endif
 
-x=if A B C
+#add			=$(call add,x,y)
+#add.1			=$(call papply,1,add)
+#$(call .papply,1,add) = $(call add,1,y)
+#$(call .curry,add)    = $()
+#$(call .uncurry,add)
+#x=if A B C
+
+#
+
 
 .uncurry		=\
 $(strip \
@@ -73,16 +99,19 @@ $(call .uncurry.tmp)\
 )
 
 
-.if			=\
-$(.debug.3)\
-$(if $(strip $(1)),$(strip $(2)),$(strip $(3)))
+#.if			=\
+#$(.debug.3)\
+#$(if $(strip $(1)),$(strip $(2)),$(strip $(3)))
 
 .test			=\
-$(.debug.1)\
-$(call .if,\
-	$(1),\
-	$(.true),\
-	$(.false)\
+$(strip \
+	$(.debug.1)\
+	$(if,\
+		$(1),\
+		$(.true)\
+		,\
+		$(.false)\
+	)\
 )
 
 .not			=\
@@ -144,21 +173,21 @@ $(call .not,\
 	$(call .oif,$(1),$(2))\
 )
 
-.when			=\
-$(.debug.2)\
-$(call .if,\
-	$(1),\
-	$(2),\
-	$(.nothing)\
-)
-
-.unless			=\
-$(.debug.2)\
-$(call .if,\
-	$(1),\
-	$(.nothing),\
-	$(2)\
-)
+#.when			=\
+#$(.debug.2)\
+#$(call .if,\
+#	$(1),\
+#	$(2),\
+#	$(.nothing)\
+#)
+#
+#.unless			=\
+#$(.debug.2)\
+#$(call .if,\
+#	$(1),\
+#	$(.nothing),\
+#	$(2)\
+#)
 
 .findstring		=\
 $(.debug.2)\
@@ -175,9 +204,8 @@ $(call .findstring,\
 .eq			=\
 $(.debug.2)\
 $(call .or,\
-	$(call .not,\
-		$(call .or,$(1),$(2))\
-	),\
+	$(call .nor,$(1),$(2))\
+	,\
 	$(call .and,\
 		$(call .in,$(1),$(2)),\
 		$(call .in,$(2),$(1))\
@@ -195,20 +223,24 @@ $(.debug.2)\
 $(patsubst %$(strip $(1)),%,$(strip $(2)))
 
 .rm.prefix		=\
-$(.debug.2)\
-$(patsubst $(strip $(1))%,%,$(strip $(2)))
+$(strip \
+	$(.debug.2)\
+	$(patsubst $(strip $(1))%,%,$(strip $(2)))\
+)
 
-.fix.dir		=\
+.fix.dir		=$(strip \
 $(.debug.1)\
-$(call .rm.suffix,$(.slash),$(1))
+$(call .rm.suffix,$(.slash),$(1)))
 
 .dir			=\
 $(.debug.1)\
 $(call .fix.dir,$(dir $(strip $(1))))
 
 .notdir			=\
-$(.debug.1)\
-$(notdir $(call .fix.dir,$(strip $(1))))
+$(strip \
+	$(.debug.1)\
+	$(notdir $(call .fix.dir,$(1)))\
+)
 
 .math			=\
 $(.debug.2)\
@@ -326,6 +358,11 @@ $(call .sort,$(1))
 	)\
 )
 
+.abspath		=\
+$(abspath $(strip $(1)))
+
+.realpath		=\
+$(realpath $(strip $(1)))
 
 .assert.value		:=
 .assert.error		:=
@@ -365,15 +402,63 @@ $(call .assert,\
 
 
 ##############################################################################
-# Include Guard
+# Setup Include Guard for including makefile  "Quis custodiet ipsos custodes?"
 
-.include.guard.list	=
+#$(call .push.this.MAKEFILE_LIST,$(my.last.MAKEFILE))
 
-.include.guard.start	=\
-$(eval .include.guard.list+=)\
-$(eval undefine FIRST_INCLUDE)\
+#$(call .unset.FIRST_INCLUDE)
 
-.include.guard.stop	=\
+#ifndef $(this.include.marker)
+#$(call .set.this.include.marker)
+
+#$(call .set.FIRST_INCLUDE)
+
+#$(call .stop.rule.search)
+#endif # Include Guard for including Makefile
+#this.MAKEFILE_LIST	:=
+#this.pop.MAKEFILE_LIST	=$(call .pop.list,$(this.MAKEFILE_LIST))
+#this.MAKEFILE		=$(lastword $(this.MAKEFILE_LIST))
+#this.abs.MAKEFILE	=$(abspath $(this.MAKEFILE))
+#this.mk.MAKEFILE	=$(patsubst $(mk)/%,%,$(this.abs.MAKEFILE))
+#this.esc.MAKEFILE	=$(call .esc.name,$(this.mk.MAKEFILE))
+#this.include.marker	=$(this.esc.MAKEFILE).INCLUDE
+#this.real.MAKEFILE	=$(realpath $(this.MAKEFILE))
+#this.name.MAKEFILE	=$(call .not.dir,$(this.MAKEFILE))
+#this			=$(call .rm.mk,$(this.name.MAKEFILE))
+##############################################################################
+
+THIS.mk.abs		=$(call .abspath,$(THIS.mk))
+THIS.mk.real		=$(call .realpath,$(THIS.mk))
+THIS.mk.name		=$(call .notdir,$(THIS.mk))
+THIS.mk.real.name	=$(call .notdir,$(THIS.mk.real))
+THIS.mk.rel		=$(call .rm.prefix,$(PATH.mk)/,$(THIS.mk.abs))
+THIS.mk.esc		=$(call .esc.name,$(THIS.mk.rel))
+
+THIS			=$(call .rm.suffix,.mk,$(THIS.mk.name))
+
+.esc.name		=\
+$(subst $(slash),$(under),$(subst $(dot),$(under),$(1)))
+
+.include.marker		=INCLUDE.$(THIS.mk.esc) $(warning <$(THIS.mk.rel)>)
+
+.stop.rule.search	=$(eval $$(1):: ;)
+
+FIRST.INCLUDE		=\
+$(strip FIRST_INCLUDE\
+	$(eval $$(.include.marker)+=X )\
+	$(if \
+		$(call .eq,\
+			$(call .size,\
+				$(.include.marker)\
+			),\
+			1\
+		),\
+		$(eval FIRST_INCLUDE=FIRST_INCLUDE)\
+		$(call .stop.rule.search,$$(THIS.mk))\
+		,\
+		$(eval undefine FIRST_INCLUDE)\
+	)\
+)
 
 ##############################################################################
 # Test for modern GNU Make
@@ -394,9 +479,6 @@ $(call .test.feature, jobserver )
 $(call .test.feature, check-symlink )
 ##############################################################################
 
-#ifndef INCLUDE.main.mk
-#INCLUDE.main.mk		:=$(lastword $(MAKEFILE_LIST))
-
 # Fix builtin's
 .subst			=$(subst $(strip $(1)),$(strip $(2)),$(strip $(3)))
 .patsubst		=$(patsubst $(strip $(1)),$(strip $(2)),$(strip $(3)))
@@ -416,9 +498,6 @@ $(suffix $(strip $(1)))
 
 .wildcard		=\
 
-.realpath		=\
-
-.abspath		=\
 
 .get.user		=\
 $(or\
@@ -450,63 +529,30 @@ $(or\
 )
 
 
-####
-
-# Name of Makefile including current Makefile
-my.MAKEFILE_LIST	=$(MAKEFILE_LIST)
-my.pop.MAKEFILE_LIST	=$(call .pop.list,$(my.MAKEFILE_LIST))
-my.last.MAKEFILE	=$(lastword $(my.pop.MAKEFILE_LIST))
-
-.esc.name\
-=$(subst $(slash),$(under),$(subst $(dot),$(under),$(1)))
-
-
-# Stack of Makefiles who use include guard
-this.MAKEFILE_LIST	:=
-this.pop.MAKEFILE_LIST	=$(call .pop.list,$(this.MAKEFILE_LIST))
-this.MAKEFILE		=$(lastword $(this.MAKEFILE_LIST))
-this.abs.MAKEFILE	=$(abspath $(this.MAKEFILE))
-this.mk.MAKEFILE	=$(patsubst $(mk)/%,%,$(this.abs.MAKEFILE))
-this.esc.MAKEFILE	=$(call .esc.name,$(this.mk.MAKEFILE))
-this.include.marker	=$(this.esc.MAKEFILE).INCLUDE
-this.real.MAKEFILE	=$(realpath $(this.MAKEFILE))
-this.name.MAKEFILE	=$(call .not.dir,$(this.MAKEFILE))
-this			=$(call .rm.mk,$(this.name.MAKEFILE))
-
-.set.this.include.marker\
-=$(eval $(this.include.marker):=$$(this.real.MAKEFILE))
-.set.FIRST_INCLUDE	=$(eval FIRST_INCLUDE:=yes)
-.unset.FIRST_INCLUDE	=$(eval undefine FIRST_INCLUDE)
-.stop.rule.search	=$(eval $$(this.MAKEFILE):: ;)
-
-.push.this.MAKEFILE_LIST=$(eval this.MAKEFILE_LIST+=$(1))
-.pop.this.MAKEFILE_LIST\
-=$(eval this.MAKEFILE_LIST:=$$(this.pop.MAKEFILE_LIST))
-
-guard			=$(mk)/config.mk
-end_guard		=$(call .pop.this.MAKEFILE_LIST)
-
-my.MAKEFILE		=$(firstword $(MAKEFILE_LIST))
-my.abs.MAKEFILE		=$(abspath $(my.MAKEFILE))
-my.real.MAKEFILE	=$(realpath $(my.MAKEFILE))
-my.name.MAKEFILE	=$(call .not.dir,$(my.MAKEFILE))
-
+#####
+#
+## Name of Makefile including current Makefile
+#my.MAKEFILE_LIST	=$(MAKEFILE_LIST)
+#my.pop.MAKEFILE_LIST	=$(call .pop.list,$(my.MAKEFILE_LIST))
+#my.last.MAKEFILE	=$(lastword $(my.pop.MAKEFILE_LIST))
+#
+#
+#.set.this.include.marker\
+#=$(eval $(this.include.marker):=$$(this.real.MAKEFILE))
+#.set.FIRST_INCLUDE	=$(eval FIRST_INCLUDE:=yes)
+#.unset.FIRST_INCLUDE	=$(eval undefine FIRST_INCLUDE)
+#.stop.rule.search	=$(eval $$(this.MAKEFILE):: ;)
+#
+#.push.this.MAKEFILE_LIST=$(eval this.MAKEFILE_LIST+=$(1))
+#.pop.this.MAKEFILE_LIST\
+#=$(eval this.MAKEFILE_LIST:=$$(this.pop.MAKEFILE_LIST))
+#
+#my.MAKEFILE		=$(firstword $(MAKEFILE_LIST))
+#my.abs.MAKEFILE		=$(abspath $(my.MAKEFILE))
+#my.real.MAKEFILE	=$(realpath $(my.MAKEFILE))
+#my.name.MAKEFILE	=$(call .not.dir,$(my.MAKEFILE))
+#
 
 ##############################################################################
+$(call .stop.rule.search,$(INCLUDE.func.mk))
 endif # INCLUDE.func.mk
-
-##############################################################################
-# Setup Include Guard for including Makefile  "Quis custodiet ipsos custodes?"
-##############################################################################
-$(call .push.this.MAKEFILE_LIST,$(my.last.MAKEFILE))
-
-$(call .unset.FIRST_INCLUDE)
-
-ifndef $(this.include.marker)
-$(call .set.this.include.marker)
-
-$(call .set.FIRST_INCLUDE)
-
-$(call .stop.rule.search)
-endif # end Include Guard setup for including Makefile
-##############################################################################
