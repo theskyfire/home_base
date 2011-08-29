@@ -1,89 +1,66 @@
 EXPECT:=AZ
-ACTUAL:=A$(subst)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (1) to function
-SUBSHELL:=$(shell $(MAKE) --eval='A$$(subst )Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (1) to function
-SUBSHELL:=xIGNOREx $(shell $(MAKE) --eval='A$$(subst a)Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (2) to function
-SUBSHELL:=xIGNOREx $(shell $(MAKE) --eval='A$$(subst a , b)Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
+ACTUAL:=A$(lastword)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=A$(subst a , b ,)Z
+ACTUAL:=A$(lastword )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=$(subst x,,xAxZx)
+ACTUAL:=A$(lastword	)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=AZ
-ACTUAL:=$(subst az,AZ,az)
+EXPECT:=AzZ
+ACTUAL:=A$(lastword	z)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=az
-ACTUAL:=$(subst az ,AZ,az)
+EXPECT:=AzZ
+ACTUAL:=A$(lastword	a z)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=A$(SPACE)$(SPACE)Q$(SPACE)Z
-ACTUAL:=A$(subst\
-	q,\
-	Q,\
-	q\
-)Z
+EXPECT:=AzZ
+ACTUAL:=A$(lastword	a	z)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-f=$(subst $(1),$(2),$(3))
-EXPECT:=A Q Z
-ACTUAL:=A$(call f,\
-	q,\
-	Q,\
-	q\
-)Z
+EXPECT:=Aa,zZ
+ACTUAL:=A$(lastword	a,z	)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+EXPECT:=AzZ
+ACTUAL:=A$(lastword	a	,	z	)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+f=$(lastword	$(1)$(2))
+EXPECT:=AzZ
+ACTUAL:=A$(call f	, a , z )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
-f=$(subst $(strip $(1)),$(strip $(2)),$(strip $(3)))
-EXPECT:=AQZ
-ACTUAL:=A$(call f,\
-	q,\
-	Q,\
-	q\
-)Z
+f=$(lastword	$(1)$(2))
+EXPECT:=AazZ
+ACTUAL:=A$(call f	, a,z )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
 .DEFAULT_GOAL:=PASS
-
-##############################################################################
 # vim: set syntax=make:
