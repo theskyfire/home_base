@@ -49,7 +49,7 @@ ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=A$(SPACE)$(SPACE)Q$(SPACE)Z
+EXPECT:=A  Q Z
 ACTUAL:=A$(subst\
 	q,\
 	Q,\
@@ -83,7 +83,5 @@ include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
-.DEFAULT_GOAL:=PASS
-
-##############################################################################
+PASS: ;
 # vim: set syntax=make:

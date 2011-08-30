@@ -1,17 +1,12 @@
-FAIL:
-	false
-
-PASS:
-	true
-
-test.mk:: ;
-
-.PHONY: FAIL PASS test
-
-.DEFAULT_GOAL:=FAIL
-
+#test.mk:: ;
 #$(TEST):: ;
 
-NOTHING:=
-TAB:=$(NOTHING)	$(NOTHING)
-SPACE:=$(NOTHING) $($NOTING)
+PATH.mk			:=\
+$(patsubst %/,%,$(dir \
+	$(patsubst %/,%,$(dir \
+		$(realpath $(lastword $(MAKEFILE_LIST)))\
+	))\
+))
+
+LIB.mk			=$(PATH.mk)/lib
+guard			:=$(LIB.mk)/guard.mk

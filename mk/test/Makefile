@@ -8,18 +8,14 @@ output:=$(addsuffix .out,$(tests))
 
 all: $(goals)
 
-$(goals): % : %.t %.t.out Makefile
+$(goals): % : %.t %.t.out Makefile test.mk
 
 TEST_MK=test.mk
 
 # from main.mk
-PATH.mk			:=$(patsubst %/,%,$(dir \
-	$(patsubst %/,%,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))\
-))
+MAKE_CMD=MAKEFILES='$(TEST_MK)' $(MAKE) -dpf '$<' TEST='$<'
 
-MAKE_CMD=MAKEFILES='$(TEST_MK)' $(MAKE) -dpf '$<' TEST='$<' PATH.mk='$(PATH.mk)'
-
-$(output): %.out : % Makefile
+$(output): %.out : % Makefile test.mk
 	@{\
 		function err_trap () {\
 			echo 'FAIL' ;\
@@ -37,6 +33,7 @@ $(output): %.out : % Makefile
 
 clean:
 	rm -f *.out
+	rm -f *.out.err
 
 $(tests):: ;
 

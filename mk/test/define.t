@@ -46,7 +46,7 @@ ifdef TEST_DEFINE4
 include FAIL $(error ifdef TEST_DEFINE4)
 endif
 
-.DEFAULT_GOAL:=PASS
+PASS: ;
 
 ##############################################################################
-# vim: set syntax=make
+# vim: set syntax=make:

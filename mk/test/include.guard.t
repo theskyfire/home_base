@@ -1,6 +1,5 @@
 ########################################################################
 # Before first include
-guard:=$(PATH.mk)/lib/guard.mk
 
 EXPECT:=PATH.mk
 ifndef $(EXPECT)
@@ -366,5 +365,5 @@ include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 ########################################################################
-.DEFAULT_GOAL:=PASS
+PASS: ;
 # vim: set syntax=make:

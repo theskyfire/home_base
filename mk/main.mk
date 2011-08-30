@@ -12,12 +12,13 @@ include $(guard)
 ifdef $(.FIRST.INCLUDE)
 ########################################################################
 
-#include $(PATH.mk)/functions.mk
+include $(LIB.mk)/check.mk
 
 ## Standard Environment
-#USER			?=$(call .get.user)
-#HOME			?=$(call .get.home)
-#TMPDIR			?=$(call .get.tmp)
+include $(LIB.mk)/env.mk
+USER			?=$(call .get.env.USER)
+HOME			?=$(call .get.env.HOME)
+TMPDIR			?=$(call .get.env.TMPDIR)
 
 ## Make command-line overrides
 #BASE_NAME		=base

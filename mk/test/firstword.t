@@ -62,5 +62,5 @@ include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
-.DEFAULT_GOAL:=PASS
+PASS: ;
 # vim: set syntax=make:

@@ -1,155 +1,115 @@
+include $(LIB.mk)/env.mk
 
-EXPECT:=
-ACTUAL:=$(strip)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip X)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip                    X)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip X                   )
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip                  X                   )
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip			X                   )
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip      X				)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X
-ACTUAL:=$(strip			X			)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X X
-ACTUAL:=$(strip X			X			)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X X
-ACTUAL:=$(strip X     X )
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=X X
-ACTUAL:=$(strip X	X )
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=1 , 2
-ACTUAL:=$(strip		1  ,  2 )
+EXPECT:=AZ
+ACTUAL:=A$(or)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=A$(strip)Z
+ACTUAL:=A$(or )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=A$(strip )Z
+ACTUAL:=A$(or	)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-f=$(strip	$(1))
 EXPECT:=AZ
-ACTUAL:=A$(call f)Z
+ACTUAL:=A$(or	,)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
 EXPECT:=AZ
-ACTUAL:=A$(call f ,)Z
+ACTUAL:=A$(or	,,)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=AZ
-ACTUAL:=A$(call f , )Z
+EXPECT:=X
+ACTUAL:=$(or	,X,)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=AZ
-ACTUAL:=A$(call f	,	)Z
+EXPECT:=X
+ACTUAL:=$(or	,,X)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=AZ
-ACTUAL:=A$(call f	,	,)Z
+EXPECT:=X
+ACTUAL:=$(or	,,X,Y,Z)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=AxZ
-ACTUAL:=A$(call f	,x)Z
+EXPECT:=X
+ACTUAL:=$(or	,, ,	, X ,Y,Z)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=AxZ
-ACTUAL:=A$(call f	, x )Z
+EXPECT:=AQZ
+ACTUAL:=A$(or	Q	)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1))
-EXPECT:=Ax xZ
-ACTUAL:=A$(call f	, x	x )Z
+EXPECT:=A$(strip	Q	)Z
+ACTUAL:=A$(or	,	Q	)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
-undefine f
 
-f=$(strip	$(1)$(2))
+EXPECT:=A$(strip	a	z	)Z
+ACTUAL:=A$(or	,	a z	)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+f=$(or $(1))
 EXPECT:=Aa zZ
-ACTUAL:=A$(call f	, a , z )Z
+ACTUAL:=A$(call f,a z)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine f
+
+f=$(or $(1),)
+EXPECT:=Aa zZ
+ACTUAL:=A$(call f,a z)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine f
+
+f=$(or $(1) )
+EXPECT:=Aa zZ
+ACTUAL:=A$(call f,a z)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine f
+
+f=$(or $(1) ,)
+EXPECT:=Aa zZ
+ACTUAL:=A$(call f,a z)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine f
+
+f			=\
+$(or \
+	$(1),\
+)
+EXPECT:=Aa zZ
+ACTUAL:=A$(call f,a z)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
