@@ -1,82 +1,70 @@
 EXPECT:=AZ
-ACTUAL:=A$(subst)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (1) to function
-SUBSHELL:=$(shell $(MAKE) --eval='A$$(subst )Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (1) to function
-SUBSHELL:=xIGNOREx $(shell $(MAKE) --eval='A$$(subst a)Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=*** insufficient number of arguments (2) to function
-SUBSHELL:=xIGNOREx $(shell $(MAKE) --eval='A$$(subst a , b)Z' 2>&1)
-ACTUAL:=$(findstring $(EXPECT),$(SUBSHELL))
+ACTUAL:=A$(join)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=A$(subst a , b ,)Z
+ACTUAL:=A$(join ,)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=$(subst x,,xAxZx)
+ACTUAL:=$(join A,Z)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 EXPECT:=AZ
-ACTUAL:=$(subst az,AZ,az)
+ACTUAL:=$(join A , Z )
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=az
-ACTUAL:=$(subst az ,AZ,az)
+f=$(join $(1) ,)
+EXPECT:=AXZ
+ACTUAL:=A$(call f,X)Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
+undefine f
 
-EXPECT:=A  Q Z
-ACTUAL:=A$(subst\
-	q,\
-	Q,\
-	q\
-)Z
+f=$(join $(1),)
+EXPECT:=AXZ
+ACTUAL:=A$(call f, X )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
+undefine f
 
-f=$(subst $(1),$(2),$(3))
-EXPECT:=A Q Z
+f=$(join $(1),)
+EXPECT:=AXZ
 ACTUAL:=A$(call f,\
-	q,\
-	Q,\
-	q\
+	X	\
+	,\
 )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
-f=$(subst $(strip $(1)),$(strip $(2)),$(strip $(3)))
-EXPECT:=AQZ
+f=$(join ,	$(1)	)
+EXPECT:=AXZ
 ACTUAL:=A$(call f,\
-	q,\
-	Q,\
-	q\
+	X	\
+	,\
+)Z
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine f
+
+f=$(join ,	$(1)	)
+EXPECT:=Aa zZ
+ACTUAL:=A$(call f,\
+	a  z	\
+	,\
 )Z
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')

@@ -261,6 +261,9 @@ ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
+#### $(THIS.mk):: ;  should now be defined
+.DEFAULT_GOAL:=$(THIS.mk)
+
 ########################################################################
 # call .FIRST.INCLUDE for second time
 
@@ -289,7 +292,7 @@ EXPECT:=INCLUDE.test_include_guard_t
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
-EXPECT:=X_X
+EXPECT:=XX
 ACTUAL:=$(INCLUDE.test_include_guard_t)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
@@ -323,7 +326,7 @@ EXPECT:=INCLUDE.test_include_guard_t
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
-EXPECT:=X_X_X
+EXPECT:=XXX
 ACTUAL:=$(INCLUDE.test_include_guard_t)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
@@ -365,5 +368,4 @@ include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
 ########################################################################
-PASS: ;
 # vim: set syntax=make:

@@ -63,5 +63,4 @@
 #endif
 #undefine f
 #
-PASS: ;
 # vim: set syntax=make:

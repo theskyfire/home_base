@@ -1,5 +1,3 @@
-include $(LIB.mk)/check.mk
-
 define testx =
 
 if$(strip )eq '' ''
@@ -16,5 +14,4 @@ A=a
 
 .DEFAULT_GOAL:=PASS
 
-PASS: ;
 # vim: set syntax=make:

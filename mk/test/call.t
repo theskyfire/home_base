@@ -22,5 +22,4 @@ include FAIL $(error CALL,A)
 endif
 undefine CALL
 
-PASS: ;
 # vim: set syntax=make:

@@ -1,21 +1,16 @@
 tests:=$(wildcard *.t)
-
+subtests:=$(wildcard *.tt)
 goals:=$(tests:%.t=%)
 
-output:=$(addsuffix .out,$(tests))
-
-.PHONY: all $(goals)
-
-all: $(goals)
-
-$(goals): % : %.t %.t.out Makefile test.mk
-
 TEST_MK=test.mk
-
-# from main.mk
 MAKE_CMD=MAKEFILES='$(TEST_MK)' $(MAKE) -dpf '$<' TEST='$<'
 
-$(output): %.out : % Makefile test.mk
+.PHONY: all $(goals)
+all: $(goals)
+$(goals): % : %.t.out
+
+.SECONDEXPANSION:
+$(addsuffix .out,$(tests)): %.out : % Makefile test.mk $$(wildcard $$(*)t)
 	@{\
 		function err_trap () {\
 			echo 'FAIL' ;\
@@ -36,5 +31,6 @@ clean:
 	rm -f *.out.err
 
 $(tests):: ;
-
+$(subtests):: ;
+$(TEST_MK):: ;
 Makefile:: ;

@@ -1,0 +1,72 @@
+guard:=$(LIB.mk)/guard.mk
+include $(guard)
+ifdef $(.FIRST.INCLUDE)
+
+include $(LIB.mk)/cond.mk
+include $(LIB.mk)/assert.mk
+
+THROW={EXPECTED FAILURE}
+
+# Every assert should fail
+.assert.pass=include FAIL $$(error Unexpected PASS)
+.assert.eq.pass=include FAIL $$(error Unexpected PASS)
+
+ifdef basic_assert
+$(call .assert,,$(THROW))
+endif
+
+ifdef basic_space
+$(call .assert, ,$(THROW))
+endif
+
+ifdef basic_tab
+$(call .assert,		,$(THROW))
+endif
+
+ifdef empty_var
+VAR:=
+$(call .assert,$(VAR),$(THROW))
+undefine VAR
+endif
+
+ifdef eq_blank
+$(call .assert.eq,x,,$(THROW))
+endif
+
+ifdef eq_case
+$(call .assert.eq,a,A,$(THROW))
+endif
+
+ifdef eq_alpha
+$(call .assert.eq,A,Z,$(THROW))
+endif
+
+ifdef neq_blank
+$(call .assert.neq,,,$(THROW))
+endif
+
+ifdef neq_case
+$(call .assert.neq,A,A,$(THROW))
+endif
+
+ifdef neq_alpha
+$(call .assert.neq,x,x,$(THROW))
+endif
+
+ifdef def
+undefine UNDEFINED
+$(call .assert.def,UNDEFINED,$(THROW))
+endif
+
+ifdef undef
+DEFINED=defined
+$(call .assert.ndef,DEFINED,$(THROW))
+undefine DEFINED
+endif
+
+.DEFAULT_GOAL:=FAIL
+FAIL:
+	@echo "unexpected failure!"
+
+endif # .FIRST.INCLUDE
+# vim: set syntax=make:

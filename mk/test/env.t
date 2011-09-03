@@ -1,5 +1,3 @@
-include $(LIB.mk)/env.mk
-
 EXPECT:=.get.env.HOME
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
@@ -61,5 +59,4 @@ ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-PASS: ;
 # vim: set syntax=make:

@@ -1,6 +1,5 @@
-include $(LIB.mk)/cond.mk
-
-# ifdef / ifndef
+########################################################################
+# ifdef
 
 DEFINED=defined
 ifdef DEFINED
@@ -14,6 +13,86 @@ ifdef UNDEFINED
 include FAIL $(error ifdef UNDEFINED)
 endif
 
+undefine DEFINED
+ifdef DEFINED
+include FAIL $(error undefine DEFINED)
+endif
+
+VAR=DEFINED
+DEFINED=defined
+ifdef $(VAR)
+else
+include FAIL $(error ifdef $$(VAR))
+endif
+undefine DEFINED
+undefine VAR
+
+VAR=.if.def
+ifndef $(VAR)
+include FAIL $(error Assertion failed: '$(VAR)' should be defined)
+endif
+undefine VAR
+
+VAR=.ifdef
+ifndef $(VAR)
+include FAIL $(error Assertion failed: '$(VAR)' should be defined)
+endif
+undefine VAR
+
+DEFINED=defined
+EXPECT=Then
+undefine ACTUAL
+$(call .ifdef,DEFINED,ACTUAL=Then,ACTUAL=Else)
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+undefine DEFINED
+
+undefine UNDEFINED
+EXPECT=Else
+undefine ACTUAL
+$(call .ifdef,UNDEFINED,ACTUAL=Then,ACTUAL=Else)
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+DEFINED=defined
+$(call .ifdef,\
+	DEFINED\
+	,\
+	,\
+	include FAIL $$(error Assertion failed: DEFINED undefined)\
+)
+undefine DEFINED
+
+undefine UNDEFINED
+$(call .ifdef,\
+	UNDEFINED\
+	,\
+	include FAIL $$(error Assertion failed: UNDEFINED defined)\
+	,\
+)
+undefine DEFINED
+
+DEFINED=defined
+VAR=DEFINED
+THEN=$(if X,,$(error Assertion failed: THEN))
+ELSE=$(error Assertion failed: ELSE)
+$(call .ifdef,\
+	$(VAR)\
+	,\
+	$(THEN)\
+	,\
+	$(value ELSE)\
+)
+undefine ELSE
+undefine THEN
+undefine VAR
+undefine DEFINED
+
+########################################################################
+# ifndef
+
 undefine UNDEFINED
 ifndef UNDEFINED
 else
@@ -26,104 +105,61 @@ include FAIL $(error ifndef DEFINED)
 endif
 undefine DEFINED
 
-undefine DEFINED
-ifdef DEFINED
-include FAIL $(error undefine DEFINED)
-endif
-
-EXPECT:=.if.def
+EXPECT=.if.ndef
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
 
-DEFINED=defined
-EXPECT:=Then
-undefine ACTUAL
-$(eval $(call .if.def,DEFINED,ACTUAL:=Then))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
-
-undefine UNDEFINED
-EXPECT:=Else
-undefine ACTUAL
-$(eval $(call .if.def,UNDEFINED,ACTUAL:=Then,ACTUAL:=Else))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
-
-EXPECT:=.if.ndef
+EXPECT=.ifndef
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
 
 undefine UNDEFINED
-EXPECT:=Then
+EXPECT=Then
 undefine ACTUAL
-$(eval $(call .if.ndef,UNDEFINED,ACTUAL:=Then,ACTUAL:=Else))
+$(call .ifndef,UNDEFINED,ACTUAL=Then,ACTUAL=Else)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine DEFINED
 
 DEFINED=defined
-EXPECT:=Else
+EXPECT=Else
 undefine ACTUAL
-$(eval $(call .if.ndef,DEFINED,ACTUAL:=Then,ACTUAL:=Else))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
-
-EXPECT:=.ifdef
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-
-DEFINED=defined
-EXPECT:=Then
-undefine ACTUAL
-$(call .ifdef,DEFINED,ACTUAL:=Then,ACTUAL:=Else)
+$(call .ifndef,DEFINED,ACTUAL=Then,ACTUAL=Else)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine DEFINED
 
 undefine UNDEFINED
-EXPECT:=Else
-undefine ACTUAL
-$(call .ifdef,DEFINED,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
-
-EXPECT:=.ifndef
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .ifndef,\
+	UNDEFINED\
+	,\
+	,\
+	include FAIL $$(error Assertion failed: error should not happen)\
+)
 
 undefine UNDEFINED
-EXPECT:=Then
-undefine ACTUAL
-$(call .ifndef,UNDEFINED,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
+VAR=$(if X,UNDEFINED,$(error Assertion failed: VAR))
+THEN=$(if X,,$(error Assertion failed: THEN))
+ELSE=$(error Assertion failed: ELSE)
+test_eval_cond=$(call .if.ndef,\
+	$(value VAR)\
+	,\
+	$(value THEN)\
+	,\
+	$(value ELSE)\
+)
+$(eval $(test_eval_cond))
+undefine test_eval_cond
+undefine ELSE
+undefine THEN
+undefine VAR
 
-DEFINED=defined
-EXPECT:=Else
-undefine ACTUAL
-$(call .ifndef,DEFINED,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-undefine DEFINED
-
-# ifeq / ifneq
+########################################################################
+# ifeq
 
 ifeq (X,)
 include FAIL $(error ifeq (X,))
@@ -157,6 +193,72 @@ ifeq '' ' '
 include FAIL $(error ifeq '' ' ')
 endif
 
+EXPECT=.if.eq
+ifndef $(EXPECT)
+include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
+endif
+
+EXPECT=.ifeq
+ifndef $(EXPECT)
+include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
+endif
+
+EXPECT=Then
+undefine ACTUAL
+$(call .ifeq,,,ACTUAL=Then,ACTUAL=Else)
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+EXPECT=Else
+undefine ACTUAL
+$(call .ifeq,X,,ACTUAL=Then,ACTUAL=Else)
+ifneq ($(EXPECT),$(ACTUAL))
+include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+endif
+
+$(call .ifeq,\
+	A\
+	,\
+	A\
+	,\
+	,\
+	include FAIL $$(error Assertion failed: error should not happen)\
+)
+
+f=$(call .ifeq,\
+	$(1)\
+	,\
+	$(2)\
+	,\
+	,\
+	include FAIL $$(error Assertion failed: error should not happen)\
+)
+$(call f)
+undefine f
+
+VAR1=$(if X,AAA,$(error Assertion failed: VAR1))
+VAR2=$(if X,AAA,$(error Assertion failed: VAR2))
+THEN=$(if X,,$(error Assertion failed: THEN))
+ELSE=$(error Assertion failed: ELSE)
+test_eval_cond=$(call .if.eq,\
+	$(value VAR1)\
+	,\
+	$(value VAR2)\
+	,\
+	$(value THEN)\
+	,\
+	$(value ELSE)\
+)
+$(eval $(test_eval_cond))
+undefine test_eval_cond
+undefine ELSE
+undefine THEN
+undefine VAR2
+undefine VAR1
+
+########################################################################
+# ifneq
 
 ifneq (,)
 include FAIL $(error ifneq (,))
@@ -182,81 +284,57 @@ ifneq '' ''
 include FAIL $(error ifneq '' '')
 endif
 
-EXPECT:=.if.eq
+EXPECT=.if.neq
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
 
-EXPECT:=Then
-undefine ACTUAL
-$(eval $(call .if.eq,,,ACTUAL:=Then,ACTUAL:=Else))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=Else
-undefine ACTUAL
-$(eval $(call .if.eq,X,,ACTUAL:=Then,ACTUAL:=Else))
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=.if.neq
+EXPECT=.ifneq
 ifndef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
 endif
 
-EXPECT:=Then
+EXPECT=Then
 undefine ACTUAL
-$(eval $(call .if.neq,A,Z,ACTUAL:=Then,ACTUAL:=Else))
+$(call .ifneq,A,Z,ACTUAL=Then,ACTUAL=Else)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=Else
+EXPECT=Else
 undefine ACTUAL
-$(eval $(call .if.neq,A,A,ACTUAL:=Then,ACTUAL:=Else))
+$(call .ifneq,A,A,ACTUAL=Then,ACTUAL=Else)
 ifneq ($(EXPECT),$(ACTUAL))
 include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 
-EXPECT:=.ifeq
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .ifneq,\
+	A\
+	,\
+	Z\
+	,\
+	,\
+	include FAIL $$(error Assertion failed: error should not happen)\
+)
 
-EXPECT:=Then
-undefine ACTUAL
-$(call .ifeq,,,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+VAR1=$(if X,AAA,$(error Assertion failed: VAR1))
+VAR2=$(if X,ZZZ,$(error Assertion failed: VAR2))
+THEN=$(if X,,$(error Assertion failed: THEN))
+ELSE=$(error Assertion failed: ELSE)
+test_eval_cond=$(call .if.neq,\
+	$(value VAR1)\
+	,\
+	$(value VAR2)\
+	,\
+	$(value THEN)\
+	,\
+	$(value ELSE)\
+)
+$(eval $(test_eval_cond))
+undefine test_eval_cond
+undefine ELSE
+undefine THEN
+undefine VAR2
+undefine VAR1
 
-EXPECT:=Else
-undefine ACTUAL
-$(call .ifeq,X,,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=.ifneq
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-
-EXPECT:=Then
-undefine ACTUAL
-$(call .ifneq,A,Z,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=Else
-undefine ACTUAL
-$(call .ifneq,A,A,ACTUAL:=Then,ACTUAL:=Else)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-PASS: ;
 # vim: set syntax=make:

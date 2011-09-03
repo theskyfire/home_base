@@ -28,14 +28,16 @@ THIS.mk.marker		=INCLUDE.$(THIS.mk.esc)
 .FIRST.INCLUDE		=\
 $(strip FIRST_INCLUDE\
 	$(eval $$(THIS.mk.marker)+=X)\
-	$(eval $$(THIS.mk.marker):=$$(subst $$(strip ) $$(strip ),_,$$($$(THIS.mk.marker))))\
+	$(eval $$(THIS.mk.marker):=$$(subst $$(strip ) $$(strip ),,$$($$(THIS.mk.marker))))\
 	$(if \
-		$(findstring X_X,$($(THIS.mk.marker)))\
+		$(findstring XX,$($(THIS.mk.marker)))\
 		,\
 		$(eval undefine FIRST_INCLUDE)\
 		,\
 		$(eval FIRST_INCLUDE=FIRST_INCLUDE)\
+		$(eval $(THIS.mk):: ; )\
 	)\
 )
 
+$(lastword $(MAKEFILE_LIST)):: ;
 ########################################################################

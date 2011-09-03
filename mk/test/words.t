@@ -118,5 +118,4 @@ include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
 endif
 undefine f
 
-PASS: ;
 # vim: set syntax=make:
