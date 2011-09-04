@@ -2,31 +2,20 @@ PASS: ;
 
 FAIL: ; false
 
+test.mk:: ;
+
 .DEFAULT_GOAL:=PASS
 
-PATH.mk			:=\
-$(patsubst %/,%,$(dir \
-	$(patsubst %/,%,$(dir \
-		$(realpath $(lastword $(MAKEFILE_LIST)))\
-	))\
-))
-
-LIB.mk			=$(PATH.mk)/lib
-guard			:=$(LIB.mk)/guard.mk
-
-SUBMAKE=MAKEFILES='' MAKEFLAGS='' $(MAKE) -d -f '$(TEST)t' '$@'=DEFINED LIB.mk='$(LIB.mk)'
-
-test.mk:: ;
-#$(TEST):: ;
+SUBMAKE=MAKEFILES='' MAKEFLAGS='' $(MAKE) -dp -f '$(TEST)t' '$@'=DEFINED guard='$(guard)'
 
 ifneq ($(findstring guard.t,$(TEST)),guard.t)
 
-include $(LIB.mk)/assert.mk
-
-include $(guard)
+include ../lib/guard.mk
 THIS.mk:=$(TEST)
 ifdef $(.FIRST.INCLUDE)
 endif
+
+include $(LIB.mk)/assert.mk
 
 -include $(TEST:%.t=$(LIB.mk)/%.mk)
 

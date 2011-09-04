@@ -1,0 +1,31 @@
+include $(guard)
+ifdef $(.FIRST.INCLUDE)
+
+include $(LIB.mk)/check.mk
+
+THROW={EXPECTED FAILURE}
+
+# Every assert should fail
+.assert.pass=include FAIL $$(error Unexpected PASS)
+.assert.eq.pass=include FAIL $$(error Unexpected PASS)
+
+ifdef fake_feature
+$(warning <$(findstring $(strip  fake-feature ),$(.FEATURES))>)
+X			=\
+$(call .assert,\
+	$(findstring $(strip $(1)),$(.FEATURES)),\
+	Feature '$(strip $(1))' missing: Please use a modern GNU Make$(2)\
+)
+$(call .assert.def,.test.feature)
+$(call .test.feature,fake-feature,CCCCC)
+$(call X,fake-feature,CCCCC)
+$(call .test.feature, fake-feature ,$(THROW))
+$(call X, fake-feature ,ZZZ)
+endif
+
+.DEFAULT_GOAL:=FAIL
+FAIL:
+	@echo "unexpected failure!"
+
+endif # .FIRST.INCLUDE
+# vim: set syntax=make:

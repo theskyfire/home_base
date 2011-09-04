@@ -24,12 +24,13 @@ endif
 .DEFAULT_GOAL=FAIL
 ##############################################################################
 # Test for modern GNU Make
+
+include $(LIB.mk)/assert.mk
+
 .test.feature		=\
-$(.debug.1)\
-$(call .assert.in,\
-	$(1),\
-	$(.FEATURES),\
-	Feature '$$(.assert.needle)' missing: Please use a modern GNU Make\
+$(call .assert,\
+	$(findstring $(strip $(1)),$(.FEATURES)),\
+	Feature '$(strip $(1))' missing: Please use a modern GNU Make$(2)\
 )
 
 $(call .test.feature, else-if )

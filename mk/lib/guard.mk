@@ -2,6 +2,10 @@
 # Include Guard   "Quis custodiet ipsos custodes?"
 ########################################################################
 
+guard			:=$(realpath $(lastword $(MAKEFILE_LIST)))
+LIB.mk			:=$(patsubst %/,%,$(dir $(guard)))
+PATH.mk			:=$(patsubst %/,%,$(dir $(LIB.mk)))
+
 # Set THIS.mk to including makefile
 THIS.mk			:=\
 $(lastword\

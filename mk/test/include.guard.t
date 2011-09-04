@@ -1,265 +1,142 @@
 ########################################################################
 # Before first include
 
-EXPECT:=PATH.mk
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(realpath $(CURDIR)/..)
-ACTUAL:=$(PATH.mk)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=guard
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(PATH.mk)/lib/guard.mk
-ACTUAL:=$(guard)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=THIS.mk
+EXPECT=guard
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.abs
+EXPECT=LIB.mk
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.abs)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.real
+EXPECT=PATH.mk
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.real)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.name
+EXPECT=THIS.mk
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.name)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.relative
+EXPECT=THIS.mk.abs
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.relative)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.esc
+EXPECT=THIS.mk.real
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.esc)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.marker
+EXPECT=THIS.mk.name
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.esc)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=INCLUDE.test_include_guard_t
+EXPECT=THIS.mk.relative
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(INCLUDE.test_include_guard_t)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=THIS.mk.includes
+EXPECT=THIS.mk.esc
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(THIS.mk.includes)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=FIRST_INCLUDE
+EXPECT=THIS.mk.marker
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(FIRST_INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
 
-EXPECT:=.FIRST.INCLUDE
+EXPECT=.FIRST.INCLUDE
 ifdef $(EXPECT)
 include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
-EXPECT:=AZ
-ACTUAL:=A$(.FIRST.INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
+
+EXPECT=FIRST_INCLUDE
+ifdef $(EXPECT)
+include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
+endif
+
+EXPECT=INCLUDE.test_guard_t
+ifdef $(EXPECT)
+include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
+endif
+
+EXPECT=INCLUDE.test_include_guard_t
+ifdef $(EXPECT)
+include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
 endif
 
 ########################################################################
-# Include
-include $(guard)
+# Include guard.mk & assert.mk
 
-EXPECT:=THIS.mk
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' is not defined)
-endif
-EXPECT:=$(TEST)
-ACTUAL:=$(THIS.mk)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+include ../lib/guard.mk
 
-EXPECT:=THIS.mk.abs
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(abspath $(THIS.mk))
-ACTUAL:=$(THIS.mk.abs)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+# save THIS.mk
+SAVE.THIS.mk:=$(THIS.mk)
 
-EXPECT:=THIS.mk.real
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(realpath $(THIS.mk))
-ACTUAL:=$(THIS.mk.real)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+# fake guard & .FIRST.INCLUDE to include assert.mk
+guard=/dev/null
+.FIRST.INCLUDE=guard
+include ../lib/assert.mk
 
-EXPECT:=THIS.mk.name
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(notdir $(THIS.mk.real))
-ACTUAL:=$(THIS.mk.name)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+# reload guard.mk to fix guard & .FIRST.INCLUDE
+include ../lib/guard.mk
+THIS.mk:=$(SAVE.THIS.mk)
 
-EXPECT:=THIS.mk.relative
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=$(patsubst $(PATH.mk)/%,%,$(THIS.mk.real))
-ACTUAL:=$(THIS.mk.relative)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+########################################################################
+# test guard.mk
 
-EXPECT:=THIS.mk.esc
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=test_include_guard_t
-ACTUAL:=$(THIS.mk.esc)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,guard)
+$(call .assert.eq,$(realpath ../lib/guard.mk),$(guard))
 
-EXPECT:=THIS.mk.marker
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=INCLUDE.$(THIS.mk.esc)
-ACTUAL:=$(THIS.mk.marker)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,LIB.mk)
+$(call .assert.eq,$(patsubst %/,%,$(dir $(guard))),$(LIB.mk))
+
+$(call .assert.def,PATH.mk)
+$(call .assert.eq,$(patsubst %/,%,$(dir $(LIB.mk))),$(PATH.mk))
+
+$(call .assert.def,THIS.mk)
+$(call .assert.eq,$(TEST),$(THIS.mk))
+
+$(call .assert.def,THIS.mk.abs)
+$(call .assert.eq,$(abspath $(THIS.mk)),$(THIS.mk.abs))
+
+$(call .assert.def,THIS.mk.real)
+$(call .assert.eq,$(realpath $(THIS.mk)),$(THIS.mk.real))
+
+$(call .assert.def,THIS.mk.name)
+$(call .assert.eq,$(notdir $(THIS.mk.real)),$(THIS.mk.name))
+
+$(call .assert.def,THIS.mk.relative)
+$(call .assert.eq,$(patsubst $(PATH.mk)/%,%,$(THIS.mk.real)),$(THIS.mk.relative))
+
+$(call .assert.def,THIS.mk.esc)
+$(call .assert.eq,test_include_guard_t,$(THIS.mk.esc))
+
+$(call .assert.def,THIS.mk.marker)
+$(call .assert.eq,INCLUDE.$(THIS.mk.esc),$(THIS.mk.marker))
+
+$(call .assert.def,.FIRST.INCLUDE)
 
 ########################################################################
 # call .FIRST.INCLUDE for first time
 
-# still not defined
-EXPECT:=FIRST_INCLUDE
-ifdef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
-endif
-EXPECT:=AZ
-ACTUAL:=A$(FIRST_INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.ndef,FIRST_INCLUDE)
+$(call .assert.ndef,INCLUDE.test_include_guard_t)
 
-# still not defined
-EXPECT:=INCLUDE.test_include_guard_t
-ifdef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
-endif
-EXPECT:=AZ
-ACTUAL:=A$(FIRST_INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,.FIRST.INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(.FIRST.INCLUDE))
 
-EXPECT:=.FIRST.INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .assert.def,FIRST_INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(FIRST_INCLUDE))
 
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(.FIRST.INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=FIRST_INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(FIRST_INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=INCLUDE.test_include_guard_t
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=AXZ
-ACTUAL:=A$(INCLUDE.test_include_guard_t)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,INCLUDE.test_include_guard_t)
+$(call .assert.eq,X,$(INCLUDE.test_include_guard_t))
 
 #### $(THIS.mk):: ;  should now be defined
 .DEFAULT_GOAL:=$(THIS.mk)
@@ -267,105 +144,37 @@ endif
 ########################################################################
 # call .FIRST.INCLUDE for second time
 
-EXPECT:=.FIRST.INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .assert.def,.FIRST.INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(.FIRST.INCLUDE))
 
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(.FIRST.INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.ndef,FIRST_INCLUDE)
 
-EXPECT:=FIRST_INCLUDE
-ifdef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
-endif
-EXPECT:=AZ
-ACTUAL:=A$(FIRST_INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=INCLUDE.test_include_guard_t
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=XX
-ACTUAL:=$(INCLUDE.test_include_guard_t)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,INCLUDE.test_include_guard_t)
+$(call .assert.eq,XX,$(INCLUDE.test_include_guard_t))
 
 ########################################################################
 # call .FIRST.INCLUDE for third time
 
-EXPECT:=.FIRST.INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .assert.def,.FIRST.INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(.FIRST.INCLUDE))
 
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(.FIRST.INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.ndef,FIRST_INCLUDE)
 
-EXPECT:=FIRST_INCLUDE
-ifdef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
-endif
-EXPECT:=AZ
-ACTUAL:=A$(FIRST_INCLUDE)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=INCLUDE.test_include_guard_t
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=XXX
-ACTUAL:=$(INCLUDE.test_include_guard_t)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,INCLUDE.test_include_guard_t)
+$(call .assert.eq,XXX,$(INCLUDE.test_include_guard_t))
 
 ########################################################################
 # call .FIRST.INCLUDE for forth time after resetting marker
 undefine $(THIS.mk.marker)
 
-EXPECT:=.FIRST.INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
+$(call .assert.def,.FIRST.INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(.FIRST.INCLUDE))
 
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(.FIRST.INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,FIRST_INCLUDE)
+$(call .assert.eq,FIRST_INCLUDE,$(FIRST_INCLUDE))
 
-EXPECT:=FIRST_INCLUDE
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=FIRST_INCLUDE
-ACTUAL:=$(FIRST_INCLUDE)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=INCLUDE.test_include_guard_t
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-EXPECT:=AXZ
-ACTUAL:=A$(INCLUDE.test_include_guard_t)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.def,INCLUDE.test_include_guard_t)
+$(call .assert.eq,X,$(INCLUDE.test_include_guard_t))
 
 ########################################################################
 # vim: set syntax=make:

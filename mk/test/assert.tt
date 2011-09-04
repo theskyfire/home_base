@@ -1,4 +1,3 @@
-guard:=$(LIB.mk)/guard.mk
 include $(guard)
 ifdef $(.FIRST.INCLUDE)
 
