@@ -177,6 +177,14 @@ ifeq (x,X)
 include FAIL $(error ifeq (x,X))
 endif
 
+ifeq (a,z,a,z)
+include FAIL $(error ifeq (a,z,a,z))
+endif
+
+ifeq (,)a,,)a)
+include FAIL $(error ifeq (a,z,a,z))
+endif
+
 ifeq "x" "X"
 include FAIL $(error ifeq "x" "X")
 endif

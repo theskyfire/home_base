@@ -19,6 +19,9 @@
 #exec FDPAT CMD ARGS	# run CMD in window
 
 #### Session Window Options
+setenv SHELL ${HOME}/base/bin/bash
+setenv SHELLRC ${HOME}/base/etc/bashrc
+setenv START_SHELL ${SHELL} --rcfile ${SHELLRC}
 #shell -${SHELL}	# alias for defshell
 defshell ${HOME}/base/bin/bash # override ${SHELL}
 #defzombie ^[^M onerror	# defzombie is an alias for zombie 
@@ -44,7 +47,7 @@ login off		# login or out of utmp
 #### Window Terminal Options
 # Screen acts as a terminal for the commands running in a Window.
 #term "screen"		# change what screen presents as its term 'screen'
-defmode 0620		# ptty mode for new windows
+DEfmode 0620		# ptty mode for new windows
 defobuflimit 1024	# output buffer, blocks when full
 console off		# don't grab system console /dev/console
 #defcharset		#
@@ -97,7 +100,7 @@ printcmd "cat > ${HOME}/.screen/.screen.print" # term print cmd will cat to file
 #stuff STRING		# stuff string into input buffer for window
 #history		# fake command history
 
-#### Logging Options
+#### logging Options
 deflog off		# no logging
 logfile "${HOME}/.screen/screenlog.%n" # logfile
 logfile flush 5		# flush timeout
@@ -342,8 +345,8 @@ bind  A title		# Enter title for window
 bind  T title		# Enter title for window
 bind  N number -1	# Decrement window number
 # Create window, and switch region to that window
-bind  c screen ${HOME}/base/bin/bash --rcfile ${HOME}/base/etc/bashrc
-bind ^C screen ${HOME}/base/bin/bash --rcfile ${HOME}/base/etc/bashrc
+bind  c screen ${HOME}/base/bin/shell.sh
+bind ^C screen ${HOME}/base/bin/shell.sh
 bind  C screen //group	# Create window group
 bind ^K kill		# kill current window
 bind  K kill		# kill current window
@@ -406,10 +409,10 @@ bind ^W windows		# show list of windows
 bind  ) layout select 0	# select layout 0
 bind  ! layout select 1	# select layout 1
 bind  @ layout select 2	# select layout 2
-bind  \# layout select 3 # select layout 3
+bind \# layout select 3 # select layout 3
 bind  $ layout select 4	# select layout 4
 bind  % layout select 5	# select layout 5
-bind  \^ layout select 6 # select layout 6
+bind \^ layout select 6 # select layout 6
 bind  & layout select 7	# select layout 7
 bind  * layout select 8	# select layout 8
 bind  ( layout select 9	# select layout 9
@@ -422,41 +425,124 @@ bind ^P layout prev	# switch to prev layout
 
 chdir			# cd to ~ for new windows
 
-# Environment
-setenv HOMEbase "${HOME}/base"
-setenv HB "${HOMEbase}"
-setenv HB_ETC "${HB}/etc"
-setenv HB_BIN "${HB}/bin"
-setenv HB_BASH "${HB_BIN}/bash"
-setenv HB_BASHRC "${HB_ETC}/bashrc"
-setenv HB_SHELL "${HB_BASH}"
-setenv SHELL "${HB_SHELL}"
+#### Clean Environment
+setenv SHLVL 1
 
-# create main window group
-screen -t main 0 //group
+unsetenv SHELLOPTS
+unsetenv BASHOPTS
+unsetenv CDPATH
+unsetenv POSIXLY_CORRECT
+unsetenv BASH_XTRACEFD
+unsetenv COLUMNS
+unsetenv COMPREPLY
+unsetenv EMACS
+unsetenv FCEDIT
+unsetenv FIGNORE
+unsetenv FUNCNEST
+unsetenv GLOBIGNORE
+unsetenv HISTCONTROL
+unsetenv HISTFILE
+unsetenv HISTFILESIZE
+unsetenv HISTIGNORE
+unsetenv HISTSIZE
+unsetenv HISTTIMEFORMAT
+unsetenv HOSTFILE
+unsetenv IFS
+unsetenv IGNOREEOF
+unsetenv INPUTRC
+unsetenv LANG
+unsetenv LC_ALL
+unsetenv LC_COLLATE
+unsetenv LC_CTYPE
+unsetenv LC_MESSAGES
+unsetenv LC_NUMERIC
+unsetenv LINES
 
-# create virt layout and 3 new windows
-layout new vplit3
+# unset all other bash variables
+unsetenv BASH
+unsetenv BASHPID
+unsetenv BASH_ALIASES
+unsetenv BASH_ARGC
+unsetenv BASH_ARGV
+unsetenv BASH_CMDS
+unsetenv BASH_COMMAND
+unsetenv BASH_EXECUTION_STRING
+unsetenv BASH_LINENO
+unsetenv BASH_REMATCH
+unsetenv BASH_SOURCE
+unsetenv BASH_SUBSHELL
+unsetenv BASH_VERSINFO
+unsetenv BASH_VERSION
+unsetenv COMP_CWORD
+unsetenv COMP_KEY
+unsetenv COMP_LINE
+unsetenv COMP_POINT
+unsetenv COMP_TYPE
+unsetenv COMP_WORDBREAKS
+unsetenv COMP_WORDS
+unsetenv COPROC
+unsetenv DIRSTACK
+unsetenv EUID
+unsetenv FUNCNAME
+unsetenv GROUPS
+unsetenv HISTCMD
+unsetenv HOSTNAME
+unsetenv HOSTTYPE
+unsetenv LINENO
+unsetenv MACHTYPE
+unsetenv MAPFILE
+unsetenv OLDPWD
+unsetenv OPTARG
+unsetenv OPTIND
+unsetenv OSTYPE
+unsetenv PIPESTATUS
+unsetenv PPID
+unsetenv PWD
+unsetenv RANDOM
+unsetenv READLINE_LINE
+unsetenv READLINE_POINT
+unsetenv REPLY
+unsetenv SECONDS
+unsetenv UID
+
+#screen -t init 0 
+
+# create window groups
+screen -t base 0 //group
+
+select base
+screen -t sys  10 //group
+
+select base
+screen -t main 20 //group
+
+# create standard screens
+select sys
+screen -t sh   1 ${HOME}/base/bin/shell.sh
+screen -t edit 2 ${HOME}/base/bin/shell.sh
+screen -t help 3 ${HOME}/base/bin/shell.sh
+
+select main
+screen -t work 4 ${HOME}/base/bin/shell.sh
+
+# create layouts
+
+layout new vsplit3
 layout number 0
-screen -t sh 1 ${HB_BASH} --rcfile ${HB_BASHRC}
-group main
+select sh
 split -v
 focus right
-screen -t edit 2 ${HB_BASH} --rcfile ${HB_BASHRC}
-group main
+select edit
 split -v
 focus right
-screen -t help 3 ${HB_BASH} --rcfile ${HB_BASHRC}
-group main
+select help
 focus
 
-# main layout
 layout new main
 layout number 1
 focus
 select sh
 
-# vsplit layout
 layout new vsplit
 layout number 2
 select edit
@@ -465,7 +551,6 @@ focus right
 select help
 focus left
 
-# dev_l layout
 layout new dev_l
 layout number 3
 select sh
@@ -477,7 +562,6 @@ focus down
 select help
 focus left
 
-# dev_r layout
 layout new dev_r
 layout number 4
 select edit
@@ -490,7 +574,6 @@ focus down
 select help
 focus up
 
-# hsplit layout
 layout new hsplit
 layout number 5
 select edit
@@ -499,19 +582,9 @@ focus down
 select help
 focus up
 
-# create work window group
-screen -t sub 6 //group
-
-# work layout
-layout new work
-layout number 6
-screen -t work 7 ${HOME}/base/bin/bash --rcfile ${HOME}/base/bashrc
-group sub
-focus
-select work
-
-
 # select main layout
 layout select main
+select sh
+select work
 
 # vim:filetype=screen:

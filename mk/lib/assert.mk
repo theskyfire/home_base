@@ -30,13 +30,13 @@ $(call .ifneq,\
 .assert.eq.fail		=include FAIL $$(error $(call .assert.eq.msg,$(1),$(2),$(3)))
 .assert.eq		=\
 $(call .ifeq,\
-	$(1)\
+	$(value 1)\
 	,\
-	$(2)\
+	$(value 2)\
 	,\
 	$(.assert.eq.pass)\
 	,\
-	$(call .assert.eq.fail,$(1),$(2),$(3))\
+	$(call .assert.eq.fail,$(value 1),$(value 2),$(value 3))\
 )
 
 .assert.neq.msg.prefix	=Not equal assertion failed: $(strip )

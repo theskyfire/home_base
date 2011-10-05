@@ -1,0 +1,27 @@
+########################################################################
+
+hb="${HOME}/base"
+
+hb_bin="${hb}/bin"
+hb_sbin="${hb}/sbin"
+hb_etc="${hb}/etc"
+hb_tmp="${hb}/tmp"
+hb_opt="${hb}/opt"
+hb_="${hb}/"
+
+hb_PATH="${hb_sbin}:${hb_bin}"
+for path in ${hb_etc}/PATH.d/* ; do
+	hb_PATH="${hb_PATH}:$(< ${path})"
+done
+
+hb_INPUTRC="${hb_etc}/inputrc"
+hb_SHELL="${hb_bin}/bash"
+hb_BASHRC="${hb_etc}/bashrc"
+hb_PAGER="less"
+hb_EDITOR="${hb_bin}/vim"
+hb_VIMRC="${hb_etc}/vimrc"
+hb_MANPATH="${hb}/man"
+hb_TMPDIR="${hb_tmp}/tmpdir"
+
+########################################################################
+# vim: syntax=sh:

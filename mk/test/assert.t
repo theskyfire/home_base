@@ -64,6 +64,8 @@ $(call .ifndef,.assert,\
 	include FAIL $$(error Assertion failed: '$$(1)' should be defined)\
 )
 $(call .assert,X,assert failure)
+.comma:=,
+$(call .assert,$(.comma),assert failure)
 
 ########################################################################
 # .assert.eq
@@ -131,6 +133,8 @@ $(call .assert.eq,X,X,assert failure)
 $(call .assert.eq,,,assert failure)
 $(call .assert.eq, ,,assert failure)
 $(call .assert.eq, ,	,assert failure)
+.comma:=,
+$(call .assert.eq,A$(.comma)Z,A$(.comma)Z,assert failure)
 
 ########################################################################
 # .assert.neq

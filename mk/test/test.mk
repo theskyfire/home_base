@@ -17,6 +17,6 @@ endif
 
 include $(LIB.mk)/assert.mk
 
--include $(TEST:%.t=$(LIB.mk)/%.mk)
+-include $(wildcard $(TEST:%.t=$(LIB.mk)/%.mk))
 
 endif # $(TEST) != guard.t

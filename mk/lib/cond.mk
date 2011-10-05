@@ -25,7 +25,7 @@ endef
 
 .ifeq			=$(eval $(.if.eq))
 define .if.eq =
-if$(strip )eq ($(strip $(1)),$(strip $(2)))
+if$(strip )eq ($(strip $(value 1)),$(strip $(value 2)))
 $(3)
 el$(strip )se
 $(4)

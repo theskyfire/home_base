@@ -1,38 +1,13 @@
-EXPECT:=AZ
-ACTUAL:=A$(firstword)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.eq,AZ,A$(firstword)Z)
+$(call .assert.eq,AZ,A$(firstword )Z)
+$(call .assert.eq,AZ,A$(firstword	)Z)
 
-EXPECT:=AZ
-ACTUAL:=A$(firstword )Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.eq,AmZ,A$(firstword	m)Z)
+$(call .assert.eq,AaZ,A$(firstword	a z)Z)
+$(call .assert.eq,AaZ,A$(firstword	a	z)Z)
 
-EXPECT:=AZ
-ACTUAL:=A$(firstword	)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=AzZ
-ACTUAL:=A$(firstword	z)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=AaZ
-ACTUAL:=A$(firstword	a z)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-EXPECT:=AaZ
-ACTUAL:=A$(firstword	a	z)Z
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+#.comma:=,
+#$(call .assert.eq,Aa$(.comma)zZ,A$(firstword	a,z	)Z)
 
 EXPECT:=Aa,zZ
 ACTUAL:=A$(firstword	a,z	)Z

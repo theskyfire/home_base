@@ -1,62 +1,19 @@
-EXPECT:=.get.env.HOME
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-
-EXPECT:=$(HOME)
-ACTUAL:=$(.get.env.HOME)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
+$(call .assert.def,.get.env.HOME)
+$(call .assert.eq,$(HOME),$(.get.env.HOME))
 undefine HOME
-EXPECT:=HOME
-ifdef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should not be defined)
-endif
+$(call .assert.ndef,HOME)
+$(call .assert.eq,$(shell cd 2>/dev/null ; pwd),$(.get.env.HOME))
 
-EXPECT:=$(shell cd 2>/dev/null ; pwd)
-ACTUAL:=$(.get.env.HOME)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
-
-EXPECT:=.get.env.USER
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-
-EXPECT:=$(USER)
-ACTUAL:=$(.get.env.USER)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
+$(call .assert.def,.get.env.USER)
+$(call .assert.eq,$(USER),$(.get.env.USER))
 undefine USER
-EXPECT:=$(shell whoami)
-ACTUAL:=$(.get.env.USER)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.ndef,USER)
+$(call .assert.eq,$(shell whoami),$(.get.env.USER))
 
-
-EXPECT:=.get.env.TMPDIR
-ifndef $(EXPECT)
-include FAIL $(error Assertion failed: '$(EXPECT)' should be defined)
-endif
-
-EXPECT:=/tmp
-ACTUAL:=$(.get.env.TMPDIR)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
-
+$(call .assert.def,.get.env.TMPDIR)
+$(call .assert.eq,/tmp,$(.get.env.TMPDIR))
 undefine TMPDIR
-EXPECT:=/tmp
-ACTUAL:=$(.get.env.TMPDIR)
-ifneq ($(EXPECT),$(ACTUAL))
-include FAIL $(error Assertion failed: EXPECT='$(EXPECT)' ACTUAL='$(ACTUAL)')
-endif
+$(call .assert.ndef,TMPDIR)
+$(call .assert.eq,/tmp,$(.get.env.TMPDIR))
 
 # vim: set syntax=make:

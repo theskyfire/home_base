@@ -1,149 +1,223 @@
-##############################################################################
-
-export HOMEbase="${HOME}/base"
-export HB="${HOMEbase}"
-export HB_USER="${USER}"
-: ${HB_USER:=${USERNAME}}
-: ${HB_USER:=$(whoami)}
-export HB_HOME="${HOME}"
-: ${HB_HOME:=~}
-: ${HB_HOME:=$(cd ; pwd)}
-
-export HB_BIN="${HB}/bin"
-export HB_SBIN="${HB}/sbin"
-export HB_TMP="${HB}/tmp"
-export HB_ETC="${HB}/etc"
-export HB_OPT="${HB}/opt"
-
-export HB_PATH="${HB_SBIN}:${HB_BIN}"
-for path in ${HB_ETC}/PATH.d/* ; do
-	HB_PATH="${HB_PATH}:$(< ${path})"
-done
-export PATH="${HB_PATH}:${PATH}"
-
-export HB_INPUTRC="${HB_ETC}/inputrc"
-export INPUTRC="${HB_INPUTRC}"
-
-export HB_BASH="${HB_BIN}/bash"
-export HB_BASHRC="${HB_ETC}/bashrc"
-export HB_SHELL="${HB_BASH}"
-export SHELL="${HB_SHELL}"
-
-# export HB_PAGER="${HB_BIN}/less"
-export HB_PAGER="less"
-export PAGER="${HB_PAGER}"
-
-export HB_VIM="${HB_BIN}/vim"
-export HB_VIMRC="${HB_ETC}/vimrc"
-export HB_EDITOR="${HB_VIM}"
-export EDITOR="${HB_EDITOR}"
-
-export HB_MANPATH="${HB}/man"
-export MANPATH="${HB_MANPATH}:${MANPATH}"
-
-###############################################################################
-#unset CDPATH
-export PS1='\u@\h \w\$ '
-
-
-#BASH_ENV
-#ENV
-#FCEDIT
-#FIGNORE
-#FUNCNEST
-#GLOBIGNORE
-#HISTCONTROL
-#HISTFILE
-#HISTFILESIZE
-#HISTIGNORE
-#HISTSIZE
-#HISTTIMEFORMAT
-#HOSTFILE
+########################################################################
+# Bash Config
+# vim: set syntax=sh :
+########################################################################
+# My bash should be started in a clean/empty environment
+# The script shell.sh saves the old env in ${HOME}/base/tmp/env.$$
+#declare -p > /tmp/lester
+export HOME="${PWD}"
+export HOME_BASE="${HOME}/base"
+export PATH="${HOME_BASE}/bin:/bin:/usr/bin:/usr/local/bin:/usr/gnu/bin"
+export USER=$(whoami)
+export LOGNAME="${USER}"
+export TERM="screen"
+export SHELL="${BASH}"
+SHLVL=2
+########################################################################
+unset POSIXLY_CORRECT
+set +o posix			# don't use strict POSIX compilance
+set +o privileged		# don't use privileged mode
+#shopt -u restricted_shell	# Is shell in restricted mode READ-ONLY
+shopt -u compat31		# don't use compatibality mode
+shopt -u compat32		# don't use compatibality mode
+shopt -u compat40		# don't use compatibality mode
+shopt -u compat41		# don't use compatibality mode
+shopt -u gnu_errfmt		# don't use gnu err format
+#shopt -u login_shell		# Is this a login shell READ-ONLY
+shopt -u shift_verbose		# don't print err message on 'shift' errors
+shopt -u xpg_echo		# don't auto-expand echo escape sequences
 #IFS
-#IGNOREEOF
-#INPUTRC
+
+shopt -s sourcepath		# do use PATH to find 'source'd files
+source ${HOME}/base/etc/baserc
+
+########################################################################
+# Readline
+########################################################################
+#set +o emacs		# don't use emacs editing
+set -o vi		# do use vi editing
+export INPUTRC="${hb_INPUTRC}"
+
+########################################################################
+# Debugging
+########################################################################
+set +o errexit		# don't exit after false pipeline/subsh/brace
+set +o errtrace		# don't trap ERR in func/cmd sub/subsh
+set +o functrace	# don't trap DEBUG & RETURN func/cmd sub/subsh
+set +o noexec		# do execute commands once read
+set +o nounset		# don't error out on unset veriable dereference
+set +o onecmd		# don't exit after executing one command
+set +o verbose		# don't echo shell input lines as they are read
+set +o xtrace		# don't echo expanded commands before execution
+shopt -u extdebug	# don't use entended debugging features
+unset FUNCNEST
+
+########################################################################
+# Exports
+########################################################################
+set +o allexport	# don't export every new/modified var/func
+set +o keyword		# don't export non-leading assignments
+
+export PATH="${hb_PATH}:${PATH}"
+export SHELL="${hb_SHELL}"
+export PAGER="${hb_PAGER}"
+export EDITOR="${hb_EDITOR}"
+export VISUAL="${EDITOR}"
+export MANPATH="${hb_MANPATH}:${MANPATH}"
+export TMPDIR="${hb_TMPDIR}"
+
+export TF_DIFF_COMMAND='diff -u --label "%6 / %7" "%1" "%2"'
+
+########################################################################
+# l10n & i18n
+########################################################################
 #LANG
+
+########################################################################
+# Interactive Shell
+########################################################################
+set +o ignoreeof	# do exit after single EOF / ^D
+unset IGNOREEOF
+set -o interactive-comments # do ignore command lines starting with #
+
+########################################################################
+# Non-Interactive Shell
+########################################################################
+shopt -u execfail	# do exit non-interactive shell if exec fails
+# non-interactive
+unset BASH_ENV
+unset ENV
+
+########################################################################
+# Prompt
+########################################################################
+shopt -s promptvars	# do prompt string expansion
+export PS1='\u@\h \w\$ '
+PS2='> '
+PS3=
+PS4='+ '
+PROMPT_DIRTRIM=7	# only display last X dirs in PWD for \W \w
+#PROMPT_COMMAND=hb_prompt_cmd
+
+hb_prompt_cmd () {
+	history -n
+	history -a
+}
+
+########################################################################
+# Expantion
+########################################################################
+set -o braceexpand	# do brace expansion
+set +o noglob		# do pathname expansion
+shopt -u dotglob	# don't use hidden files in pathname expansion
+shopt -s extquote	# do expand $'' and $"" in ${}
+shopt -u extglob	#*don't use extended pattern matching
+shopt -u failglob	# don't error on failed pathname expansion
+shopt -u globstar	# don't allow ** glob
+shopt -u nocaseglob	# don't use case-insensitive pathname expansion
+shopt -u nocasematch	# don't use case-insensitive matching: case [[
+shopt -u nullglob	# do return glob if no match found
+#shopt -s promptvars		# do prompt string expansion
+#GLOBIGNORE
+#BASH_REMATCH
+
+########################################################################
+# Completion
+########################################################################
+shopt -u dirspell	# don't correct spelling on dir word completion
+shopt -s force_fignore	# do force FIGNORE excludes in word completion
+#FIGNORE
+shopt -s hostcomplete	# do hostname completion on words with @
+#HOSTFILE
+shopt -u no_empty_cmd_completion # do search PATH for ALL commands
+shopt -s progcomp	# do programmable completion
+
+########################################################################
+# Redirection
+########################################################################
+set +o noclobber	# do overwrite existing files with redirection
+
+########################################################################
+# Pipeline
+########################################################################
+set +o pipefail		# don't return rightmost non-zero status
+shopt -u lastpipe	# don't run last pipe cmd in current shell
+#TIMEFORMAT
+
+########################################################################
+# Chdir
+########################################################################
+set +o physical		# do cd into symlink path, over physical path
+shopt -u autocd		# don't use dir names as command
+shopt -u cdable_vars	# don't deref non-existent dir as var to cd to
+shopt -u cdspell	# don't auto-correct misspelled dir names
+unset CDPATH		# don't use CDPATH
+export HOME="${HOME}"	# set HOME
+OLDPWD="${HOME}"	# set old PWD
+PWD="${HOME}"		# set PWD
+cd			# go HOME, set PWD/OLDPWD
+dirs -c			# clear DIRSTACK
+#pushd
+#popd
+
+########################################################################
+# Jobs
+########################################################################
+set -o monitor		# do monitor background jobs
+set -o notify		# do report terminated jobs immediately
+shopt -s checkjobs	# do stop exit if jobs are still running
+shopt -s huponexit	# do send HUP to jobs on exit
+#auto_resume
+
+########################################################################
+# Mail
+########################################################################
+#shopt -u mailwarn		# don't check mail file for access times
 #MAIL
 #MAILCHECK
 #MAILPATH
-#POSIXLY_CORRECT
-#PROMPT_COMMAND
-#PROMPT_DIRTRIM
-#PS1 2 3 4
-#TIMEFORMAT
-#TMPDIR
-#auto_resume
-#histchars
-#
-##############################################################################
-#set +o allexport		# don't export every new/modified var/func
-#set -o braceexpand		# do brace expansion
-##set +o emacs			# don't use emacs editing
-#set +o errexit			# don't exit after false pipeline/subsh/brace
-#set +o errtrace			# don't trap ERR in func/cmd sub/subsh
-#set +o functrace		# don't trap DEBUG & RETURN func/cmd sub/subsh
-#set -o hashall			# do hash and remember command locations
-#set -o histexpand		# do ! history substitution
-#set -o history			# do command history
-#set +o ignoreeof		# do exit after single EOF / ^D
-#set -o interactive-comments	# do ignore command lines starting with #
-#set +o keyword			# don't export non-leading assignments
-#set -o monitor			# do monitor background jobs
-#set +o noclobber		# do overwrite existing files with redirection
-#set +o noexec			# do execute commands once read
-#set +o noglob			# do pathname expansion
-#set +o nolog			# Currently ignored
-#set +o notify			# do report terminated jobs immediately
-#set +o nounset			# don't error out on unset veriable dereference
-#set +o onecmd			# don't exit after executing one command
-#set +o physical			# do cd into symlink path, over physical path
-#set +o pipefail			# don't return rightmost non-zero status
-#set +o posix			# don't use strict POSIX compilance
-#set +o privileged		# don't use privileged mode
-#set +o verbose			# don't echo shell input lines as they are read
-set -o vi			# do use vi editing
-#set +o xtrace			# don't echo expanded commands before execution
-###############################################################################
-#shopt -u autocd			# don't use dir names as command
-#shopt -u cdable_vars		# don't deref non-existent dir as var to cd to
-#shopt -u cdspell		# don't auto-correct misspelled dir names
-#shopt -u checkhash		# don't check hashed command for existence
-#shopt -s checkjobs		# do stop exit if jobs are still running
-#shopt -s checkwinsize		#*do check win size after every command
-#shopt -s cmdhist		# do save multi-line command as single entry
-#shopt -u compat31		# don't use compatibality mode
-#shopt -u compat32		# don't use compatibality mode
-#shopt -u compat40		# don't use compatibality mode
-#shopt -u compat41		# don't use compatibality mode
-#shopt -u dirspell		# don't correct spelling on directory names
-#shopt -u dotglob		# don't use hidden files in pathname expansion
-#shopt -u execfail		# do exit non-interactive shell if exec fails
-#shopt -s expand_aliases		# do use command aliasing
-#shopt -u extdebug		# don't use entended debugging features
-#shopt -s extglob		#*don't use extended pattern matching
-#shopt -s extquote		# do expand $'' and $"" in ${}
-#shopt -u failglob		# don't error on failed pathname expansion
-#shopt -s force_fignore		# do force FIGNORE excludes in word completion
-#shopt -s globstar		#*do allow ** glob
-#shopt -u gnu_errfmt		# don't use gnu err format
-#shopt -s histappend		#*do append to HISTFILE
-#shopt -s histreedit		#*do allow edit of failed history substitution
-#shopt -s histverify		#*do show history substitution for verification
-#shopt -s hostcomplete		# do hostname completion on words with @
-#shopt -u huponexit		# don't send HUP to jobs on exit
-#shopt -s interactive_comments	# do ignore command lines starting with #
-#shopt -u lastpipe		# don't run last pipe cmd in current shell
-#shopt -s lithist		#*do save multi-line commands with newlines
-##shopt -u login_shell		# Is this a login shell READ-ONLY
-#shopt -u mailwarn		# don't check mail file for access times
-#shopt -u no_empty_cmd_completion # do search PATH for ALL commands
-#shopt -u nocaseglob		# don't use case-insensitive pathname expansion
-#shopt -u nocasematch		# don't use case-insensitive matching: case [[
-#shopt -u nullglob		# do return glob if no match found
-#shopt -s progcomp		# do programmable completion
-#shopt -s promptvars		# do prompt string expansion
-##shopt -u restricted_shell	# Is shell in restricted mode READ-ONLY
-#shopt -u shift_verbose		# don't print err message on 'shift' errors
-#shopt -s sourcepath		# do use PATH to find 'source'd files
-#shopt -u xpg_echo		# don't auto-expand echo escape sequences
-##############################################################################
+
+########################################################################
+# Command Hashing
+########################################################################
+set -o hashall		# do hash and remember command locations
+shopt -s checkhash	# do check hashed command for existence
+
+########################################################################
+# Aliases
+########################################################################
+shopt -s expand_aliases	# do use command aliasing
+
+########################################################################
+# Display
+########################################################################
+shopt -s checkwinsize	#*do check win size after every command
+
+########################################################################
+# History
+########################################################################
+HISTFILE="${hb}/.history"
+HISTSIZE=2048
+#HISTSIZE=''		# Don't stifle history
+HISTFILESIZE=8192
+#HISTCMD		# history number of current command
+HISTCONTROL=ignorespace	# lines starting with space are not placed in history
+HISTCONTROL="${HISTCONTROL}:ignoredups" # ignore lines matching last line
+HISTCONTROL="${HISTCONTROL}:erasedups" # erase history matching last line
+HISTIGNORE="cd:cd -:pwd:ls:ls -al"
+#HISTTIMEFORMAT='%A %B %d %Y %H:%M:%S(%z) [%s] '
+HISTTIMEFORMAT='%F %T(%z) '
+histchars='!^#'
+
+#fc
+#FCEDIT
+#history
+
+shopt -s cmdhist	# do save multi-line command as single entry
+shopt -s lithist	#*do save multi-line commands with newlines
+shopt -s histappend	#*do append to HISTFILE
+shopt -s histreedit	#*do allow edit of failed history substitution
+shopt -s histverify	#*do show history substitution for verification
+set -o histexpand	# do ! history substitution
+# NOTE: setting history here will start recording on the next line
+set -o history		# do command history

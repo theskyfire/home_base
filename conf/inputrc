@@ -1,74 +1,120 @@
-##############################################################################
-# how readline will ring the bell <(audible)|visible|none>
-set bell-style visible
-# bind kernel term ctrl-char's to readline equivalents (On)
-set bind-tty-special-chars On
-# string inserted by "insert-comment" ("#")
-set comment-begin "#"
+########################################################################
+# History
+
+#  maximum number of history entries saved in the history list 0=unlimited (0)
+$if Bash
+# Bash will set its own history-size via HISTSIZE
+$else
+set history-size 1024
+#set history-size 0
+$endif
+
+# place point at the same location on each history line retrieved (Off)
+set history-preserve-point on
+
+# undo all changes to history after newline (Off)
+set revert-all-at-newline Off
+# modified history lines displayed with a preceding asterisk (Off)
+set mark-modified-lines on
+
+########################################################################
+# Completion
+
+# inhibit word completion (Off)
+set disable-completion Off
+
+# performed tilde expansion when readline attempts word completion (Off)
+$if Bash
+# let bash handle ~ expantion
+set expand-tilde Off
+$else
+set expand-tilde on
+$endif
+# when inserting in middle of word dont duplicate portion after cursor  (Off)
+set skip-completed-text on
+# match files beginning with "." for filename completion {use explicit .} (On)
+set match-hidden-files On
+
+
+# completed directory names have a slash appended (On)
+set mark-directories On
+# completed symlink directory names have a slash appended (Off)
+set mark-symlinked-directories on
+
+# character denoting file type is appended to filename for completions (Off)
+set visible-stats on
+
+# displays the common prefix of possible completions before cycling list (Off)
+set menu-complete-display-prefix on
+
+# length of completion items before conformation (100)
+set completion-query-items 0
+# use more-like pager to display a screenful of completions at a time (On)
+set page-completions On
+# display possible completions immediately (Off)
+set show-all-if-ambiguous on
+# display possible completions immediately (Off)
+set show-all-if-unmodified on
+
+# chars to terminate incremental search without executing as command ("C-[C-J")
+#set isearch-terminators "C-[C-J"
+
 # case-insensitive completion (Off)
 set completion-ignore-case Off
 # length of common prefix of possible completions before "..." (0)
 set completion-prefix-display-length 0
-# length of completion items before conformation (100)
-set completion-query-items 0
+#  display completions horizontally in alphabetical order
+set print-completions-horizontally on
+
+########################################################################
+# Terminal I/O
+
+# how readline will ring the bell <(audible)|visible|none>
+set bell-style visible
+#set prefer-visible-bell on
+
+# string inserted by "insert-comment" ("#")
+set comment-begin #
+
+# enable eight-bit input {don't strip 8th bit from input} (Off)
+# set meta-flag on # alias for input-meta
+set input-meta on
+#  display characters with the eighth bit set directly (Off)
+set output-meta on
 # strip 8th bit and prefix with \e (On)
 set convert-meta off
-# inhibit word completion (Off)
-set disable-completion Off
-# use key-bindings similar to <(emacs)|vi>
-set editing-mode vi
+
+# bind kernel term ctrl-char's to readline equivalents (On)
+set bind-tty-special-chars On
 # if OS support, echo char corresponding to keyboard signal (On)
 set echo-control-characters On
 # try to enable the application keypad when called (Off)
 set enable-keypad Off
 # enable any meta modifier key the terminal supports (On)
 set enable-meta-key On
-# tilde expansion is performed when readline attempts word completion (Off)
-set expand-tilde on
-# place point at the same location oneach history line retrieved (Off)
-set history-preserve-point on
-#  maximum number of history entries saved in the history list 0=unlimited (0)
-set history-size 0
+
 # use a single line for display, scrolling the input (Off)
-set horizontal-scroll-mode on
-# enable eight-bit input {don't strip 8th bit from input} (Off)
-set input-meta on
-# chars to terminate incremental search without executing as command ("C-[C-J")
-#set isearch-terminators "C-[C-J"
-# current readline keymap
-# <(emacs)|emacs-standard|emacs-meta|emacs-ctlx|vi|vi-command|vi-insert>
-set keymap vi-insert
-# completed directory names have a slash appended (On)
-set mark-directories On
-# modified history lines displayed with a preceding asterisk (Off)
-set mark-modified-lines on
-# completed symlink directory names have a slash appended (Off)
-set mark-symlinked-directories Off
-# match files beginning with "." for filename completion {use explicit .} (On)
-set match-hidden-files off
-# displays the common prefix of possible completions before cycling list (Off)
-set menu-complete-display-prefix Off
-#  display characters with the eighth bit set directly (Off)
-set output-meta on
-# use more-like pager to display a screenful of completions at a time (On)
-set page-completions off
-#  display completions horizontally in alphabetical order
-set print-completions-horizontally on
-# undo all changes to history after newline (Off)
-set revert-all-at-newline Off
-# display possible completions immediately (Off)
-set show-all-if-ambiguous on
-# display possible completions immediately (Off)
-set show-all-if-unmodified on
-# when inserting in middle of word dont duplicate portion after cursor  (Off)
-set skip-completed-text
-# character denoting file type is appended to filename for completions (Off)
-set visible-stats on
-##############################################################################
+set horizontal-scroll-mode Off
+
+
+########################################################################
+# use key-bindings similar to <(emacs)|vi>
+set editing-mode vi
+
+
+########################################################################
 set blink-matching-paren on
 set byte-oriented off
 set completion-map-case off
-set meta-flag on
-set prefer-visible-bell on
+#set prefer-visible-bell on
 set completion-display-width -1
-##############################################################################
+
+########################################################################
+# vi keymaps
+
+$include ~/base/etc/inputrc.vi-insert
+$include ~/base/etc/inputrc.vi-command
+
+$if mode=vi
+$endif
+########################################################################
